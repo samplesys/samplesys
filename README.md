@@ -1,30 +1,30 @@
-# UniNet
+# Samplesys
 
-UniNet is a scalable system for random-walk based network representation learning (NRL) and supports to learn node embedding over billion-edge networks.
-It applies an efficient edge sampler based on Metropolis-Hastings sampling technique.
-With the help of the new edge sampler, it unifies random walk based NRL models by exposing two APIs.
+Samplesys is a scalable system for large scale graph sampling system, including random nodes, random edges and exploration based methods. And the engine supports OpenMP-based parallelism. 
 
-In UniNet, we have implemented five NRL models, [deepwalk](https://dl.acm.org/doi/10.1145/2623330.2623732), [node2vec](https://dl.acm.org/doi/10.1145/2939672.2939754), [metapath2vec](https://dl.acm.org/doi/10.1145/3097983.3098036), [edge2vec](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2914-2), and [fairwalk](https://www.ijcai.org/Proceedings/2019/456).
+Also, it provides several graph sampling-based applications, like graph property estimation, node proximate estimation. 
+
+What's more, it provides samplers for random walk based NRL models.
 
 ## Usage
 
 First clone the repo with
 ```shell
-git clone https://github.com/shaoyx/UniNet.git
+git clone https://github.com/FerrisChi/samplesys.git
 ```
 Then compile with
 ```shell
-cd UniNet-Internal
+cd samplesys
 mkdir build
 cd build
 cmake ..
 make
 ```
-The above process generates 2 executable files, namely `uninet` and `gen`, where the latter is used for dataset pre-processing.
+The above process generates 2 executable files, namely `samplesys` and `gen`, where the latter is used for dataset pre-processing.
 
 ### Pre-processing
 
-UniNet accepts CSR formatted network as input. The toolkit `gen` can convert text based edgelist network to CSR formatted network in binary. The format of the input edge list file is as follows, where one line corresponds to one edge.
+samplesys accepts CSR formatted network as input. The toolkit `gen` can convert text based edgelist network to CSR formatted network in binary. The format of the input edge list file is as follows, where one line corresponds to one edge.
 
 ```
 5988 2048
@@ -53,29 +53,40 @@ UniNet accepts CSR formatted network as input. The toolkit `gen` can convert tex
 ```
 
 ### Quick-Start
-We use deepwalk as an example.
+We use *random node sampling* as an example.
 ```shell
-./uninet -train -deepwalk -input data/blogcatalog.bin -output blogcatalog.emb
+./samplesys -sample -rn -input data/blogcatalog.bin -percent 0.5
 ```
-According to the above command, UniNet executes end-to-end training process and generates vector representation for network nodes. The output embedding file is formatted as the default setting for `gensim.word2vec`.
-
+According to the above command, samplesys executes random node sampling method and generate subgraph for network. The output file is formatted in form of edge list in `output/sample.txt`.
 
 **General Settings**
-* `-train` Executes the training process for generating embedding, otherwise only executes random walk process.
+
 * `-input` Input CSR formatted network dataset.
-* `-output` The output embedding file.
-* `-out` Output the random walk trace.
-* `-threads` Number of threads used for execution. The default is 1.
-* `-walks` Number of walks starting from a single node. The default is 10.
-* `-length` The length of a random walk. The default is 80.
-* `-random`, `-burnin`, `-weight` Specify the initialization method of the Metropolis-Hastings based sampler. The default is 'random'.
-* `-deepwalk`, `-node2vec`, `-metapath`, `-edge2vec`, `-fairwalk` Choose the model for execution. It must be noted that metapath2vec, edge2vec, and fairwalk must operate on networks with heterogeneous information.
+* `-output` Output sampled network in form of edge list, `output/sample.txt` in default.
+* `-sample`, `-analysis` Choose the action to be done with graph.
+* `-rn`,`-rdn`,`prn` Choose node based sampling methods. Each corresponds to random node,.
+* `re`,`rne`,`hrne`,`ties`,`pies` Choose edge based sampling methods. Each corresponds to 
+* `dfs`,`bfs`,`sb`,`ff` Choose exploration based sampling methods. Each corresponds to 
+* `-percent` Ratio of sample towards the origin network.
+* `-debug` Print debug message.
 
 **Model-Specific Options**
-* `-p`, `-q` Parameters for node2vec, edge2vec, and fairwalk for the second-order random walk constrain.
-* `-meta` Specify the metapath used for metapath2vec with a string of integers, `01210` for example. Note that the node type number must be within the limits of the network dataset, and the string must be circular, that is, the beginning and the end must be consistent.
+
+* `-hybp` Ratio of algorithm A used in HRNE sampling methods.
+* `-start` Specify start node for exploration based sampling methods.
+* `-maxneighbor` Number of max neighbors chosen in Snow Ball sampling methods.
+* `forward` Probability of expansion in Forest Fire sampling methods.
+
+
+
+
+
+------
+
+ABANDONED
 
 ## Evaluation
+
 The evaluation is conducted on a server with 24-core Xeon CPU and 96GB of memory. The parallelism is set to 16.
 
 ### Random Walk Generating
