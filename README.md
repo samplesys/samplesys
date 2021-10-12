@@ -44,6 +44,7 @@ samplesys accepts CSR formatted network as input. The toolkit `gen` can convert 
 **Full Options**
 ```
     -weighted      Generate network with edge weights.
+    -directed      Generate network with directed edges.
     -rand-w        Assign random weight for edges in range
                     (0, 1).
     -hetro         Generate heterogeneous network file. 
@@ -63,6 +64,7 @@ According to the above command, samplesys executes random node sampling method a
 
 * `-input` Input CSR formatted network dataset.
 * `-output` Output sampled network in form of edge list, `output/sample.txt` in default.
+* `-directed` Network is directed, otherwise the network is undirected.
 * `-sample`, `-analysis` Choose the action to be done with graph.
 * `-rn`,`-rdn`,`prn` Choose node based sampling methods. Each corresponds to random node,.
 * `re`,`rne`,`hrne`,`ties`,`pies` Choose edge based sampling methods. Each corresponds to 

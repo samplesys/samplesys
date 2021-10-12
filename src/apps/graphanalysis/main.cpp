@@ -24,6 +24,7 @@
 
 #include <string>
 
+#include "apps/graphanalysis/analysis.h"
 #include "engine/graphsampling/explore.h"
 #include "engine/graphsampling/randomedge.h"
 #include "engine/graphsampling/randomnode.h"
@@ -85,6 +86,16 @@ int main(int argc, char **argv) {
 
     } else if (analysisType == ANALYSIS) {
         std::cout << "analysis" << std::endl;
+        ANALYSISBACKEND backend(graph, argc, argv);
+        backend.work();
+        // FILE *fp = fopen("./output/debug.txt", "w");
+        // for (int i = 0; i < nv; i++) {
+        //     fprintf(fp, "%d, deg: %d:: ", i, degrees[i]);
+        //     for (int p = offsets[i]; p < offsets[i + 1]; p++) {
+        //         fprintf(fp, "%d ", edges[p]);
+        //     }
+        //     fprintf(fp, "\n");
+        // }
     }
 
     return 0;

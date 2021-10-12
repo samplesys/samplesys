@@ -1,18 +1,18 @@
 /**
  * MIT License
- * 
+ *
  * Copyright (c) 2020, Beijing University of Posts and Telecommunications.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,9 @@
  **/
 
 #include "graph/kgraph.h"
+
 #include <omp.h>
+
 #include <iostream>
 #include <set>
 
@@ -35,7 +37,7 @@ bool LSGraph::load_csr_graph(string network_file) {
         inputFile.read(reinterpret_cast<char *>(&nv), sizeof(long long));
         inputFile.read(reinterpret_cast<char *>(&ne), sizeof(long long));
 
-        this->tossReverse = false;
+        // this->tossReverse = false;
         this->tossWeight = false;
 
         offsets = static_cast<long long *>(malloc((nv + 1) * sizeof(long long)));
@@ -50,23 +52,24 @@ bool LSGraph::load_csr_graph(string network_file) {
             edges_r = static_cast<long long *>(malloc(ne * sizeof(long long)));
         }
         inputFile.read(reinterpret_cast<char *>(offsets), nv * sizeof(long long));
-        
+
         offsets[nv] = static_cast<long long>(ne);
-        
+
         inputFile.read(reinterpret_cast<char *>(edges), sizeof(int32_t) * ne);
 
-        
         degrees = static_cast<int *>(malloc(nv * sizeof(int32_t)));
         for (int i = 0; i < nv; i++)
             degrees[i] = offsets[i + 1] - offsets[i];
 
         if (this->weighted) {
             cout << "Weighted Graph" << endl;
-            myrandom random(time(nullptr));
+            myrandom random(time(nullptr)); // ?
             for (long long i = 0; i < ne; i++) {
                 inputFile.read(reinterpret_cast<char *>(&weights[i]), sizeof(float));
-            } 
-        } else for (long long i = 0; i < ne; i++) weights[i] = float(1);
+            }
+        } else
+            for (long long i = 0; i < ne; i++)
+                weights[i] = float(1);
         this->type_num = 1;
         std::set<int> typeSet;
         if (this->hetro) {
@@ -78,17 +81,17 @@ bool LSGraph::load_csr_graph(string network_file) {
             this->type_num = typeSet.size();
             cout << "Num of types: " << type_num << endl;
         }
-        
-        
-        cout << nv <<" "<< ne<<endl;
+
+        cout << nv << " " << ne << endl;
         inputFile.close();
         if (!tossReverse) {
-            init_reverse(); // This should be optimized for the large graphs, using binary search for reverse edge identification.
+            init_reverse();  // This should be optimized for the large graphs, using binary search
+                             // for reverse edge identification.
         }
         return true;
-  } else {
-    return false;
-  }
+    } else {
+        return false;
+    }
 }
 
 bool LSGraph::load_csr_graph(int argc, char **argv) {
@@ -96,6 +99,7 @@ bool LSGraph::load_csr_graph(int argc, char **argv) {
     bool findInCmd = false;
     weighted = false;
     hetro = false;
+    tossReverse = false;
     for (int i = 0; i < argc; ++i) {
         if (!strcmp("-weighted", argv[i])) {
             weighted = true;
@@ -107,37 +111,38 @@ bool LSGraph::load_csr_graph(int argc, char **argv) {
             if (i == argc - 1) {
                 printf("Argument missing for -input\n");
                 exit(1);
-            } 
+            }
             findInCmd = true;
             network_file = argv[i + 1];
         }
-        
+        if (!strcmp("-directed", argv[i])) {
+            directed = true;
+            tossReverse = true;
+        }
     }
     if (!findInCmd) {
         printf("network file required, please check input...\n");
         exit(1);
     }
 
-
     return this->load_csr_graph(network_file);
-
 }
 
 void LSGraph::init_reverse() {
 #pragma omp parallel for
     for (int src = 0; src < nv; src++) {
         for (long long lastedgeidx = offsets[src]; lastedgeidx < offsets[src + 1]; lastedgeidx++) {
-        int dst = edges[lastedgeidx];
-        // accelerates
-        if (degrees[src] < degrees[dst] || (degrees[src] == degrees[dst] && src < dst))
-            continue;
-        long long pos = find_edge(dst, src); // find edge from dst to src
-        
-        edges_r[lastedgeidx] = pos;
-        edges_r[pos] = lastedgeidx;
+            int dst = edges[lastedgeidx];
+            // accelerates
+            if (degrees[src] < degrees[dst] || (degrees[src] == degrees[dst] && src < dst))
+                continue;
+            long long pos = find_edge(dst, src);  // find edge from dst to src
+
+            edges_r[lastedgeidx] = pos;
+            edges_r[pos] = lastedgeidx;
         }
     }
-  // check
+    // check
 #pragma omp parallel for schedule(dynamic)
     for (int src = 0; src < nv; src++) {
         for (long long lastedgeidx = offsets[src]; lastedgeidx < offsets[src + 1]; lastedgeidx++) {
@@ -145,26 +150,25 @@ void LSGraph::init_reverse() {
             long long rvs = edges_r[lastedgeidx];
             if (rvs >= offsets[dst + 1] || rvs < offsets[dst] || edges[rvs] != src) {
 #pragma omp critical
-{
-                cout << "ERROR for " << src << "->" << dst << " : "
-                     << edges[rvs] << " wrong or " << rvs << " not between "
-                     << offsets[dst] << " and " << offsets[dst + 1] << endl;
-}
+                {
+                    cout << "ERROR for " << src << "->" << dst << " : " << edges[rvs]
+                         << " wrong or " << rvs << " not between " << offsets[dst] << " and "
+                         << offsets[dst + 1] << endl;
+                }
                 long long pos = find_edge(dst, src);
                 edges_r[lastedgeidx] = pos;
             }
         }
     }
     std::cout << "Finish creating csr" << std::endl;
-
 }
 
+/* find index of edge from src to dst */
 long long LSGraph::find_edge(int src, int dst) {
     long long l = offsets[src], r = offsets[src + 1], mid;
     while (l < r) {
         mid = (l + r) / 2;
-        if (edges[mid] == dst)
-            return mid;
+        if (edges[mid] == dst) return mid;
         if (edges[mid] > dst)
             r = mid;
         else
@@ -197,42 +201,24 @@ void LSGraph::print_graph_info() {
     printf("number of nodes: %d, number of edges: %lld\n", this->nv, this->ne);
 }
 
-int* LSGraph::get_degree() {
-    return this->degrees;
-}
+int *LSGraph::get_degree() { return this->degrees; }
 
-long long* LSGraph::get_offsets() {
-    return this->offsets;
-}
+long long *LSGraph::get_offsets() { return this->offsets; }
 
-int* LSGraph::get_edges() {
-    return this->edges;
-}
+int *LSGraph::get_edges() { return this->edges; }
 
-long long LSGraph::get_vertex_num() {
-    return this->nv;
-}
+long long LSGraph::get_vertex_num() { return this->nv; }
 
-long long LSGraph::get_edge_num() {
-    return this->ne;
-}
+long long LSGraph::get_edge_num() { return this->ne; }
 
-long long* LSGraph::get_edges_r() {
-    return this->edges_r;
-}
+long long *LSGraph::get_edges_r() { return this->edges_r; }
 
-float* LSGraph::get_weights() {
-    return this->weights;
-}
+float *LSGraph::get_weights() { return this->weights; }
 
-int LSGraph::get_type_num() {
-    return this->type_num;
-}
+int LSGraph::get_type_num() { return this->type_num; }
 
-int *LSGraph::get_types() {
-    return this->node_types;
-}
+int *LSGraph::get_types() { return this->node_types; }
 
-bool LSGraph::is_hetro() {
-    return this->hetro;
-}
+bool LSGraph::is_hetro() { return this->hetro; }
+
+bool LSGraph::is_directed() {return this->directed;}

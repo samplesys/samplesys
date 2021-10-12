@@ -108,7 +108,7 @@ class value {
   }
 
   // 看成无向图进行计算local clustering coefficient
-  // C[i] = 2*T[i]/d[i]*(d[i]-1)
+  // C[i] = 2*T[i]/( d[i]*(d[i]-1) )
   // 重复计算:T[i]=T[i]/2;
   void calcCluster(const myGraph& G) {
     vector<vector<int>> neighbor(N_NUM);

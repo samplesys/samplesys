@@ -1,18 +1,18 @@
 /**
  * MIT License
- * 
+ *
  * Copyright (c) 2020, Beijing University of Posts and Telecommunications.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,31 +22,31 @@
  * SOFTWARE.
  **/
 
-#include <cstdio>
-#include <string.h>
 #include <stdlib.h>
-#include <string>
+#include <string.h>
+
 #include <algorithm>
-#include <iostream>
-#include <vector>
-#include <ctime>
+#include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <fstream>
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 int *nodeid;
 int *degrees;
 int *nodeindex;
 int **neighbors;
 
+bool undirected = true;
 bool weighted = false;
 bool rand_weight = false;
 bool hetro = false;
 bool rand_hetro = false;
 
 std::string hetro_string;
-
-
 
 int argPos(char *str, int argc, char **argv) {
     for (int i = 0; i < argc; ++i) {
@@ -57,9 +57,8 @@ int argPos(char *str, int argc, char **argv) {
             }
             return i;
         }
-
     }
-    return -1; 
+    return -1;
 }
 
 void work(FILE *input, FILE *ot) {
@@ -78,12 +77,13 @@ void work(FILE *input, FILE *ot) {
         ys.push_back(y);
     }
 
-    std::cout << maxi << std::endl;
+    std::cout << "max id: " << maxi << std::endl;
     n = maxi + 1;
 
     fclose(input);
 
     /* degrees 表示度数, nodeindex表示邻居个数 */
+    /* graph is directed -> degree[i] = out_degree[i] */
     degrees = static_cast<int *>(malloc(n * sizeof(int)));
     nodeindex = static_cast<int *>(malloc(n * sizeof(int)));
     neighbors = static_cast<int **>(malloc(n * sizeof(int *)));
@@ -92,7 +92,7 @@ void work(FILE *input, FILE *ot) {
 
     for (long long j = 0; j < e; j++) {
         degrees[xs[j]]++;
-        degrees[ys[j]]++;
+        if (undirected) degrees[ys[j]]++;
     }
 
     for (int i = 0; i < n; i++)
@@ -100,19 +100,17 @@ void work(FILE *input, FILE *ot) {
 
     for (long long j = 0; j < e; j++) {
         neighbors[xs[j]][nodeindex[xs[j]]++] = ys[j];
-        neighbors[ys[j]][nodeindex[ys[j]]++] = xs[j];
+        if (undirected) neighbors[ys[j]][nodeindex[ys[j]]++] = xs[j];
     }
 
     /* 去重边 */
     for (int i = 0; i < n; i++) {
         nodeindex[i] = 0;
-        if (degrees[i] == 0)
-            continue;
+        if (degrees[i] == 0) continue;
         std::sort(neighbors[i], neighbors[i] + degrees[i]);
         nodeindex[i] = 1;
         for (int j = 1; j < degrees[i]; j++)
-            if (neighbors[i][j] != neighbors[i][j - 1])
-                nodeindex[i]++;
+            if (neighbors[i][j] != neighbors[i][j - 1]) nodeindex[i]++;
     }
 
     e = 0;
@@ -122,22 +120,21 @@ void work(FILE *input, FILE *ot) {
     fwrite(&n, sizeof(long long), 1, ot);
     fwrite(&e, sizeof(long long), 1, ot);
 
+    std::cout << n << " vertex, " << e << " edges" << std::endl;
+
     long long x2 = 0;
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         fwrite(&x2, sizeof(long long), 1, ot);
         x2 += nodeindex[i];
     }
-    for (int i = 0; i < n; i++)
-    {
-        if (degrees[i] == 0)
-            continue;
+    for (int i = 0; i < n; i++) {
+        if (degrees[i] == 0) continue;
         fwrite(neighbors[i], sizeof(int), 1, ot);
         for (int j = 1; j < degrees[i]; j++)
             if (neighbors[i][j] != neighbors[i][j - 1])
                 fwrite(&neighbors[i][j], sizeof(int), 1, ot);
     }
-    srand((unsigned)time(NULL)); 
+    srand((unsigned)time(NULL));
     if (rand_hetro) {
         int *type = new int[n];
         for (long long i = 0; i < e; i++) {
@@ -154,16 +151,16 @@ void work(FILE *input, FILE *ot) {
         type[node] = w;
         fwrite(type, sizeof(int), n, ot);
     }
-    
+
     if (rand_weight) {
         float *weight = new float[e];
-        
+
         for (long long i = 0; i < e; i++) {
             weight[i] = rand() / float(RAND_MAX);
         }
         fwrite(weight, sizeof(float), e, ot);
     }
-    
+    std::cout << "graph generated." << std::endl;
     fclose(ot);
 }
 
@@ -184,14 +181,14 @@ int main(int argc, char **argv) {
     } else {
         std::cout << "Missing output file" << std::endl;
     }
-    if ((a = argPos(const_cast<char *>("-weighted"), argc, argv)) > 0)
-        weighted = true;
-    if ((a = argPos(const_cast<char *>("-rand-w"), argc, argv)) > 0)
-        rand_weight = true;
+    if ((a = argPos(const_cast<char *>("-weighted"), argc, argv)) > 0) weighted = true;
+    if ((a = argPos(const_cast<char *>("-rand-w"), argc, argv)) > 0) rand_weight = true;
 
-    if ((a = argPos(const_cast<char *>("-hetro"), argc, argv)) > 0)
-        hetro = true;
-    
+    if ((a = argPos(const_cast<char *>("-hetro"), argc, argv)) > 0) hetro = true;
+
+    if ((a = argPos(const_cast<char *>("-directed"), argc, argv)) > 0)
+        undirected = false;
+
     if ((a = argPos(const_cast<char *>("-node-type"), argc, argv)) > 0) {
         hetro_string = std::string(argv[a + 1]);
     } else if (hetro) {
