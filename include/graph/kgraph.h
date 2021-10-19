@@ -42,10 +42,10 @@ using namespace std;
 class LSGraph {
 private:
 
-
     bool        tossWeight;
     bool        tossReverse;
-    
+
+    bool        directed;
     bool        hetro;
     int         nv;
     long long   ne;
@@ -83,9 +83,13 @@ public:
 
     long long get_vertex_num();
 
+    long long get_exist_vertex_num();
+
     long long get_edge_num();
 
     bool is_hetro();
+
+    bool is_directed();
 
     int* get_degree();
 

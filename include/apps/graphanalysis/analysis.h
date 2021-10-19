@@ -44,7 +44,8 @@ class ANALYSISBACKEND {
     */
     map<int, double> dis_cluster;
     map<int, int> dis_degree;
-    double assortativty_coef, *clustering_coef;
+    double assortativty_coef;
+    double *clustering_coef, transitivity;
 
    public:
     ANALYSISBACKEND(LSGraph *_graph, int args, char **argv);

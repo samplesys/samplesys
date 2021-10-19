@@ -38,3 +38,8 @@ txt/*
 txt
 build/*
 *.bin
+*.py
+
+.vscode/
+output/
+grapic/

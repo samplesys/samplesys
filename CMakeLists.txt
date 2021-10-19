@@ -27,5 +27,7 @@ ${DIR_GRAPH_SRCS}
 ${DIR_UTILS_SRCS}
 )
 
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE armadillo)
+
 # compile gen
 ADD_EXECUTABLE(gen src/preprocess/gen.cpp)

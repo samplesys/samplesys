@@ -40,6 +40,7 @@ int *degrees;
 int *nodeindex;
 int **neighbors;
 
+bool csvFlag = false;
 bool undirected = true;
 bool weighted = false;
 bool rand_weight = false;
@@ -69,12 +70,24 @@ void work(FILE *input, FILE *ot) {
     int x, y;
     e = 0;
 
-    while (fscanf(input, "%d%d", &x, &y) > 0) {
-        e++;
-        if (x > maxi) maxi = x;
-        if (y > maxi) maxi = y;
-        xs.push_back(x);
-        ys.push_back(y);
+    if (csvFlag) {
+        char s[30];
+        if(!fscanf(input, "%s", s)) std::cout<<"Error"<<std::endl;
+        while (fscanf(input, "%d,%d", &x, &y) > 0) {
+            e++;
+            if (x > maxi) maxi = x;
+            if (y > maxi) maxi = y;
+            xs.push_back(x);
+            ys.push_back(y);
+        }
+    } else {
+        while (fscanf(input, "%d%d", &x, &y) > 0) {
+            e++;
+            if (x > maxi) maxi = x;
+            if (y > maxi) maxi = y;
+            xs.push_back(x);
+            ys.push_back(y);
+        }
     }
 
     std::cout << "max id: " << maxi << std::endl;
@@ -170,6 +183,11 @@ int main(int argc, char **argv) {
     int a = 0;
     if ((a = argPos(const_cast<char *>("-input"), argc, argv)) > 0) {
         inputFile = fopen(argv[a + 1], "r");
+        if (strstr(argv[a + 1], ".csv")) {
+            csvFlag = true;
+        } else {
+            csvFlag = false;
+        }
         if (!inputFile) {
             std::cout << "Input file error" << std::endl;
         }
@@ -186,8 +204,7 @@ int main(int argc, char **argv) {
 
     if ((a = argPos(const_cast<char *>("-hetro"), argc, argv)) > 0) hetro = true;
 
-    if ((a = argPos(const_cast<char *>("-directed"), argc, argv)) > 0)
-        undirected = false;
+    if ((a = argPos(const_cast<char *>("-directed"), argc, argv)) > 0) undirected = false;
 
     if ((a = argPos(const_cast<char *>("-node-type"), argc, argv)) > 0) {
         hetro_string = std::string(argv[a + 1]);

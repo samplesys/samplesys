@@ -58,6 +58,8 @@ void outer(vector<double> x, vector<double> y, vector<vector<double>> &xy) {
 /* Degree correlation: The Pearson correlation coefficient between the starting and ending degrees
  * of all edges. Assortativity measures the similarity of connections in the graph with respect to
  * the node degree.
+ * 
+ * referrence: networkx.degree_assortativity_coefficient()
  */
 void ANALYSISBACKEND::calcDegree() {
     int nv = graph->get_vertex_num();
@@ -68,10 +70,20 @@ void ANALYSISBACKEND::calcDegree() {
     for (int i = 0; i < nv; i++) {
         dis_degree[degree[i]]++;
     }
-    printf("degree distribution:\n");
-    for (auto deg : dis_degree) {
+    long long sumd = 0;
+    printf("Degree distribution:\n");
+    for (auto deg : dis_degree)
         printf("%d %d\n", deg.first, deg.second);
+    for (int i = 0; i < nv; i++) {
+        int d = 0;
+        for (long long p = offsets[i]; p < offsets[i + 1]; p++) {
+            if (i == edge[p]) continue; // cut off self loops
+            d++;
+            sumd++;
+        }
+        dis_degree[d]++;
     }
+    printf("Average degree: %lf\n", 1.0 * sumd / graph->get_exist_vertex_num());
 
     // degree assortativity coefficient: modified from networkx.degree_assortativity_coefficient()
     int n = dis_degree.size();
@@ -92,15 +104,12 @@ void ANALYSISBACKEND::calcDegree() {
             int x = degree[i], y = degree[edge[p]];
             sum++;
             M[mapping[x]][mapping[y]]++;
-            // printf("%d->%d, %d %d %lf\n", i, edge[p], x, y, M[mapping[x]][mapping[y]]);
         }
     }
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             M[i][j] /= sum;
-            // printf("%lf ", M[i][j]);
         }
-        // printf("\n");
     }
 
     // numeric assortativity coefficient, pearsonr
@@ -128,13 +137,22 @@ void ANALYSISBACKEND::calcDegree() {
         for (int j = 0; j <= n; j++)
             dsum += xy[i][j] * (M[i][j] - ab[i][j]);
     }
+    if (!vara || !varb) printf("Network has perfect assortative mixing patterns.\n");
     assortativty_coef = dsum / sqrt(vara * varb);
-    printf("Assortativity coefficient: %lf\n", assortativty_coef);
+    printf("Degree assortativity coefficient: %lf\n", assortativty_coef);
 }
 
 /* local clustering coefficient
- * C[i] = 2*nei[i]/( degree[i]*(degree[i]-1) ) / 2    (undirected edge)
- * dis_cluster[d] = average{C[i] | degree[i]=d}
+ *
+ * In undirected edge:
+ *      clustering_coef_i = \frac{2T(i)}{deg(i)(deg(i)-1)}
+ *      T(i) is the number of triangles through node i
+ *
+ *
+ * transtivity = sum_i{clustering_coef[i]} / nv
+ * dis_cluster[d] = sum_i{clustering_coef[i]} / sum{degree[i] = d}
+ *
+ * referrence:
  */
 void ANALYSISBACKEND::calcCluster() {
     int nv = graph->get_vertex_num();
@@ -148,18 +166,12 @@ void ANALYSISBACKEND::calcCluster() {
     for (int i = 0; i < nv; i++) {
         for (int p = offset[i]; p < offset[i + 1]; p++) {
             neighbor[i].push_back(edges[p]);
-            // neighbor[edges[p]].push_back(i);
         }
     }
-    // printf("neighbor:\n");
-    // for (int i = 0; i < nv; i++) {
-    //     for (auto id : neighbor[i])
-    //         printf("%d ", id);
-    //     printf("\n");
-    // }
-    if (!graph->weighted) {
+    long long triangles = 0, triads = 0;
+    if (!graph->weighted && !graph->is_directed()) {
         vector<int> tmp(nv);
-        FILE *fp = fopen("result.txt", "w");
+        FILE *fp = fopen("debug.txt", "w");
         for (int i = 0; i < nv; i++) {
             for (int p = offset[i]; p < offset[i + 1]; p++) {
                 auto it = set_intersection(neighbor[i].begin(), neighbor[i].end(),
@@ -167,17 +179,24 @@ void ANALYSISBACKEND::calcCluster() {
                                            tmp.begin());
                 T[i] += it - tmp.begin();
             }
-            fprintf(fp,"%d %lf\n", T[i] / 2,
-                   T[i] / (1.0 * neighbor[i].size() * (neighbor[i].size() - 1)));
         }
-        for (int i = 0; i < nv; i++)
+
+        for (int i = 0; i < nv; i++) {
             if (neighbor[i].size() > 1) {
                 clustering_coef[i] = T[i] / (1.0 * neighbor[i].size() * (neighbor[i].size() - 1));
                 dis_cluster[degree[i]] += clustering_coef[i] / dis_degree[degree[i]];
-            }
+                triangles += T[i] / 2;
+                triads += neighbor[i].size() * (neighbor[i].size() - 1) / 2;
+            } else
+                clustering_coef[i] = 0;
+            fprintf(fp, "%d %d %lf\n", i, T[i], clustering_coef[i]);
+        }
+        transitivity = 1.0 * triangles / triads;
         fclose(fp);
     }
-    printf("Clustering coef:\n");
+    printf("Transitivity: %lf\n", transitivity);
+    printf("Clustering coef distribution:\n");
+
     for (auto ttt : dis_cluster)
         printf("%d: %lf\n", ttt.first, ttt.second);
 

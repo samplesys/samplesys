@@ -209,6 +209,13 @@ int *LSGraph::get_edges() { return this->edges; }
 
 long long LSGraph::get_vertex_num() { return this->nv; }
 
+long long LSGraph::get_exist_vertex_num() {
+    int exist_vertex = 0;
+    for (int i = 0; i < nv; i++)
+        if (offsets[i] != offsets[i + 1]) exist_vertex++;
+    return exist_vertex;
+}
+
 long long LSGraph::get_edge_num() { return this->ne; }
 
 long long *LSGraph::get_edges_r() { return this->edges_r; }
@@ -221,4 +228,4 @@ int *LSGraph::get_types() { return this->node_types; }
 
 bool LSGraph::is_hetro() { return this->hetro; }
 
-bool LSGraph::is_directed() {return this->directed;}
+bool LSGraph::is_directed() { return this->directed; }

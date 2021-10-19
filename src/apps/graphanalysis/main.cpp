@@ -32,7 +32,9 @@
 #include "spdlog/cfg/env.h"
 #include "spdlog/spdlog.h"
 #include "utils/sampleutils.h"
-#include "utils/utils.h"
+#include "../lib/arma/include/armadillo"
+
+using namespace arma;
 
 enum AnalysisType { SAMPLE, ANALYSIS };
 
@@ -88,6 +90,9 @@ int main(int argc, char **argv) {
         std::cout << "analysis" << std::endl;
         ANALYSISBACKEND backend(graph, argc, argv);
         backend.work();
+        // mat A(4, 5, fill::randu);
+        // mat B(4, 5, fill::randu);
+        // cout << A*B.t() << endl;
         // FILE *fp = fopen("./output/debug.txt", "w");
         // for (int i = 0; i < nv; i++) {
         //     fprintf(fp, "%d, deg: %d:: ", i, degrees[i]);

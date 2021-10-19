@@ -65,7 +65,7 @@ void EASYSAMPLE::get_args(int argc, char **argv) {
     if ((a = argPos(const_cast<char *>("-percent"), argc, argv)) > 0)
         this->percent = atof(argv[a + 1]);
     else
-        this->percent = 0.1;
+        this->percent = 0.5;
 
     /* Sample result */
     if ((a = argPos(const_cast<char *>("-output"), argc, argv)) > 0) {
