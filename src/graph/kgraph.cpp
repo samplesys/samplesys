@@ -229,3 +229,5 @@ int *LSGraph::get_types() { return this->node_types; }
 bool LSGraph::is_hetro() { return this->hetro; }
 
 bool LSGraph::is_directed() { return this->directed; }
+
+bool LSGraph::is_weighted() { return this->weighted; }

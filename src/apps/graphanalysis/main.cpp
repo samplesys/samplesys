@@ -22,6 +22,7 @@
  * SOFTWARE.
  **/
 
+#include <armadillo>
 #include <string>
 
 #include "apps/graphanalysis/analysis.h"
@@ -32,12 +33,9 @@
 #include "spdlog/cfg/env.h"
 #include "spdlog/spdlog.h"
 #include "utils/sampleutils.h"
-#include "utils/utils.h"
-#include "../lib/arma/include/armadillo"
-
 using namespace arma;
 
-enum AnalysisType { SAMPLE, ANALYSIS };
+enum AnalysisType { SAMPLE, ANALYSIS, TEST };
 
 std::string graph_path;
 AnalysisType analysisType;
@@ -51,6 +49,8 @@ void args(int argc, char **argv) {
         analysisType = SAMPLE;
     } else if ((a = argPos(const_cast<char *>("-analysis"), argc, argv)) > 0) {
         analysisType = ANALYSIS;
+    } else if ((a = argPos(const_cast<char *>("-test"), argc, argv)) > 0) {
+        analysisType = TEST;
     }
 }
 
@@ -90,19 +90,17 @@ int main(int argc, char **argv) {
     } else if (analysisType == ANALYSIS) {
         std::cout << "analysis" << std::endl;
         ANALYSISBACKEND backend(graph, argc, argv);
-        backend.work();
+        backend.calcDegree();
+        backend.calcTranstivity();
+        backend.calcCluster();
+        backend.calcEigenval(5);
+        backend.calcSingularval(5);
+        backend.getWccs();
+    } else if (analysisType == TEST) {
+        std::cout << "testing:\n";
         mat A(4, 5, fill::randu);
         mat B(4, 5, fill::randu);
-        cout << A*B.t() << endl;
-        
-        // FILE *fp = fopen("./output/debug.txt", "w");
-        // for (int i = 0; i < nv; i++) {
-        //     fprintf(fp, "%d, deg: %d:: ", i, degrees[i]);
-        //     for (int p = offsets[i]; p < offsets[i + 1]; p++) {
-        //         fprintf(fp, "%d ", edges[p]);
-        //     }
-        //     fprintf(fp, "\n");
-        // }
+        cout << A * B.t() << endl;
     }
 
     return 0;
