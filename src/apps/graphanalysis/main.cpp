@@ -23,6 +23,7 @@
  **/
 
 #include <armadillo>
+#include <chrono>
 #include <string>
 
 #include "apps/graphanalysis/analysis.h"
@@ -34,6 +35,8 @@
 #include "spdlog/spdlog.h"
 #include "utils/sampleutils.h"
 using namespace arma;
+using namespace std;
+using namespace std::chrono;
 
 enum AnalysisType { SAMPLE, ANALYSIS, TEST };
 
@@ -64,6 +67,9 @@ int main(int argc, char **argv) {
     if (analysisType == SAMPLE) {
         std::cout << "sampling" << std::endl;
         int a;
+
+        auto start = high_resolution_clock::now();
+
         if ((a = argPos(const_cast<char *>("-rn"), argc, argv)) > 0 ||
             (a = argPos(const_cast<char *>("-rdn"), argc, argv)) > 0 ||
             (a = argPos(const_cast<char *>("-prn"), argc, argv)) > 0) {
@@ -86,6 +92,12 @@ int main(int argc, char **argv) {
             sampler->run();
             delete sampler;
         }
+
+        auto stop = high_resolution_clock::now();
+
+        auto duration = duration_cast<microseconds>(stop - start);
+
+        cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
 
     } else if (analysisType == ANALYSIS) {
         std::cout << "analysis" << std::endl;
