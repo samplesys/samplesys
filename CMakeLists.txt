@@ -1,33 +1,33 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.20)
+project(sampler)
 
-# Project name
-PROJECT(samplesys)
+set(CMAKE_CXX_STANDARD 17)
 
-# common settings
-set(CMAKE_CXX_STANDARD 11)
-INCLUDE_DIRECTORIES(
-include
-)
+add_library(sampler SHARED
+        src/engine/node_sampling/DegreeBasedSampler.cpp
+        include/engine/node_sampling/DegreeBasedSampler.h
+        src/engine/node_sampling/NodeSampler.cpp
+        include/engine/node_sampling/NodeSampler.h
+        src/engine/node_sampling/PageRankBasedSampler.cpp
+        include/engine/node_sampling/PageRankBasedSampler.h
+        src/engine/node_sampling/RandomNodeSampler.cpp
+        include/engine/node_sampling/RandomNodeSampler.h
+        src/engine/BaseSampler.cpp
+        include/engine/BaseSampler.h
+        src/graph/Graph.cpp
+        include/graph/Graph.h
+        src/engine/edge_sampling/EdgeSampler.cpp
+        include/engine/edge_sampling/EdgeSampler.h
+        src/engine/edge_sampling/RandomEdgeSampler.cpp
+        include/engine/edge_sampling/RandomEdgeSampler.h
+        src/utils/Random.cpp
+        include/utils/Random.h)
+target_include_directories(sampler PUBLIC
+        include
+        )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Ofast -fopenmp -Wall -Wno-strict-aliasing")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Ofast -fopenmp -Wall -Wno-strict-aliasing")
-
-file(GLOB DIR_SRCS CONFIGURE_DEPENDS "src/*.cpp" "src/*.c")
-file(GLOB_RECURSE DIR_ENGINE_SRCS CONFIGURE_DEPENDS "src/engine/*.cpp" "src/engine/*.c")
-file(GLOB_RECURSE DIR_GRAPH_SRCS CONFIGURE_DEPENDS "src/graph/*.cpp" "src/graph/*.c")
-file(GLOB_RECURSE DIR_UTILS_SRCS CONFIGURE_DEPENDS "src/utils/*.cpp" "src/utils/*.c")
-file(GLOB_RECURSE DIR_APPS_GRAPH_ANALYSIS_SRCS CONFIGURE_DEPENDS "src/apps/graphanalysis/*.cpp")
-
-#compile samplesys
-ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
-${DIR_SRCS} 
-${DIR_APPS_GRAPH_ANALYSIS_SRCS}
-${DIR_ENGINE_SRCS}
-${DIR_GRAPH_SRCS}
-${DIR_UTILS_SRCS}
-)
-
-target_link_libraries(${CMAKE_PROJECT_NAME} -larmadillo)
-
-# compile gen
-ADD_EXECUTABLE(gen src/preprocess/gen.cpp)
+add_executable(testSampler
+        example/testSampler.cpp
+        example/utils.cpp
+        example/utils.h)
+target_link_libraries(testSampler sampler)

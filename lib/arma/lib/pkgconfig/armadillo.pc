@@ -1,9 +1,0 @@
-libdir=/mnt/v/Code/samplesys/linear/lib
-includedir=/mnt/v/Code/samplesys/linear/include
-
-Name: armadillo
-Description: Fast C++ matrix library with syntax similar to MATLAB and Octave
-URL: http://arma.sourceforge.net
-Version: 10.7.1
-Cflags: -I${includedir}
-Libs: -L${libdir} -larmadillo
