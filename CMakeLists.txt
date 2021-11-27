@@ -14,14 +14,17 @@ add_library(sampler SHARED
         include/engine/node_sampling/RandomNodeSampler.h
         src/engine/BaseSampler.cpp
         include/engine/BaseSampler.h
-        src/graph/Graph.cpp
-        include/graph/Graph.h
         src/engine/edge_sampling/EdgeSampler.cpp
         include/engine/edge_sampling/EdgeSampler.h
         src/engine/edge_sampling/RandomEdgeSampler.cpp
         include/engine/edge_sampling/RandomEdgeSampler.h
+        src/engine/edge_sampling/RandomNodeEdgeSampler.cpp
+        include/engine/edge_sampling/RandomNodeEdgeSampler.h
+        src/graph/DirectedGraph.cpp
+        include/graph/DirectedGraph.h
         src/utils/Random.cpp
-        include/utils/Random.h)
+        include/utils/Random.h src/graph/UndirectedGraph.cpp include/graph/UndirectedGraph.h src/graph/Graph.cpp include/graph/Graph.h)
+
 target_include_directories(sampler PUBLIC
         include
         )
