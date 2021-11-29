@@ -56,8 +56,8 @@ void ANALYSISBACKEND::transGraphToMat() {
         }
     }
     adj_mat = sp_mat(location, values);
-    printf("%lld %lld %lld %lld\n", location.n_cols, location.n_rows, location.n_elem,
-           values.n_elem);
+    // printf("%lld %lld %lld %lld\n", location.n_cols, location.n_rows, location.n_elem,
+    //        values.n_elem);
 }
 
 /* Compute the outer product of two vectors. */
@@ -219,7 +219,8 @@ void ANALYSISBACKEND::_weighted_triangles(int *nnbr, float *nweightedTriangle) {
     }
     for (int i = 0; i < nv; i++) {
         vector<int> seen, inbr, jnbr, conbr;
-        for (int x = 0, j; x < nbr[i].size(); x++) {
+        int j;
+        for (int x = 0; x < nbr[i].size(); x++) {
             j = nbr[i][x];
             seen.push_back(j);
             auto it = set_difference(nbr[j].begin(), nbr[j].end(), seen.begin(), seen.end(),
@@ -529,13 +530,14 @@ void ANALYSISBACKEND::calcSingularval(int k) {
  * get WCCs(weakly-connected-component) of graph
  * If graph is undirected, wcc is connected component.
  * If graph is directed, wcc is conneccted component of base graph.
- */ 
+ */
 void ANALYSISBACKEND::getWccs() {
     int nv = graph->get_vertex_num();
     int *edge = graph->get_edges();
-    bool *visited = (bool *)(malloc(nv * sizeof(int)));
+    bool visited[nv];
     long long *offset = graph->get_offsets();
     memset(visited, 0, sizeof(visited));
+
     vector<int> wccV, pred[nv];
     if (graph->is_directed()) {
         for (int i = 0; i < nv; i++) {
@@ -575,12 +577,75 @@ void ANALYSISBACKEND::getWccs() {
         wccs.push_back(wccV);
     }
     sort(wccs.begin(), wccs.end());
-    printf("WCC done.\n");
+}
+
+void ANALYSISBACKEND::sccTarjan(int st, int *dfn, int *low, int *belong, int &dfs_clock) {
+    int nv = graph->get_vertex_num();
+    long long *offset = graph->get_offsets();
+    int *edge = graph->get_edges();
+    int tp = 0, top = 0;
+    struct dsu {
+        int nowi;
+        long long edgei;
+        int down;
+    } stk[nv];
+    stk[++tp] = (dsu){st, offset[st], 0};
+    int sta[nv];
+
+    int nowi, nxti;
+    while (tp) {  // stack is not empty
+        dsu &now = stk[tp];
+        nowi = now.nowi;
+        if (now.edgei == offset[nowi]) {  // start traverse
+            dfn[nowi] = low[nowi] = ++dfs_clock;
+            sta[++top] = nowi;
+        }
+        if (now.down)  // use low[now.down] to update low[nowi]
+            low[nowi] = min(low[nowi], low[now.down]);
+        if (now.edgei == offset[nowi + 1]) {  // end traverse
+            if (low[nowi] == dfn[nowi]) {
+                sccs.push_back({});
+                int j;
+                while (top > 0) {
+                    j = sta[top--];
+                    belong[j] = sccs.size() - 1;
+                    sccs[sccs.size() - 1].push_back(j);
+                    if (j == nowi) break;
+                }
+            }
+            tp--;
+            continue;
+        }
+
+        nxti = edge[now.edgei], now.edgei += 1;
+        if (!dfn[nxti]) {
+            now.down = nxti;  // traverse son = nxti
+            stk[++tp] = (dsu){nxti, offset[nxti], 0};
+        } else if (!belong[nxti])  // son traversed but doesn't belong to SCC
+            low[nowi] = min(low[nowi], dfn[nxti]);
+    }
 }
 
 /**
  * get SCCs(strongly-connected-component)
  */
 void ANALYSISBACKEND::getSccs() {
+    int nv = graph->get_vertex_num();
+    int *dfn = (int *)(malloc(nv * sizeof(int)));
+    int *low = (int *)(malloc(nv * sizeof(int)));
+    int *belong = (int *)(malloc(nv * sizeof(int)));
+    int dfs_clock = 0;
 
+    for (int i = 0; i < nv; i++)
+        dfn[i] = low[i] = belong[i] = 0;
+
+    for (int i = 0; i < nv; i++)
+        if (!dfn[i]) sccTarjan(i, dfn, low, belong, dfs_clock);
+
+    printf("%ld SCCs:\n", sccs.size());
+    for (auto scc : sccs) {
+        for (auto x : scc)
+            printf("%d ", x);
+        printf("\n");
+    }
 }

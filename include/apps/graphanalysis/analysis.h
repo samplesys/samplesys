@@ -78,4 +78,5 @@ class ANALYSISBACKEND {
     void calcSingularval(int k);
     void getWccs();
     void getSccs();
+    void sccTarjan(int st, int *dfn, int *low, int *belong, int &dfs_clock);
 };

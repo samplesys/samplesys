@@ -108,6 +108,7 @@ int main(int argc, char **argv) {
         backend.calcEigenval(5);
         backend.calcSingularval(5);
         backend.getWccs();
+        backend.getSccs();
     } else if (analysisType == TEST) {
         std::cout << "testing:\n";
         mat A(4, 5, fill::randu);
