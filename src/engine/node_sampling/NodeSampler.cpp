@@ -19,7 +19,6 @@ vector<pair<size_t, size_t>> NodeSampler::get_sampled_nodes(const Graph         
     auto ret = vector<pair<size_t, size_t>>();
 
     auto sampled_nodes = random.choice(probability, number_of_nodes, false);
-    sort(sampled_nodes.begin(), sampled_nodes.end());
 
     auto nodes_is_sampled = vector<bool>(g.number_of_nodes());
     for (auto &&v : sampled_nodes) {

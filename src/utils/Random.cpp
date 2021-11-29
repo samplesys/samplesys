@@ -43,5 +43,6 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
             sampled.push_back(indices[i].first);
         }
     }
+    sort(sampled.begin(), sampled.end());
     return sampled;
 }
