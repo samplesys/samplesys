@@ -8,14 +8,13 @@
 #include <vector>
 
 class Random {
- private:
-  int seed;
+   private:
+    int seed;
 
- public:
-  explicit Random(int seed);
-  std::vector<std::size_t> choice(const std::vector<double> &probability,
-                                  std::size_t number_of_sampled,
-                                  bool replace) const;
+   public:
+    explicit Random(int seed);
+    std::vector<std::size_t> choice(const std::vector<double> &probability,
+                                    std::size_t number_of_sampled, bool replace) const;
 };
 
 #endif  // SAMPLER_INCLUDE_UTILS_RANDOM_H_
