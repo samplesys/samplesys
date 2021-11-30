@@ -6,11 +6,10 @@
 
 #include <algorithm>
 #include <cmath>
-#include <random>
 
 using namespace std;
 
-Random::Random(int seed) : seed(seed) {}
+Random::Random(int seed) : gen(seed) {}
 
 vector<size_t> Random::choice(const vector<double> &probability, size_t number_of_sampled,
                               bool replace) const {
@@ -19,7 +18,6 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
     }
     vector<size_t> sampled;
     sampled.reserve(number_of_sampled);
-    auto gen = mt19937(seed);
 
     if (replace) {
         discrete_distribution<size_t> dist(probability.begin(), probability.end());
@@ -27,8 +25,8 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
             sampled.push_back(dist(gen));
         }
     } else {
-        uniform_real_distribution<> dist(0, 1);
-        vector<double>              vals;
+        uniform_real_distribution<double> dist(0, 1);
+        vector<double>                    vals;
         vals.reserve(probability.size());
         for (auto i : probability) {
             vals.push_back(std::pow(dist(gen), 1. / i));
@@ -45,4 +43,16 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
     }
     sort(sampled.begin(), sampled.end());
     return sampled;
+}
+
+template <typename dtype = int>
+dtype Random::randint(dtype low, dtype high) {
+    auto dist = uniform_int_distribution<dtype>(low, high - 1);
+    return dist(gen);
+}
+
+template <typename dtype = int>
+dtype Random::randint(dtype high) {
+    auto dist = uniform_int_distribution<dtype>(0, high - 1);
+    return dist(gen);
 }

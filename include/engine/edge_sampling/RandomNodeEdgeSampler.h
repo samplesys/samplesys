@@ -8,9 +8,13 @@
 #include "EdgeSampler.h"
 
 class RandomNodeEdgeSampler : public EdgeSampler {
+   private:
+    std::vector<std::pair<std::size_t, std::size_t>> _sample(const Graph &g);
+
    public:
     explicit RandomNodeEdgeSampler(std::size_t number_of_edges, int seed = 10);
     std::vector<std::pair<std::size_t, std::size_t>> sample(const DirectedGraph &g) override;
+    std::vector<std::pair<std::size_t, std::size_t>> sample(const UndirectedGraph &g) override;
 };
 
 #endif  // SAMPLER_SRC_ENGINE_EDGE_SAMPLING_RANDOMNODEEDGESAMPLER_H_
