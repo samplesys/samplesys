@@ -34,6 +34,8 @@ add_library(sampler SHARED
         include/engine/edge_sampling/RandomNodeEdgeSampler.h
         src/engine/edge_sampling/HybridNodeEdgeSampler.cpp
         include/engine/edge_sampling/HybridNodeEdgeSampler.h
+        src/engine/edge_sampling/RandomEdgeSamplerWithInduction.cpp
+        include/engine/edge_sampling/RandomEdgeSamplerWithInduction.h
 
         src/analysis/Backend.cpp
         include/analysis/Backend.h
@@ -46,5 +48,6 @@ target_include_directories(sampler PUBLIC
 add_executable(testSampler
         example/testSampler.cpp
         example/utils.cpp
-        example/utils.h)
+        example/utils.h
+        )
 target_link_libraries(testSampler sampler)
