@@ -13,8 +13,6 @@ class EdgeSampler : public BaseSampler {
 
    public:
     explicit EdgeSampler(std::size_t number_of_edges, int seed);
-    virtual std::vector<std::pair<std::size_t, std::size_t>> get_sampled_edges(
-        const Graph &g, const std::vector<double> &probability);
 };
 
 #endif  // SAMPLER_INCLUDE_ENGINE_EDGE_SAMPLING_EDGESAMPLER_H_

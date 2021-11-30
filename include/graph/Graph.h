@@ -24,6 +24,9 @@ class Graph {
 
     [[nodiscard]] virtual std::size_t number_of_nodes() const;
     [[nodiscard]] virtual std::size_t number_of_edges() const;
+
+    [[nodiscard]] virtual size_t index_of_offsets(size_t loc) const;
+    [[nodiscard]] virtual size_t loc_of_edge_between(size_t from, size_t to) const;
 };
 
 #endif  // SAMPLER_INCLUDE_GRAPH_GRAPH_H_
