@@ -18,15 +18,18 @@ class Random {
                                                   std::size_t                number_of_sampled,
                                                   bool                       replace) const;
 
-    template <typename dtype>
+    template <typename dtype = int>
     dtype randint(dtype low, dtype high);
-    template <typename dtype>
+    template <typename dtype = int>
     dtype randint(dtype high);
 
-    template <typename dtype>
+    template <typename dtype = double>
     dtype uniform(dtype low, dtype high);
-    template <typename dtype>
+    template <typename dtype = double>
     dtype uniform();
+
+    template <typename dtype>
+    void shuffle(std::vector<dtype> &x);
 };
 
 #endif  // SAMPLER_INCLUDE_UTILS_RANDOM_H_

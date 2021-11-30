@@ -45,26 +45,31 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
     return sampled;
 }
 
-template <typename dtype = int>
+template <typename dtype>
 dtype Random::randint(dtype low, dtype high) {
     auto dist = uniform_int_distribution<dtype>(low, high - 1);
     return dist(gen);
 }
 
-template <typename dtype = int>
+template <typename dtype>
 dtype Random::randint(dtype high) {
     auto dist = uniform_int_distribution<dtype>(0, high - 1);
     return dist(gen);
 }
 
-template <typename dtype = double>
+template <typename dtype>
 dtype Random::uniform(dtype low, dtype high) {
     auto dist = uniform_real_distribution<dtype>(low, high);
     return dist(gen);
 }
 
-template <typename dtype = double>
+template <typename dtype>
 dtype Random::uniform() {
     auto dist = uniform_real_distribution<dtype>();
     return dist(gen);
+}
+
+template <typename dtype>
+void Random::shuffle(vector<dtype> &x) {
+    std::shuffle(x.begin(), x.end(), gen);
 }

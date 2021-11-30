@@ -36,6 +36,8 @@ add_library(sampler SHARED
         include/engine/edge_sampling/HybridNodeEdgeSampler.h
         src/engine/edge_sampling/RandomEdgeSamplerWithInduction.cpp
         include/engine/edge_sampling/RandomEdgeSamplerWithInduction.h
+        src/engine/edge_sampling/RandomEdgeSamplerWithPartialInduction.cpp
+        include/engine/edge_sampling/RandomEdgeSamplerWithPartialInduction.h
 
         src/analysis/Backend.cpp
         include/analysis/Backend.h
