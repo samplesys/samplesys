@@ -13,7 +13,7 @@
 
 /**
  * Undirected Graph
- * Convert the upper triangular matrix to CSR
+ * the edge between i and j is saved as both i->j and j->i
  */
 class UndirectedGraph : public Graph {
    public:
