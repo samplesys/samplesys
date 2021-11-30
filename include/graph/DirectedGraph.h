@@ -9,7 +9,7 @@
 #include <set>
 #include <vector>
 
-#include "Graph.h"
+#include "graph/Graph.h"
 
 /**
  * Directed Graph
