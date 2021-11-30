@@ -20,10 +20,19 @@ add_library(sampler SHARED
         include/engine/edge_sampling/RandomEdgeSampler.h
         src/engine/edge_sampling/RandomNodeEdgeSampler.cpp
         include/engine/edge_sampling/RandomNodeEdgeSampler.h
+
         src/graph/DirectedGraph.cpp
         include/graph/DirectedGraph.h
         src/utils/Random.cpp
-        include/utils/Random.h src/graph/UndirectedGraph.cpp include/graph/UndirectedGraph.h src/graph/Graph.cpp include/graph/Graph.h)
+        include/utils/Random.h
+        src/graph/UndirectedGraph.cpp
+        include/graph/UndirectedGraph.h
+        src/graph/Graph.cpp
+        include/graph/Graph.h
+
+        src/analysis/Backend.cpp
+        include/analysis/Backend.h
+        )
 
 target_include_directories(sampler PUBLIC
         include
@@ -34,3 +43,10 @@ add_executable(testSampler
         example/utils.cpp
         example/utils.h)
 target_link_libraries(testSampler sampler)
+
+add_executable(testAnalysis
+        example/testAnalysis.cpp
+        example/utils.cpp
+        example/utils.h
+)
+target_link_libraries(testAnalysis sampler)
