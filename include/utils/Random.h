@@ -22,6 +22,11 @@ class Random {
     dtype randint(dtype low, dtype high);
     template <typename dtype>
     dtype randint(dtype high);
+
+    template <typename dtype>
+    dtype uniform(dtype low, dtype high);
+    template <typename dtype>
+    dtype uniform();
 };
 
 #endif  // SAMPLER_INCLUDE_UTILS_RANDOM_H_

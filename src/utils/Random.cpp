@@ -56,3 +56,15 @@ dtype Random::randint(dtype high) {
     auto dist = uniform_int_distribution<dtype>(0, high - 1);
     return dist(gen);
 }
+
+template <typename dtype = double>
+dtype Random::uniform(dtype low, dtype high) {
+    auto dist = uniform_real_distribution<dtype>(low, high);
+    return dist(gen);
+}
+
+template <typename dtype = double>
+dtype Random::uniform() {
+    auto dist = uniform_real_distribution<dtype>();
+    return dist(gen);
+}
