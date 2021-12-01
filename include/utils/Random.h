@@ -15,8 +15,7 @@ class Random {
    public:
     explicit Random(int seed);
     [[nodiscard]] std::vector<std::size_t> choice(const std::vector<double> &probability,
-                                                  std::size_t                number_of_sampled,
-                                                  bool                       replace) const;
+                                                  std::size_t number_of_sampled, bool replace);
 
     template <typename dtype = int>
     dtype randint(dtype low, dtype high);
