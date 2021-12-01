@@ -2,17 +2,16 @@
 // Created by AutJ on 2021/12/1.
 //
 
-#include "engine/exploration_sampling/BreadthFirstSearchSampler.h"
+#include "engine/exploration_sampling/SnowBallSampler.h"
 
 #include <queue>
 
 using namespace std;
 
-BreadthFirstSearchSampler::BreadthFirstSearchSampler(size_t number_of_nodes, size_t start_node,
-                                                     int seed)
-    : BaseSampler(seed), number_of_nodes(number_of_nodes), start_node(start_node) {}
+SnowBallSampler::SnowBallSampler(size_t number_of_nodes, size_t start_node, size_t k, int seed)
+    : BaseSampler(seed), number_of_nodes(number_of_nodes), k(k), start_node(start_node) {}
 
-vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGraph& g) {
+vector<pair<size_t, size_t>> SnowBallSampler::sample(const DirectedGraph& g) {
     auto ret = vector<pair<size_t, size_t>>();
 
     const auto& columns = g.get_columns();
@@ -38,7 +37,7 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGra
         node_is_sampled[source] = true;
         _queue.push(source);
 
-        // BFS sample neighbours
+        // BFS sample no more than k neighbours
         while (!_queue.empty() && current_sampled_nodes < number_of_nodes) {
             size_t i = _queue.front();
             _queue.pop();
@@ -46,8 +45,8 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGra
             auto seq = vector<size_t>(degrees[i]);
             iota(seq.begin(), seq.end(), 0);
             random.shuffle(seq);
-            for (auto delta : seq) {
-                size_t loc = offsets[i] + delta;
+            for (size_t delta = 0; delta < seq.size() && delta < k; ++delta) {
+                size_t loc = offsets[i] + seq[delta];
                 auto   j   = columns[loc];
                 if (node_is_sampled[j]) continue;
                 ret.emplace_back(i, j);
@@ -62,7 +61,7 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGra
     return ret;
 }
 
-vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const UndirectedGraph& g) {
+vector<pair<size_t, size_t>> SnowBallSampler::sample(const UndirectedGraph& g) {
     auto ret = vector<pair<size_t, size_t>>();
 
     const auto& columns = g.get_columns();
@@ -88,7 +87,7 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const UndirectedG
         node_is_sampled[source] = true;
         _queue.push(source);
 
-        // BFS sample neighbours
+        // BFS sample no more than k neighbours
         while (!_queue.empty() && current_sampled_nodes < number_of_nodes) {
             size_t i = _queue.front();
             _queue.pop();
@@ -96,8 +95,8 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const UndirectedG
             auto seq = vector<size_t>(degrees[i]);
             iota(seq.begin(), seq.end(), 0);
             random.shuffle(seq);
-            for (auto delta : seq) {
-                size_t loc = offsets[i] + delta;
+            for (size_t delta = 0; delta < seq.size() && delta < k; ++delta) {
+                size_t loc = offsets[i] + seq[delta];
                 auto   j   = columns[loc];
                 if (node_is_sampled[j]) continue;
                 if (i < j) {

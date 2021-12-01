@@ -38,12 +38,14 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const DirectedGraph
         node_is_sampled[source_i] = true;
         if (++current_sampled_nodes == number_of_nodes) break;
         if (!degrees[source_i]) continue;
+
         /* find a neighbour to form an edge */
         auto neighbours = g.calc_neighbours(source_i);
         random.shuffle(neighbours);
         auto it = find_if(neighbours.begin(), neighbours.end(),
                           [&node_is_sampled](const auto& e) { return !node_is_sampled[e]; });
         if (it == neighbours.end()) continue;
+
         /* the first node has been traversed, while the second one is to be traversed */
         _stack.push({source_i, *it});
         while (!_stack.empty() && current_sampled_nodes < number_of_nodes) {
@@ -51,10 +53,12 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const DirectedGraph
             size_t      i = p.first, j = p.second;
             _stack.pop();
             if (node_is_sampled[j]) continue;
+
             // traverse the second node
             ret.emplace_back(i, j);
             if (++current_sampled_nodes == number_of_nodes) break;
             node_is_sampled[j] = true;
+
             // push the neighbours
             if (degrees[j] == 0) continue;
             auto seq = vector<size_t>(degrees[j]);
@@ -93,12 +97,14 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const UndirectedGra
         node_is_sampled[source_i] = true;
         if (++current_sampled_nodes == number_of_nodes) break;
         if (!degrees[source_i]) continue;
+
         /* find a neighbour to form an edge */
         auto neighbours = g.calc_neighbours(source_i);
         random.shuffle(neighbours);
         auto it = find_if(neighbours.begin(), neighbours.end(),
                           [&node_is_sampled](const auto& e) { return !node_is_sampled[e]; });
         if (it == neighbours.end()) continue;
+
         /* the first node has been traversed, while the second one is to be traversed */
         _stack.push({source_i, *it});
         while (!_stack.empty() && current_sampled_nodes < number_of_nodes) {
@@ -106,6 +112,7 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const UndirectedGra
             size_t      i = p.first, j = p.second;
             _stack.pop();
             if (node_is_sampled[j]) continue;
+
             // traverse the second node
             if (i < j) {
                 ret.emplace_back(i, j);
@@ -114,6 +121,7 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const UndirectedGra
             }
             if (++current_sampled_nodes == number_of_nodes) break;
             node_is_sampled[j] = true;
+
             // push the neighbours
             if (degrees[j] == 0) continue;
             auto seq = vector<size_t>(degrees[j]);

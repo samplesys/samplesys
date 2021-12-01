@@ -39,12 +39,15 @@ add_library(sampler SHARED
 
         src/engine/exploration_sampling/BreadthFirstSearchSampler.cpp
         include/engine/exploration_sampling/BreadthFirstSearchSampler.h
-
+        src/engine/exploration_sampling/DepthFirstSearchSampler.cpp
+        include/engine/exploration_sampling/DepthFirstSearchSampler.h
+        src/engine/exploration_sampling/SnowBallSampler.cpp
+        include/engine/exploration_sampling/SnowBallSampler.h
+        
         #        src/analysis/degree.cpp
         #        include/analysis/degree.h
         src/analysis/Backend.cpp
-        include/analysis/Backend.h
-        src/engine/exploration_sampling/DepthFirstSearchSampler.cpp include/engine/exploration_sampling/DepthFirstSearchSampler.h)
+        include/analysis/Backend.h)
 
 target_include_directories(sampler PUBLIC
         include
