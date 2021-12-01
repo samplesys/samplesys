@@ -5,11 +5,11 @@
 #ifndef SAMPLER_INCLUDE_ENGINE_BASESAMPLER_H_
 #define SAMPLER_INCLUDE_ENGINE_BASESAMPLER_H_
 
-#include <graph/DirectedGraph.h>
-#include <graph/UndirectedGraph.h>
-#include <utils/Random.h>
-
 #include <fstream>
+
+#include "graph/DirectedGraph.h"
+#include "graph/UndirectedGraph.h"
+#include "utils/Random.h"
 
 class BaseSampler {
    protected:

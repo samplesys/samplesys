@@ -37,6 +37,11 @@ add_library(sampler SHARED
         src/engine/edge_sampling/RandomEdgeSamplerWithPartialInduction.cpp
         include/engine/edge_sampling/RandomEdgeSamplerWithPartialInduction.h
 
+        src/engine/exploration_sampling/BreadthFirstSearchSampler.cpp
+        include/engine/exploration_sampling/BreadthFirstSearchSampler.h
+
+        src/analysis/degree.cpp
+        include/analysis/degree.h
         src/analysis/Backend.cpp
         include/analysis/Backend.h
         )

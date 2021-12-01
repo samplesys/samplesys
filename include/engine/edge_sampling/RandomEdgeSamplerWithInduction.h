@@ -5,7 +5,7 @@
 #ifndef SAMPLER_SRC_ENGINE_EDGE_SAMPLING_RANDOMEDGESAMPLERWITHINDUCTION_H_
 #define SAMPLER_SRC_ENGINE_EDGE_SAMPLING_RANDOMEDGESAMPLERWITHINDUCTION_H_
 
-#include <engine/BaseSampler.h>
+#include "engine/BaseSampler.h"
 
 class RandomEdgeSamplerWithInduction : public BaseSampler {
    private:
