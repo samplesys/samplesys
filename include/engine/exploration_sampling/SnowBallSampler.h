@@ -10,8 +10,8 @@
 class SnowBallSampler : public BaseSampler {
    private:
     std::size_t number_of_nodes;
-    std::size_t k;
     std::size_t start_node;
+    std::size_t k;
 
    public:
     explicit SnowBallSampler(std::size_t number_of_nodes, std::size_t start_node = -1,

@@ -73,3 +73,9 @@ template <typename dtype>
 void Random::shuffle(vector<dtype> &x) {
     std::shuffle(x.begin(), x.end(), gen);
 }
+
+template <typename dtype>
+dtype Random::geometric_distribution(double p) {
+    auto dist = std::geometric_distribution<dtype>(p);
+    return dist(gen);
+}

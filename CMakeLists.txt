@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(sampler SHARED
         src/utils/Random.cpp
         include/utils/Random.h
+        include/utils/LimitedQueue.h
 
         src/graph/Graph.cpp
         include/graph/Graph.h
@@ -43,7 +44,9 @@ add_library(sampler SHARED
         include/engine/exploration_sampling/DepthFirstSearchSampler.h
         src/engine/exploration_sampling/SnowBallSampler.cpp
         include/engine/exploration_sampling/SnowBallSampler.h
-        
+        src/engine/exploration_sampling/ForestFireSampler.cpp
+        include/engine/exploration_sampling/ForestFireSampler.h
+
         #        src/analysis/degree.cpp
         #        include/analysis/degree.h
         src/analysis/Backend.cpp

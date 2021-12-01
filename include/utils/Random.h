@@ -27,8 +27,11 @@ class Random {
     template <typename dtype = double>
     dtype uniform();
 
-    template <typename dtype>
+    template <typename dtype = int>
     void shuffle(std::vector<dtype> &x);
+
+    template <typename dtype = int>
+    dtype geometric_distribution(double p);
 };
 
 #endif  // SAMPLER_INCLUDE_UTILS_RANDOM_H_
