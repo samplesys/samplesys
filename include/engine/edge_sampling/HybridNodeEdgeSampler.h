@@ -5,11 +5,12 @@
 #ifndef SAMPLER_SRC_ENGINE_EDGE_SAMPLING_HYBRIDNODEEDGESAMPLER_H_
 #define SAMPLER_SRC_ENGINE_EDGE_SAMPLING_HYBRIDNODEEDGESAMPLER_H_
 
-#include "EdgeSampler.h"
+#include <engine/BaseSampler.h>
 
-class HybridNodeEdgeSampler : public EdgeSampler {
+class HybridNodeEdgeSampler : public BaseSampler {
    private:
-    double p;
+    std::size_t number_of_edges;
+    double      p;
 
    public:
     explicit HybridNodeEdgeSampler(std::size_t number_of_edges, double p = 0.8, int seed = 10);

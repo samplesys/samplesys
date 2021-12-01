@@ -7,7 +7,7 @@
 using namespace std;
 
 RandomNodeEdgeSampler::RandomNodeEdgeSampler(size_t number_of_edges, int seed)
-    : EdgeSampler(number_of_edges, seed) {}
+    : BaseSampler(seed), number_of_edges(number_of_edges) {}
 
 vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const DirectedGraph& g) {
     auto ret = vector<pair<size_t, size_t>>();

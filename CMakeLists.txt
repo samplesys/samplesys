@@ -26,8 +26,6 @@ add_library(sampler SHARED
         src/engine/node_sampling/PageRankBasedSampler.cpp
         include/engine/node_sampling/PageRankBasedSampler.h
 
-        src/engine/edge_sampling/EdgeSampler.cpp
-        include/engine/edge_sampling/EdgeSampler.h
         src/engine/edge_sampling/RandomEdgeSampler.cpp
         include/engine/edge_sampling/RandomEdgeSampler.h
         src/engine/edge_sampling/RandomNodeEdgeSampler.cpp

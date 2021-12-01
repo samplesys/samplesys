@@ -5,7 +5,7 @@
 #ifndef SAMPLER_INCLUDE_ENGINE_EDGE_SAMPLING_RANDOMEDGESAMPLERWITHPARTIALINDUCTION_H_
 #define SAMPLER_INCLUDE_ENGINE_EDGE_SAMPLING_RANDOMEDGESAMPLERWITHPARTIALINDUCTION_H_
 
-#include "EdgeSampler.h"
+#include <engine/BaseSampler.h>
 
 class RandomEdgeSamplerWithPartialInduction : public BaseSampler {
    private:

@@ -7,7 +7,7 @@
 using namespace std;
 
 HybridNodeEdgeSampler::HybridNodeEdgeSampler(size_t number_of_edges, double p, int seed)
-    : EdgeSampler(number_of_edges, seed), p(p) {}
+    : BaseSampler(seed), number_of_edges(number_of_edges), p(p) {}
 
 vector<pair<size_t, size_t>> HybridNodeEdgeSampler::sample(const DirectedGraph& g) {
     auto ret = vector<pair<size_t, size_t>>();
