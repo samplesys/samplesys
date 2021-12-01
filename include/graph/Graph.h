@@ -22,6 +22,8 @@ class Graph {
     [[nodiscard]] virtual const decltype(offsets) &get_offsets() const;
     [[nodiscard]] virtual const decltype(degrees) &get_degrees() const;
 
+    [[nodiscard]] virtual decltype(columns) calc_neighbours(size_t i) const;
+
     [[nodiscard]] virtual std::size_t number_of_nodes() const;
     [[nodiscard]] virtual std::size_t number_of_edges() const;
 
