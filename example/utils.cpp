@@ -9,8 +9,7 @@
 
 using namespace std;
 
-void readGraph(size_t &number_of_nodes, map<std::size_t, set<std::size_t>> &adjList,
-               const string &file) {
+void readGraph(size_t &number_of_nodes, map<size_t, set<size_t>> &adjList, const string &file) {
     FILE *fp = fopen(file.c_str(), "r");
     if (!fp) {
         printf("error %d: %s \n", errno, strerror(errno));

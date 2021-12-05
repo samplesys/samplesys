@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 
     auto start = high_resolution_clock::now();
 
-    auto it = nodeSamplers.find(argv[3]);
+    auto it = nodeSamplers.find(samplingMethod);
     if (it == nodeSamplers.end()) {
         cout << samplingMethod << " not found";
         exit(1);
