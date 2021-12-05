@@ -5,7 +5,9 @@
 
 #include "analysis/Backend.h"
 #include "utils.h"
+
 using namespace Backend;
+using namespace std;
 using namespace std::chrono;
 
 void cmdInp(int argc, char **argv) {
@@ -16,8 +18,8 @@ void cmdInp(int argc, char **argv) {
              << endl;
         exit(1);
     }
-    int    _argc   = 0;
-    string input   = argv[++_argc];
+    int    _argc = 0;
+    string input = argv[++_argc];
     // string graphType      = argv[++_argc];
 
     size_t number_of_nodes;

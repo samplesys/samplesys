@@ -62,3 +62,10 @@ add_executable(testSampler
         example/utils.h
         )
 target_link_libraries(testSampler sampler)
+
+add_executable(testAnalysis
+        example/testAnalysis.cpp
+        example/utils.cpp
+        example/utils.h
+        )
+target_link_libraries(testAnalysis sampler)

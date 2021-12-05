@@ -4,7 +4,6 @@
 
 #include "utils/Random.h"
 
-#include <algorithm>
 #include <cmath>
 
 using namespace std;
@@ -43,39 +42,4 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
     }
     sort(sampled.begin(), sampled.end());
     return sampled;
-}
-
-template <typename dtype>
-dtype Random::randint(dtype low, dtype high) {
-    auto dist = uniform_int_distribution<dtype>(low, high - 1);
-    return dist(gen);
-}
-
-template <typename dtype>
-dtype Random::randint(dtype high) {
-    auto dist = uniform_int_distribution<dtype>(0, high - 1);
-    return dist(gen);
-}
-
-template <typename dtype>
-dtype Random::uniform(dtype low, dtype high) {
-    auto dist = uniform_real_distribution<dtype>(low, high);
-    return dist(gen);
-}
-
-template <typename dtype>
-dtype Random::uniform() {
-    auto dist = uniform_real_distribution<dtype>();
-    return dist(gen);
-}
-
-template <typename dtype>
-void Random::shuffle(vector<dtype> &x) {
-    std::shuffle(x.begin(), x.end(), gen);
-}
-
-template <typename dtype>
-dtype Random::geometric_distribution(double p) {
-    auto dist = std::geometric_distribution<dtype>(p);
-    return dist(gen);
 }
