@@ -10,8 +10,6 @@
 #include <vector>
 
 class Graph {
-    friend class GraphStream;
-
    protected:
     std::vector<std::size_t> edges;
     std::vector<std::size_t> columns;

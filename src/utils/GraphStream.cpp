@@ -33,62 +33,58 @@ shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed) {
 void GraphStream::writeText(const string &filename, const shared_ptr<Graph> &g) {
     FILE *fp = fopen(filename.c_str(), "w");
 
-    auto offsets = g->offsets;
-    auto columns = g->columns;
+    auto offsets = g->get_offsets();
+    auto columns = g->get_columns();
     if (!fp) {
         printf("error %d: %s \n", errno, strerror(errno));
     }
     for (size_t i = 0; i < g->number_of_nodes(); ++i) {
-        for (size_t loc = g->offsets[i]; loc < g->offsets[i + 1]; ++loc) {
-            fprintf(fp, "%zd %zd\n", i, g->columns[loc]);
+        for (size_t loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
+            fprintf(fp, "%zd %zd\n", i, columns[loc]);
         }
     }
     fclose(fp);
 }
 shared_ptr<Graph> GraphStream::readBinary(const string &filename, bool directed) {
-    auto   g  = shared_ptr<Graph>();
-    auto   is = ifstream(filename, ios_base::in | ios_base::binary);
-    size_t size;
+    auto is = ifstream(filename, ios_base::in | ios_base::binary);
 
-    is.read(reinterpret_cast<char *>(&size), sizeof(size_t));
-    g->edges.assign(size, 0);
-    is.read(reinterpret_cast<char *>(g->edges.data()),
-            size * sizeof(decltype(g->edges)::value_type));
+    size_t number_of_nodes = 0;
+    size_t number_of_edges = 0;
+    is.read(reinterpret_cast<char *>(&number_of_nodes), sizeof(size_t));
+    is.read(reinterpret_cast<char *>(&number_of_edges), sizeof(size_t));
+    auto adjList1 = vector<pair<size_t, size_t>>(number_of_edges);
+    is.read(reinterpret_cast<char *>(adjList1.data()),
+            number_of_edges * sizeof(decltype(adjList1)::value_type));
 
-    is.read(reinterpret_cast<char *>(&size), sizeof(size_t));
-    g->columns.assign(size, 0);
-    is.read(reinterpret_cast<char *>(g->columns.data()),
-            size * sizeof(decltype(g->columns)::value_type));
+    auto adjList2 = map<size_t, set<size_t>>();
+    for (const auto &p : adjList1) {
+        adjList2[p.first].insert(p.second);
+    }
 
-    is.read(reinterpret_cast<char *>(&size), sizeof(size_t));
-    g->offsets.assign(size, 0);
-    is.read(reinterpret_cast<char *>(g->offsets.data()),
-            size * sizeof(decltype(g->offsets)::value_type));
-
-    is.read(reinterpret_cast<char *>(&size), sizeof(size_t));
-    g->degrees.assign(size, 0);
-    is.read(reinterpret_cast<char *>(g->degrees.data()),
-            size * sizeof(decltype(g->degrees)::value_type));
-
-    return g;
+    if (directed) {
+        return make_shared<DirectedGraph>(adjList2, number_of_nodes);
+    } else {
+        return make_shared<UndirectedGraph>(adjList2, number_of_nodes);
+    }
 }
 
 void GraphStream::writeBinary(const string &filename, const shared_ptr<Graph> &g) {
     auto os = ofstream(filename, ios_base::out | ios_base::binary);
 
-    os.write(reinterpret_cast<const char *>(g->edges.size()), sizeof(size_t));
-    os.write(reinterpret_cast<const char *>(g->edges.data()),
-             g->edges.size() * sizeof(decltype(g->edges)::value_type));
+    auto offsets = g->get_offsets();
+    auto columns = g->get_columns();
+    auto adjList = vector<pair<size_t, size_t>>();
 
-    os.write(reinterpret_cast<const char *>(g->columns.size()), sizeof(size_t));
-    os.write(reinterpret_cast<const char *>(g->columns.data()),
-             g->columns.size() * sizeof(decltype(g->columns)::value_type));
+    for (size_t i = 0; i < g->number_of_nodes(); ++i) {
+        for (size_t loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
+            adjList.emplace_back(i, columns[loc]);
+        }
+    }
 
-    os.write(reinterpret_cast<const char *>(g->offsets.size()), sizeof(size_t));
-    os.write(reinterpret_cast<const char *>(g->offsets.data()),
-             g->offsets.size() * sizeof(decltype(g->offsets)::value_type));
-
-    os.write(reinterpret_cast<const char *>(g->degrees.size()), sizeof(size_t));
-    os.write(reinterpret_cast<const char *>(g->degrees.data()),
-             g->degrees.size() * sizeof(decltype(g->degrees)::value_type));
+    size_t number_of_nodes = g->number_of_nodes();
+    size_t number_of_edges = g->number_of_edges();
+    os.write(reinterpret_cast<const char *>(&number_of_nodes), sizeof(size_t));
+    os.write(reinterpret_cast<const char *>(&number_of_edges), sizeof(size_t));
+    os.write(reinterpret_cast<const char *>(adjList.data()),
+             number_of_edges * sizeof(decltype(adjList)::value_type));
 }

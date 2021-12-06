@@ -16,7 +16,6 @@
  */
 class DirectedGraph : public Graph {
    public:
-    DirectedGraph() = default;
     DirectedGraph(std::map<std::size_t, std::set<std::size_t>>& adjList,
                   std::size_t                                   number_of_nodes);
 };
