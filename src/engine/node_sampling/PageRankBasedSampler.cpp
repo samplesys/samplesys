@@ -29,9 +29,10 @@ vector<pair<size_t, size_t>> PageRankBasedSampler::sample(const DirectedGraph &g
     while (diff(PR, newPR) > 1e-6) {
         PR.assign(newPR.begin(), newPR.end());
         newPR.assign(g.number_of_nodes(), 1 - alpha);
-
+#pragma omp parallel for
         for (size_t i = 0; i < g.number_of_nodes(); ++i) {
             auto left = offsets[i], right = offsets[i + 1];
+#pragma omp parallel for
             for (size_t loc = left; loc < right; ++loc) {
                 auto j = columns[loc];
                 newPR[j] += PR[i] / static_cast<double>(degrees[i]) * alpha;
@@ -58,9 +59,10 @@ vector<pair<size_t, size_t>> PageRankBasedSampler::sample(const UndirectedGraph 
     while (diff(PR, newPR) > 1e-6) {
         PR.assign(newPR.begin(), newPR.end());
         newPR.assign(g.number_of_nodes(), 1 - alpha);
-
+#pragma omp parallel for
         for (size_t i = 0; i < g.number_of_nodes(); ++i) {
             auto left = offsets[i], right = offsets[i + 1];
+#pragma omp parallel for
             for (size_t loc = left; loc < right; ++loc) {
                 auto j = columns[loc];
                 newPR[j] += PR[i] / static_cast<double>(degrees[i]) * alpha;

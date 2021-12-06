@@ -4,8 +4,12 @@
 
 #include "utils/Random.h"
 
-#include <cmath>
+#include <omp.h>
 
+#include <algorithm>
+#include <cmath>
+#include <queue>
+#include <random>
 using namespace std;
 
 Random::Random(int seed) : gen(seed) {}
@@ -24,22 +28,50 @@ vector<size_t> Random::choice(const vector<double> &probability, size_t number_o
             sampled.push_back(dist(gen));
         }
     } else {
-        uniform_real_distribution<double> dist(0, 1);
-        vector<double>                    vals;
-        vals.reserve(probability.size());
-        for (auto i : probability) {
-            vals.push_back(std::pow(dist(gen), 1. / i));
+        class cmp {
+            bool operator()(std::pair<size_t, double> a, std::pair<size_t, double> b) {
+                return a.second < b.second;
+            }
+        };
+        uniform_real_distribution<> dist(0, 1);
+        priority_queue<std::pair<size_t, double>, vector<std::pair<size_t, double>>, cmp> indices;
+        size_t vsize = probability.size();
+        size_t i     = 0;
+
+        // O(nlog(s)), (n = size of probaility, s = number_of_sampled)
+#pragma omp parallel for
+        for (; i < min(vsize, number_of_sampled); i++) {
+            indices.push(make_pair(i, std::pow(dist(gen), 1.0 / i)));
         }
-        vector<std::pair<int, double>> indices;
-        for (size_t iter = 0; iter < vals.size(); iter++) {
-            indices.emplace_back(iter, vals[iter]);
+#pragma omp parallel for
+        for (; i < number_of_sampled; i++) {
+            auto new_pair = make_pair(i, std::pow(dist(gen), 1.0 / i));
+            if (new_pair.second > indices.top().second) {
+                indices.pop();
+                indices.push(new_pair);
+            }
         }
-        sort(indices.begin(), indices.end(),
-             [](const auto &x, const auto &y) { return x.second > y.second; });
+#pragma omp parallel for
         for (auto i = 0; i < number_of_sampled; i++) {
             sampled.push_back(indices[i].first);
         }
     }
-    sort(sampled.begin(), sampled.end());
+
+    //  O(nlog(n)), (n = size of probaility)
+    //     else {
+    //         uniform_real_distribution<>       dist(0, 1);
+    //         vector<std::pair<size_t, double>> indices;
+    //         size_t                            vsize = probability.size();
+
+    //         indices.reserve(vsize);
+    // #pragma omp parallel for
+    //         for (size_t i = 0; i < vsize; i++) {
+    //             indices.emplace_back(i, std::pow(dist(gen), 1. / i));
+    //         }
+    // sort(indices.begin(), indices.end(),
+    //      [](const auto &x, const auto &y) { return x.second > y.second; });
+    //         for (auto i = 0; i < number_of_sampled; i++) {
+    //             sampled.push_back(indices[i].first);
+    //         }
     return sampled;
 }
