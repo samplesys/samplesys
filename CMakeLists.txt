@@ -9,6 +9,8 @@ add_library(sampler SHARED
         src/utils/Random.cpp
         include/utils/Random.h
         include/utils/LimitedQueue.h
+        src/utils/GraphStream.cpp
+        include/utils/GraphStream.h
 
         src/graph/Graph.cpp
         include/graph/Graph.h
@@ -71,7 +73,3 @@ add_executable(testAnalysis
         example/utils.h
         )
 target_link_libraries(testAnalysis sampler)
-
-add_executable(gen
-        src/utils/Gen.cpp
-)

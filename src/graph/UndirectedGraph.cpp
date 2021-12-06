@@ -6,7 +6,7 @@
 
 using namespace std;
 
-UndirectedGraph::UndirectedGraph(size_t number_of_nodes, map<size_t, set<size_t>> &adjList) {
+UndirectedGraph::UndirectedGraph(map<size_t, set<size_t>> &adjList, size_t number_of_nodes) {
     size_t number_of_edges = 0;
 
     auto copy = vector<set<size_t>>(number_of_nodes);

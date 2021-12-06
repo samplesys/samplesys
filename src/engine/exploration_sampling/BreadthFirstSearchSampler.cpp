@@ -12,18 +12,18 @@ BreadthFirstSearchSampler::BreadthFirstSearchSampler(size_t number_of_nodes, siz
                                                      int seed)
     : BaseSampler(seed), number_of_nodes(number_of_nodes), start_node(start_node) {}
 
-vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGraph& g) {
+vector<pair<size_t, size_t>> BreadthFirstSearchSampler::_sample(const DirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto node_is_sampled = vector<bool>(g.number_of_nodes());
+    auto node_is_sampled = vector<bool>(g->number_of_nodes());
 
     size_t source;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source = random.randint(g->number_of_nodes());
     } else {
         source = start_node;
     }
@@ -32,7 +32,7 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGra
     do {
         // find a new start node in case the graph is not connected
         while (node_is_sampled[source]) {
-            source = random.randint(g.number_of_nodes());
+            source = random.randint(g->number_of_nodes());
         }
         ++current_sampled_nodes;
         node_is_sampled[source] = true;
@@ -62,18 +62,18 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const DirectedGra
     return ret;
 }
 
-vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const UndirectedGraph& g) {
+vector<pair<size_t, size_t>> BreadthFirstSearchSampler::_sample(const UndirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto node_is_sampled = vector<bool>(g.number_of_nodes());
+    auto node_is_sampled = vector<bool>(g->number_of_nodes());
 
     size_t source;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source = random.randint(g->number_of_nodes());
     } else {
         source = start_node;
     }
@@ -82,7 +82,7 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const UndirectedG
     do {
         // find a new start node in case the graph is not connected
         while (node_is_sampled[source]) {
-            source = random.randint(g.number_of_nodes());
+            source = random.randint(g->number_of_nodes());
         }
         ++current_sampled_nodes;
         node_is_sampled[source] = true;
@@ -114,4 +114,16 @@ vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const UndirectedG
         }
     } while (current_sampled_nodes < number_of_nodes);
     return ret;
+}
+
+vector<pair<size_t, size_t>> BreadthFirstSearchSampler::sample(const Graph& g) {
+    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
+    if (ptr1 != nullptr) {
+        return this->_sample(ptr1);
+    }
+    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
+    if (ptr2 != nullptr) {
+        return this->_sample(ptr2);
+    }
+    return {};
 }

@@ -9,20 +9,20 @@
 using namespace std;
 
 SnowBallSampler::SnowBallSampler(size_t number_of_nodes, size_t start_node, size_t k, int seed)
-    : BaseSampler(seed), number_of_nodes(number_of_nodes), k(k), start_node(start_node) {}
+    : BaseSampler(seed), number_of_nodes(number_of_nodes), start_node(start_node), k(k) {}
 
-vector<pair<size_t, size_t>> SnowBallSampler::sample(const DirectedGraph& g) {
+vector<pair<size_t, size_t>> SnowBallSampler::_sample(const DirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto node_is_sampled = vector<bool>(g.number_of_nodes());
+    auto node_is_sampled = vector<bool>(g->number_of_nodes());
 
     size_t source;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source = random.randint(g->number_of_nodes());
     } else {
         source = start_node;
     }
@@ -31,7 +31,7 @@ vector<pair<size_t, size_t>> SnowBallSampler::sample(const DirectedGraph& g) {
     do {
         // find a new start node in case the graph is not connected
         while (node_is_sampled[source]) {
-            source = random.randint(g.number_of_nodes());
+            source = random.randint(g->number_of_nodes());
         }
         ++current_sampled_nodes;
         node_is_sampled[source] = true;
@@ -61,18 +61,18 @@ vector<pair<size_t, size_t>> SnowBallSampler::sample(const DirectedGraph& g) {
     return ret;
 }
 
-vector<pair<size_t, size_t>> SnowBallSampler::sample(const UndirectedGraph& g) {
+vector<pair<size_t, size_t>> SnowBallSampler::_sample(const UndirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto node_is_sampled = vector<bool>(g.number_of_nodes());
+    auto node_is_sampled = vector<bool>(g->number_of_nodes());
 
     size_t source;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source = random.randint(g->number_of_nodes());
     } else {
         source = start_node;
     }
@@ -81,7 +81,7 @@ vector<pair<size_t, size_t>> SnowBallSampler::sample(const UndirectedGraph& g) {
     do {
         // find a new start node in case the graph is not connected
         while (node_is_sampled[source]) {
-            source = random.randint(g.number_of_nodes());
+            source = random.randint(g->number_of_nodes());
         }
         ++current_sampled_nodes;
         node_is_sampled[source] = true;
@@ -113,4 +113,16 @@ vector<pair<size_t, size_t>> SnowBallSampler::sample(const UndirectedGraph& g) {
         }
     } while (current_sampled_nodes < number_of_nodes);
     return ret;
+}
+
+vector<pair<size_t, size_t>> SnowBallSampler::sample(const Graph& g) {
+    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
+    if (ptr1 != nullptr) {
+        return this->_sample(ptr1);
+    }
+    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
+    if (ptr2 != nullptr) {
+        return this->_sample(ptr2);
+    }
+    return {};
 }
