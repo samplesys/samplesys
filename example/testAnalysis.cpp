@@ -6,6 +6,7 @@
 #include "analysis/Backend.h"
 #include "utils.h"
 using namespace Backend;
+using namespace std;
 using namespace std::chrono;
 
 void cmdInp(int argc, char **argv) {
@@ -16,8 +17,7 @@ void cmdInp(int argc, char **argv) {
              << endl;
         exit(1);
     }
-    int    _argc   = 0;
-    string input   = argv[++_argc];
+    int _argc = 0;
     // string graphType      = argv[++_argc];
 
     size_t number_of_nodes;
@@ -34,12 +34,12 @@ void cmdInp(int argc, char **argv) {
     Backend::get_degree_avg(graph, avg_degree);
     printf("Average degree: %lf\n", avg_degree);
     Backend::get_degree_disb(graph, deg_disb);
-    printf("Degree distribution:\n");
+    printf("Degree distribution:\nDegree  Count\n");
     for (auto x : deg_disb) {
         printf("%zd %zd\n", x.first, x.second);
     }
     Backend::get_degree_asso(graph, asso_coef);
-    printf("%lf", asso_coef);
+    printf("%lf\n", asso_coef);
 
     auto stop     = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
