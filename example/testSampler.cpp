@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     size_t number_of_nodes;
     auto   adjList = map<std::size_t, set<std::size_t>>();
-    readGraph(number_of_nodes, adjList, argv[1]);
+    readGraph(number_of_nodes, adjList, input);
 
     auto graph = UndirectedGraph(number_of_nodes, adjList);
 

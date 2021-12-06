@@ -5,7 +5,9 @@
 
 #include "analysis/Backend.h"
 #include "utils.h"
+
 using namespace Backend;
+using namespace std;
 using namespace std::chrono;
 
 void cmdInp(int argc, char **argv) {
@@ -16,13 +18,13 @@ void cmdInp(int argc, char **argv) {
              << endl;
         exit(1);
     }
-    int    _argc   = 0;
-    string input   = argv[++_argc];
+    int    _argc = 0;
+    string input = argv[++_argc];
     // string graphType      = argv[++_argc];
 
     size_t number_of_nodes;
     auto   adjList = map<std::size_t, set<std::size_t>>();
-    readGraph(number_of_nodes, adjList, argv[1]);
+    readGraph(number_of_nodes, adjList, input);
 
     auto                graph = UndirectedGraph(number_of_nodes, adjList);
     map<size_t, size_t> deg_disb;
