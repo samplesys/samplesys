@@ -1,13 +1,10 @@
-#ifndef DEGREE_H
-#define DEGREE_H
+#ifndef ANALYSIS_DEGREE_H
+#define ANALYSIS_DEGREE_H
 
 #include <cmath>
 #include <cstring>
 #include <map>
 #include <vector>
-
-#include "graph/DirectedGraph.h"
-#include "graph/UndirectedGraph.h"
 
 namespace Backend {
 

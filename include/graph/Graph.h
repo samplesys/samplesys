@@ -15,6 +15,7 @@ class Graph {
     std::vector<std::size_t> columns;
     std::vector<std::size_t> offsets;
     std::vector<std::size_t> degrees;
+    bool                     weighted;
 
    public:
     [[nodiscard]] virtual const decltype(edges)   &get_edges() const;
@@ -29,6 +30,8 @@ class Graph {
 
     [[nodiscard]] virtual size_t index_of_offsets(size_t loc) const;
     [[nodiscard]] virtual size_t loc_of_edge_between(size_t from, size_t to) const;
+
+    [[nodiscard]] virtual bool is_weighted() const;
 };
 
 #endif  // SAMPLER_INCLUDE_GRAPH_GRAPH_H_

@@ -36,3 +36,6 @@ size_t Graph::loc_of_edge_between(size_t i, size_t j) const {
     }
     return it - columns.begin();
 }
+
+// 目前先设置成false
+bool Graph::is_weighted() const { return false; }

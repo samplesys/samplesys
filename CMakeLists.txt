@@ -70,7 +70,7 @@ add_executable(testAnalysis
         example/utils.cpp
         example/utils.h
         )
-target_link_libraries(testAnalysis sampler)
+target_link_libraries(testAnalysis sampler -larmadillo)
 
 add_executable(gen
         src/utils/Gen.cpp

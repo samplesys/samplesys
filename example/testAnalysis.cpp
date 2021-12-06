@@ -1,14 +1,17 @@
+#include <armadillo>
 #include <chrono>
 #include <functional>
 #include <iostream>
 #include <map>
 
 #include "analysis/Backend.h"
+#include "graph/UndirectedGraph.h"
 #include "utils.h"
 
 using namespace Backend;
 using namespace std;
 using namespace std::chrono;
+using namespace arma;
 
 void cmdInp(int argc, char **argv) {
     if (argc < 2) {
@@ -44,8 +47,28 @@ void cmdInp(int argc, char **argv) {
 
     auto stop     = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    cout << "Time"
+    cout << "Degree Analysis Time"
          << ": " << duration.count() << " microseconds" << endl;
+
+    start                = high_resolution_clock::now();
+    size_t  nv           = graph.number_of_nodes();
+    double *cluster_coef = static_cast<double *>(malloc(nv * sizeof(double)));
+    Backend::get_cluster_coef(graph, cluster_coef);
+    printf("Clustering coefficient:\n");
+    for (size_t i = 0; i < nv; i++)
+        printf("%zd %lf\n", i, cluster_coef[i]);
+    stop     = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Clustering Analysis Time: " << duration.count() << " microseconds" << endl;
+
+    start = high_resolution_clock::now();
+    sp_mat spr_mat;
+    Backend::get_sparse_mat(graph, spr_mat);
+    Backend::get_eigenval(spr_mat, 10);
+    Backend::get_singularval(spr_mat, 10);
+    stop     = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Linear Analysis Time: " << duration.count() << " microseconds" << endl;
 }
 
 int main(int argc, char *argv[]) {
