@@ -71,3 +71,7 @@ add_executable(testAnalysis
         example/utils.h
         )
 target_link_libraries(testAnalysis sampler)
+
+add_executable(gen
+        src/utils/Gen.cpp
+)
