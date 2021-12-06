@@ -12,13 +12,14 @@ UndirectedGraph::UndirectedGraph(size_t number_of_nodes, map<size_t, set<size_t>
     auto copy = vector<set<size_t>>(number_of_nodes);
     for (auto &&p : adjList) {
         for (auto &&j : p.second) {
-            if (p.first == j) {
-                // 自环
-                exit(1);
-            }
+            // 自环也加进去
+            // if (p.first == j) {
+            //     // 自环
+            //     exit(1);
+            // }
             ++number_of_edges;
             copy[p.first].insert(j);
-            copy[j].insert(p.first);
+            if (j != p.first) copy[j].insert(p.first);
         }
     }
 
