@@ -40,7 +40,7 @@ vector<pair<size_t, size_t>> PageRankBasedSampler::_sample(const DirectedGraph *
             } else {
 #pragma omp parallel for
                 for (size_t loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
-                    newPR[columns[loc]] += PR[i] / static_cast<double>(degrees[i]) * alpha;
+                    newPR[columns[loc]] += PR[i] / static_cast<double>(degrees[i]);
                 }
             }
         }
