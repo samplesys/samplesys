@@ -26,17 +26,27 @@ vector<pair<size_t, size_t>> PageRankBasedSampler::_sample(const DirectedGraph *
         }
         return d;
     };
-    while (diff(PR, newPR) > 1e-6) {
+    while (diff(PR, newPR) / static_cast<double>(g->number_of_nodes()) > 1e-6) {
         PR.assign(newPR.begin(), newPR.end());
-        newPR.assign(g->number_of_nodes(), 1 - alpha);
+        newPR.assign(g->number_of_nodes(), 0);
 #pragma omp parallel for
         for (size_t i = 0; i < g->number_of_nodes(); ++i) {
-            auto left = offsets[i], right = offsets[i + 1];
+            if (offsets[i] == offsets[i + 1]) {
 #pragma omp parallel for
-            for (size_t loc = left; loc < right; ++loc) {
-                auto j = columns[loc];
-                newPR[j] += PR[i] / static_cast<double>(degrees[i]) * alpha;
+                for (int j = 0; j < g->number_of_nodes(); j++) {
+                    newPR[j] += PR[i] / static_cast<double>(g->number_of_nodes() - 1);
+                }
+                newPR[i] -= PR[i] / static_cast<double>(g->number_of_nodes() - 1);
+            } else {
+#pragma omp parallel for
+                for (size_t loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
+                    newPR[columns[loc]] += PR[i] / static_cast<double>(degrees[i]);
+                }
             }
+        }
+#pragma omp parallel for
+        for (auto &item : newPR) {
+            item = item * alpha + (1 - alpha);
         }
     }
     return get_sampled_nodes(*g, newPR);
@@ -56,18 +66,19 @@ vector<pair<size_t, size_t>> PageRankBasedSampler::_sample(const UndirectedGraph
         }
         return d;
     };
-    while (diff(PR, newPR) > 1e-6) {
+    while (diff(PR, newPR) / static_cast<double>(g->number_of_nodes()) > 1e-6) {
         PR.assign(newPR.begin(), newPR.end());
-        newPR.assign(g->number_of_nodes(), 1 - alpha);
+        newPR.assign(g->number_of_nodes(), 0);
 #pragma omp parallel for
         for (size_t i = 0; i < g->number_of_nodes(); ++i) {
-            auto left = offsets[i], right = offsets[i + 1];
 #pragma omp parallel for
-            for (size_t loc = left; loc < right; ++loc) {
-                auto j = columns[loc];
-                newPR[j] += PR[i] / static_cast<double>(degrees[i]) * alpha;
-                newPR[i] += PR[j] / static_cast<double>(degrees[j]) * alpha;
+            for (size_t loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
+                newPR[columns[loc]] += PR[i] / static_cast<double>(degrees[i]);
             }
+        }
+#pragma omp parallel for
+        for (auto &item : newPR) {
+            item = item * alpha + (1 - alpha);
         }
     }
     return get_sampled_nodes(*g, newPR);
