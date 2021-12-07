@@ -32,6 +32,13 @@ vector<pair<size_t, size_t>> PageRankBasedSampler::_sample(const DirectedGraph *
 #pragma omp parallel for
         for (size_t i = 0; i < g->number_of_nodes(); ++i) {
             auto left = offsets[i], right = offsets[i + 1];
+            if (left == right) {
+#pragma omp parallel for
+                for (int j = 0; j < g->number_of_nodes(); j++) {
+                    newPR[j] += PR[i] / (g->number_of_nodes() - 1) * alpha;
+                }
+                newPR[i] -= PR[i] / (g->number_of_nodes() - 1) * alpha;
+            }
 #pragma omp parallel for
             for (size_t loc = left; loc < right; ++loc) {
                 auto j = columns[loc];
