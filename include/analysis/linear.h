@@ -9,11 +9,10 @@ template <class Graph>
 void get_sparse_mat(const Graph &g, arma::sp_mat &adj_mat);
 
 // find k eigen values/vectors
-void get_eigenval(arma::sp_mat &adj_mat, const int &k);
+void get_eigen(arma::vec &eigval, arma::mat &eigvec, const arma::sp_mat &adj_mat, const int &k);
 
 // find k singular values/vectors
-void get_singularval(arma::sp_mat &adj_mat, const int &k);
-
+void get_singular(arma::mat &U, arma::vec &S, arma::mat &V, const arma::sp_mat &adj_mat, const int &k);
 
 /**
  * Implementation

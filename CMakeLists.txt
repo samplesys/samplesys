@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 project(sampler)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Ofast -fopenmp -Wall -Wno-strict-aliasing")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Ofast -fopenmp -Wall -Wno-strict-aliasing")
 
 add_library(sampler SHARED
         src/utils/Random.cpp
@@ -49,10 +47,7 @@ add_library(sampler SHARED
         src/engine/exploration_sampling/ForestFireSampler.cpp
         include/engine/exploration_sampling/ForestFireSampler.h
 
-        #        src/analysis/degree.cpp
-        #        include/analysis/degree.h
-        src/analysis/Backend.cpp
-        include/analysis/Backend.h)
+        )
 
 target_include_directories(sampler PUBLIC
         include
@@ -65,13 +60,28 @@ add_executable(testSampler
         )
 target_link_libraries(testSampler sampler)
 
+add_library(backend SHARED
+        src/graph/Graph.cpp
+        include/graph/Graph.h
+        src/graph/DirectedGraph.cpp
+        include/graph/DirectedGraph.h
+        src/graph/UndirectedGraph.cpp
+        include/graph/UndirectedGraph.h
+
+        src/analysis/Backend.cpp
+        include/analysis/Backend.h
+        )
+
+target_include_directories(backend PUBLIC
+        include
+        )
+
+target_link_libraries(backend PUBLIC -larmadillo)
+
 add_executable(testAnalysis
         example/testAnalysis.cpp
         example/utils.cpp
         example/utils.h
         )
-target_link_libraries(testAnalysis sampler -larmadillo)
 
-add_executable(gen
-        src/utils/Gen.cpp
-)
+target_link_libraries(testAnalysis PUBLIC backend)
