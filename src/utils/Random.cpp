@@ -25,6 +25,9 @@ vector<size_t> Random::choice(const vector<double>& probability, size_t number_o
             sampled.push_back(dist(gen));
         }
     } else {
+        if (probability.size() < number_of_sampled) {
+            number_of_sampled = probability.size();
+        }
         struct cmp {
             bool operator()(const pair<size_t, double>& a, const pair<size_t, double>& b) {
                 return a.second < b.second;
@@ -34,11 +37,11 @@ vector<size_t> Random::choice(const vector<double>& probability, size_t number_o
         auto indices = priority_queue<pair<size_t, double>, vector<pair<size_t, double>>, cmp>();
 
         // O(nlog(s)), (n = size of probaility, s = number_of_sampled)
-        for (size_t i = 0; i < min(probability.size(), number_of_sampled); ++i) {
-            indices.emplace(i, pow(dist(gen), 1.0 / i));
+        for (size_t i = 0; i < number_of_sampled; ++i) {
+            indices.emplace(i, pow(dist(gen), 1.0 / probability[i]));
         }
-        for (size_t i = min(probability.size(), number_of_sampled); i < probability.size(); ++i) {
-            auto val = pow(dist(gen), 1.0 / i);
+        for (size_t i = number_of_sampled; i < probability.size(); ++i) {
+            auto val = pow(dist(gen), 1.0 / probability[i]);
             if (val > indices.top().second) {
                 indices.pop();
                 indices.emplace(i, val);
