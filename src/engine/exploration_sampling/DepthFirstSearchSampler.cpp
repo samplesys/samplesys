@@ -13,18 +13,18 @@ DepthFirstSearchSampler::DepthFirstSearchSampler(size_t number_of_nodes, size_t 
                                                  int seed)
     : BaseSampler(seed), number_of_nodes(number_of_nodes), start_node(start_node) {}
 
-vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const DirectedGraph& g) {
+vector<pair<size_t, size_t>> DepthFirstSearchSampler::_sample(const DirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto node_is_sampled = vector<bool>(g.number_of_nodes());
+    auto node_is_sampled = vector<bool>(g->number_of_nodes());
 
     size_t source_i = 0;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source_i = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source_i = random.randint(g->number_of_nodes());
     } else {
         source_i = start_node;
     }
@@ -33,14 +33,14 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const DirectedGraph
     do {
         /* find a start node */
         while (node_is_sampled[source_i]) {
-            source_i = random.randint(g.number_of_nodes());
+            source_i = random.randint(g->number_of_nodes());
         }
         node_is_sampled[source_i] = true;
         if (++current_sampled_nodes == number_of_nodes) break;
         if (!degrees[source_i]) continue;
 
         /* find a neighbour to form an edge */
-        auto neighbours = g.calc_neighbours(source_i);
+        auto neighbours = g->calc_neighbours(source_i);
         random.shuffle(neighbours);
         auto it = find_if(neighbours.begin(), neighbours.end(),
                           [&node_is_sampled](const auto& e) { return !node_is_sampled[e]; });
@@ -72,18 +72,18 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const DirectedGraph
     return ret;
 }
 
-vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const UndirectedGraph& g) {
+vector<pair<size_t, size_t>> DepthFirstSearchSampler::_sample(const UndirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto node_is_sampled = vector<bool>(g.number_of_nodes());
+    auto node_is_sampled = vector<bool>(g->number_of_nodes());
 
     size_t source_i = 0;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source_i = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source_i = random.randint(g->number_of_nodes());
     } else {
         source_i = start_node;
     }
@@ -92,14 +92,14 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const UndirectedGra
     do {
         /* find a start node */
         while (node_is_sampled[source_i]) {
-            source_i = random.randint(g.number_of_nodes());
+            source_i = random.randint(g->number_of_nodes());
         }
         node_is_sampled[source_i] = true;
         if (++current_sampled_nodes == number_of_nodes) break;
         if (!degrees[source_i]) continue;
 
         /* find a neighbour to form an edge */
-        auto neighbours = g.calc_neighbours(source_i);
+        auto neighbours = g->calc_neighbours(source_i);
         random.shuffle(neighbours);
         auto it = find_if(neighbours.begin(), neighbours.end(),
                           [&node_is_sampled](const auto& e) { return !node_is_sampled[e]; });
@@ -133,4 +133,16 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const UndirectedGra
         }
     } while (current_sampled_nodes < number_of_nodes);
     return ret;
+}
+
+vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const Graph& g) {
+    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
+    if (ptr1 != nullptr) {
+        return this->_sample(ptr1);
+    }
+    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
+    if (ptr2 != nullptr) {
+        return this->_sample(ptr2);
+    }
+    return {};
 }

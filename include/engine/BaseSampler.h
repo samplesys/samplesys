@@ -18,8 +18,7 @@ class BaseSampler {
 
    public:
     explicit BaseSampler(int seed);
-    virtual std::vector<std::pair<std::size_t, std::size_t>> sample(const DirectedGraph &g)   = 0;
-    virtual std::vector<std::pair<std::size_t, std::size_t>> sample(const UndirectedGraph &g) = 0;
+    virtual std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g) = 0;
 };
 
 #endif  // SAMPLER_INCLUDE_ENGINE_BASESAMPLER_H_

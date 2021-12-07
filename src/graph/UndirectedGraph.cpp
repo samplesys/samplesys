@@ -6,19 +6,15 @@
 
 using namespace std;
 
-UndirectedGraph::UndirectedGraph(size_t number_of_nodes, map<size_t, set<size_t>> &adjList) {
+UndirectedGraph::UndirectedGraph(map<size_t, set<size_t>> &adjList, size_t number_of_nodes) {
     size_t number_of_edges = 0;
 
     auto copy = vector<set<size_t>>(number_of_nodes);
     for (auto &&p : adjList) {
         for (auto &&j : p.second) {
-            if (p.first == j) {
-                // 自环
-                exit(1);
-            }
             ++number_of_edges;
             copy[p.first].insert(j);
-            copy[j].insert(p.first);
+            if (j != p.first) copy[j].insert(p.first);
         }
     }
 

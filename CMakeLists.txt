@@ -7,6 +7,8 @@ add_library(sampler SHARED
         src/utils/Random.cpp
         include/utils/Random.h
         include/utils/LimitedQueue.h
+        src/utils/GraphStream.cpp
+        include/utils/GraphStream.h
 
         src/graph/Graph.cpp
         include/graph/Graph.h
@@ -47,10 +49,7 @@ add_library(sampler SHARED
         src/engine/exploration_sampling/ForestFireSampler.cpp
         include/engine/exploration_sampling/ForestFireSampler.h
 
-        #        src/analysis/degree.cpp
-        #        include/analysis/degree.h
-        src/analysis/Backend.cpp
-        include/analysis/Backend.h)
+        )
 
 target_include_directories(sampler PUBLIC
         include
@@ -63,9 +62,35 @@ add_executable(testSampler
         )
 target_link_libraries(testSampler sampler)
 
+add_library(backend SHARED
+        src/graph/Graph.cpp
+        include/graph/Graph.h
+        src/graph/DirectedGraph.cpp
+        include/graph/DirectedGraph.h
+        src/graph/UndirectedGraph.cpp
+        include/graph/UndirectedGraph.h
+        src/utils/GraphStream.cpp
+        include/utils/GraphStream.h
+        
+        src/analysis/Backend.cpp
+        include/analysis/Backend.h
+        )
+
+target_include_directories(backend PUBLIC
+        include
+        )
+
+target_link_libraries(backend PUBLIC -larmadillo)
+
 add_executable(testAnalysis
         example/testAnalysis.cpp
         example/utils.cpp
         example/utils.h
         )
-target_link_libraries(testAnalysis sampler)
+
+target_link_libraries(testAnalysis PUBLIC backend)
+
+add_executable(testGraphStream
+        example/testGraphStream.cpp
+        )
+target_link_libraries(testGraphStream sampler)

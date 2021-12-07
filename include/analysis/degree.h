@@ -1,5 +1,5 @@
-#ifndef DEGREE_H
-#define DEGREE_H
+#ifndef ANALYSIS_DEGREE_H
+#define ANALYSIS_DEGREE_H
 
 #include <cmath>
 #include <cstring>
@@ -41,12 +41,12 @@ void get_degree_avg(const Graph& g, double& avg_degree) {
     std::size_t sumv   = 0;
     for (std::size_t i = 0; i < nv; i++) {
         std::size_t d = 0;
-        for (std::size_t p = offset[i]; p < offset[i + 1]; i++) {
+        for (std::size_t p = offset[i]; p < offset[i + 1]; p++) {
             if (i == column[p]) continue;  // cut off self loops
             sumd++;
             d++;
         }
-        sumv += d != 0;
+        sumv += (d != 0);
     }
     avg_degree = 1.0 * sumd / sumv;
 }
@@ -80,7 +80,9 @@ void get_degree_asso(const Graph& g, double& assortativty_coef) {
             M[mapping[x]][mapping[y]]++;
         }
     }
+#pragma omp parallel for
     for (std::size_t i = 0; i < n; i++) {
+#pragma omp parallel for
         for (std::size_t j = 0; j < n; j++) {
             M[i][j] /= sum;
         }
@@ -95,8 +97,9 @@ void get_degree_asso(const Graph& g, double& assortativty_coef) {
         y.push_back(it->first);
     }
     for (std::size_t i = 0; i < n; i++) {
-        for (std::size_t j = 0; j < n; j++)
+        for (std::size_t j = 0; j < n; j++) {
             a[j] += M[i][j], b[i] += M[i][j];
+        }
     }
     double vara = 0, varb = 0, Ex = 0, Ex2 = 0, Ey = 0, Ey2 = 0;
     for (std::size_t i = 0; i < n; i++) {
@@ -114,7 +117,6 @@ void get_degree_asso(const Graph& g, double& assortativty_coef) {
     }
     if (!vara || !varb) printf("Network has perfect assortative mixing patterns.\n");
     assortativty_coef = 1.0 * dsum / std::sqrt(vara * varb);
-    printf("Degree assortativity coefficient: %lf\n", assortativty_coef);
 }
 
 }  // namespace Backend

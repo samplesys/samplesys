@@ -4,42 +4,50 @@
 
 #include "utils/Random.h"
 
+#include <omp.h>
+
 #include <cmath>
+#include <queue>
+#include <random>
 
 using namespace std;
 
 Random::Random(int seed) : gen(seed) {}
 
-vector<size_t> Random::choice(const vector<double> &probability, size_t number_of_sampled,
+vector<size_t> Random::choice(const vector<double>& probability, size_t number_of_sampled,
                               bool replace) {
-    if (probability.size() < number_of_sampled) {
-        number_of_sampled = probability.size();
-    }
     vector<size_t> sampled;
     sampled.reserve(number_of_sampled);
 
     if (replace) {
         discrete_distribution<size_t> dist(probability.begin(), probability.end());
-        for (auto i = 0; i < number_of_sampled; i++) {
+        for (size_t i = 0; i < number_of_sampled; i++) {
             sampled.push_back(dist(gen));
         }
     } else {
-        uniform_real_distribution<double> dist(0, 1);
-        vector<double>                    vals;
-        vals.reserve(probability.size());
-        for (auto i : probability) {
-            vals.push_back(std::pow(dist(gen), 1. / i));
+        struct cmp {
+            bool operator()(const pair<size_t, double>& a, const pair<size_t, double>& b) {
+                return a.second < b.second;
+            }
+        };
+        auto dist    = uniform_real_distribution<>(0, 1);
+        auto indices = priority_queue<pair<size_t, double>, vector<pair<size_t, double>>, cmp>();
+
+        // O(nlog(s)), (n = size of probaility, s = number_of_sampled)
+        for (size_t i = 0; i < min(probability.size(), number_of_sampled); ++i) {
+            indices.emplace(i, pow(dist(gen), 1.0 / i));
         }
-        vector<std::pair<int, double>> indices;
-        for (size_t iter = 0; iter < vals.size(); iter++) {
-            indices.emplace_back(iter, vals[iter]);
+        for (size_t i = min(probability.size(), number_of_sampled); i < probability.size(); ++i) {
+            auto val = pow(dist(gen), 1.0 / i);
+            if (val > indices.top().second) {
+                indices.pop();
+                indices.emplace(i, val);
+            }
         }
-        sort(indices.begin(), indices.end(),
-             [](const auto &x, const auto &y) { return x.second > y.second; });
-        for (auto i = 0; i < number_of_sampled; i++) {
-            sampled.push_back(indices[i].first);
+        for (size_t i = 0; i < number_of_sampled; i++) {
+            sampled.push_back(indices.top().first);
+            indices.pop();
         }
     }
-    sort(sampled.begin(), sampled.end());
     return sampled;
 }
