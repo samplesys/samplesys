@@ -17,8 +17,8 @@
  */
 class UndirectedGraph : public Graph {
    public:
-    UndirectedGraph(std::size_t                                   number_of_nodes,
-                    std::map<std::size_t, std::set<std::size_t>>& adjList);
+    UndirectedGraph(std::map<std::size_t, std::set<std::size_t>>& adjList,
+                    std::size_t                                   number_of_nodes);
 };
 
 #endif  // SAMPLER_INCLUDE_GRAPH_UNDIRECTEDGRAPH_H_

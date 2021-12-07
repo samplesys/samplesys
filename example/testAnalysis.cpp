@@ -5,6 +5,7 @@
 
 #include "analysis/Backend.h"
 #include "utils.h"
+#include "utils/GraphStream.h"
 
 using namespace Backend;
 using namespace std;
@@ -21,25 +22,22 @@ void cmdInp(int argc, char **argv) {
     int    _argc = 0;
     string input = argv[++_argc];
 
-    size_t number_of_nodes;
-    auto   adjList = map<std::size_t, set<std::size_t>>();
-    readGraph(number_of_nodes, adjList, input);
+    auto graph = GraphStream::readText(input);
 
-    auto                graph = UndirectedGraph(number_of_nodes, adjList);
     map<size_t, size_t> deg_disb;
     double              avg_degree;
     double              asso_coef;
 
     auto start = high_resolution_clock::now();
 
-    Backend::get_degree_avg(graph, avg_degree);
+    Backend::get_degree_avg(*graph, avg_degree);
     printf("Average degree: %lf\n", avg_degree);
-    Backend::get_degree_disb(graph, deg_disb);
+    Backend::get_degree_disb(*graph, deg_disb);
     printf("Degree distribution:\nDegree\tCount\n");
     for (auto x : deg_disb) {
         printf("%zd\t%zd\n", x.first, x.second);
     }
-    Backend::get_degree_asso(graph, asso_coef);
+    Backend::get_degree_asso(*graph, asso_coef);
     printf("Degree assortativity coefficient: %lf\n", asso_coef);
 
     auto stop     = high_resolution_clock::now();

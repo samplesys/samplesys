@@ -20,21 +20,21 @@ ForestFireSampler::ForestFireSampler(size_t number_of_nodes, size_t start_node, 
       max_visited_nodes(max_visited_nodes_backlog),
       restart_hop_size(restart_hop_size) {}
 
-vector<pair<size_t, size_t>> ForestFireSampler::sample(const DirectedGraph& g) {
+vector<pair<size_t, size_t>> ForestFireSampler::_sample(const DirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
     size_t source;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source = random.randint(g->number_of_nodes());
     } else {
         source = start_node;
     }
 
-    auto   node_is_sampled       = vector<bool>(g.number_of_nodes());
+    auto   node_is_sampled       = vector<bool>(g->number_of_nodes());
     auto   visited_nodes         = LimitedQueue<size_t>(max_visited_nodes);
     auto   tinder                = queue<size_t>();
     size_t current_sampled_nodes = 0;
@@ -42,7 +42,7 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const DirectedGraph& g) {
     while (current_sampled_nodes < number_of_nodes) {
         // select a source from unsampled nodes
         while (node_is_sampled[source]) {
-            source = random.randint(g.number_of_nodes());
+            source = random.randint(g->number_of_nodes());
         }
 
         // sample the node when pop out
@@ -67,7 +67,7 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const DirectedGraph& g) {
                 break;
             }
             auto   score      = random.geometric_distribution<size_t>(p);
-            auto   neighbours = g.calc_neighbours(i);
+            auto   neighbours = g->calc_neighbours(i);
             size_t unvisited =
                 count_if(neighbours.begin(), neighbours.end(),
                          [&node_is_sampled](const auto& e) { return !node_is_sampled[e]; });
@@ -88,7 +88,7 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const DirectedGraph& g) {
             }
         }
     }
-    for (size_t i = 0; i < g.number_of_nodes(); ++i) {
+    for (size_t i = 0; i < g->number_of_nodes(); ++i) {
         if (!node_is_sampled[i]) continue;
         for (auto loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
             if (node_is_sampled[columns[loc]]) {
@@ -99,21 +99,21 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const DirectedGraph& g) {
     return ret;
 }
 
-vector<pair<size_t, size_t>> ForestFireSampler::sample(const UndirectedGraph& g) {
+vector<pair<size_t, size_t>> ForestFireSampler::_sample(const UndirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
     size_t source;
-    if (start_node == -1 || start_node > g.number_of_nodes()) {
-        source = random.randint(g.number_of_nodes());
+    if (start_node > g->number_of_nodes()) {
+        source = random.randint(g->number_of_nodes());
     } else {
         source = start_node;
     }
 
-    auto   node_is_sampled       = vector<bool>(g.number_of_nodes());
+    auto   node_is_sampled       = vector<bool>(g->number_of_nodes());
     auto   visited_nodes         = LimitedQueue<size_t>(max_visited_nodes);
     auto   tinder                = queue<size_t>();
     size_t current_sampled_nodes = 0;
@@ -121,7 +121,7 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const UndirectedGraph& g)
     while (current_sampled_nodes < number_of_nodes) {
         // select a source from unsampled nodes
         while (node_is_sampled[source]) {
-            source = random.randint(g.number_of_nodes());
+            source = random.randint(g->number_of_nodes());
         }
 
         // sample the node when pop out
@@ -146,7 +146,7 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const UndirectedGraph& g)
                 break;
             }
             auto   score      = random.geometric_distribution<size_t>(p);
-            auto   neighbours = g.calc_neighbours(i);
+            auto   neighbours = g->calc_neighbours(i);
             size_t unvisited =
                 count_if(neighbours.begin(), neighbours.end(),
                          [&node_is_sampled](const auto& e) { return !node_is_sampled[e]; });
@@ -167,7 +167,7 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const UndirectedGraph& g)
             }
         }
     }
-    for (size_t i = 0; i < g.number_of_nodes(); ++i) {
+    for (size_t i = 0; i < g->number_of_nodes(); ++i) {
         if (!node_is_sampled[i]) continue;
         for (auto loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
             if (i < offsets[loc] && node_is_sampled[columns[loc]]) {
@@ -176,4 +176,16 @@ vector<pair<size_t, size_t>> ForestFireSampler::sample(const UndirectedGraph& g)
         }
     }
     return ret;
+}
+
+vector<pair<size_t, size_t>> ForestFireSampler::sample(const Graph& g) {
+    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
+    if (ptr1 != nullptr) {
+        return this->_sample(ptr1);
+    }
+    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
+    if (ptr2 != nullptr) {
+        return this->_sample(ptr2);
+    }
+    return {};
 }
