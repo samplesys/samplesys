@@ -87,6 +87,7 @@ add_executable(testAnalysis
         example/utils.cpp
         example/utils.h
         )
+<<<<<<< HEAD
 
 target_link_libraries(testAnalysis PUBLIC backend)
 
@@ -94,3 +95,12 @@ add_executable(testGraphStream
         example/testGraphStream.cpp
         )
 target_link_libraries(testGraphStream sampler)
+=======
+
+target_link_libraries(testAnalysis sampler)
+
+add_executable(testGraphStream
+        example/testGraphStream.cpp
+        )
+target_link_libraries(testGraphStream sampler)
+>>>>>>> 9d4a093f2e96821a019b7fb298d6f0828619fc56
