@@ -7,6 +7,8 @@ add_library(sampler SHARED
         src/utils/Random.cpp
         include/utils/Random.h
         include/utils/LimitedQueue.h
+        src/utils/GraphStream.cpp
+        include/utils/GraphStream.h
 
         src/graph/Graph.cpp
         include/graph/Graph.h
@@ -67,7 +69,9 @@ add_library(backend SHARED
         include/graph/DirectedGraph.h
         src/graph/UndirectedGraph.cpp
         include/graph/UndirectedGraph.h
-
+        src/utils/GraphStream.cpp
+        include/utils/GraphStream.h
+        
         src/analysis/Backend.cpp
         include/analysis/Backend.h
         )
@@ -85,3 +89,8 @@ add_executable(testAnalysis
         )
 
 target_link_libraries(testAnalysis PUBLIC backend)
+
+add_executable(testGraphStream
+        example/testGraphStream.cpp
+        )
+target_link_libraries(testGraphStream sampler)

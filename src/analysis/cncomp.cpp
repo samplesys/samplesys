@@ -12,7 +12,7 @@ namespace Backend {
  * If graph is undirected, wcc is connected component.
  * If graph is directed, wcc is conneccted component of base graph.
  */
-void get_wccs(const UndirectedGraph *g, vector<vector<size_t>> *wccs) {
+void _get_wccs(const UndirectedGraph *g, vector<vector<size_t>> *wccs) {
     size_t      nv     = g->number_of_nodes();
     const auto &column = g->get_columns();
     const auto &offset = g->get_offsets();
@@ -44,7 +44,7 @@ void get_wccs(const UndirectedGraph *g, vector<vector<size_t>> *wccs) {
     sort(wccs->begin(), wccs->end());
 }
 
-void get_wccs(const DirectedGraph *g, vector<vector<size_t>> *wccs) {
+void _get_wccs(const DirectedGraph *g, vector<vector<size_t>> *wccs) {
     size_t         nv     = g->number_of_nodes();
     const auto    &column = g->get_columns();
     const auto    &offset = g->get_offsets();
@@ -157,6 +157,13 @@ void get_sccs(const DirectedGraph *g, vector<vector<size_t>> *sccs) {
     delete dfn;
     delete low;
     delete belong;
+}
+
+void get_wccs(const Graph &g, vector<vector<size_t>> *wccs) {
+    auto ptr1 = dynamic_cast<const DirectedGraph *>(&g);
+    if (ptr1 != nullptr) Backend::_get_wccs(ptr1, wccs);
+    auto ptr2 = dynamic_cast<const UndirectedGraph *>(&g);
+    if (ptr2 != nullptr) Backend::_get_wccs(ptr2, wccs);
 }
 
 }  // namespace Backend

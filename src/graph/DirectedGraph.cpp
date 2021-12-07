@@ -6,7 +6,7 @@
 
 using namespace std;
 
-DirectedGraph::DirectedGraph(size_t number_of_nodes, map<size_t, set<size_t>> &adjList) {
+DirectedGraph::DirectedGraph(map<size_t, set<size_t>> &adjList, size_t number_of_nodes) {
     offsets.assign(number_of_nodes + 1, 0);
     degrees.assign(number_of_nodes, 0);
     for (size_t i = 0; i < number_of_nodes; i++) {

@@ -9,17 +9,17 @@ using namespace std;
 RandomNodeEdgeSampler::RandomNodeEdgeSampler(size_t number_of_edges, int seed)
     : BaseSampler(seed), number_of_edges(number_of_edges) {}
 
-vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const DirectedGraph& g) {
+vector<pair<size_t, size_t>> RandomNodeEdgeSampler::_sample(const DirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto   edge_is_sampled = vector<bool>(g.number_of_edges());
+    auto   edge_is_sampled = vector<bool>(g->number_of_edges());
     size_t current_sampled = 0;
     while (current_sampled < number_of_edges) {
-        auto i = random.randint<size_t>(g.number_of_nodes());
+        auto i = random.randint<size_t>(g->number_of_nodes());
         if (!degrees[i]) continue;
         auto loc = offsets[i] + random.randint<size_t>(degrees[i]);
         if (edge_is_sampled[loc]) continue;
@@ -30,23 +30,23 @@ vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const DirectedGraph& 
     return ret;
 }
 
-vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const UndirectedGraph& g) {
+vector<pair<size_t, size_t>> RandomNodeEdgeSampler::_sample(const UndirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
-    const auto& columns = g.get_columns();
-    const auto& offsets = g.get_offsets();
-    const auto& degrees = g.get_degrees();
+    const auto& columns = g->get_columns();
+    const auto& offsets = g->get_offsets();
+    const auto& degrees = g->get_degrees();
 
-    auto   edge_is_sampled = vector<bool>(g.number_of_edges());
+    auto   edge_is_sampled = vector<bool>(g->number_of_edges());
     size_t current_sampled = 0;
     while (current_sampled < number_of_edges) {
-        auto i = random.randint<size_t>(g.number_of_nodes());
+        auto i = random.randint<size_t>(g->number_of_nodes());
         if (!degrees[i]) continue;
         auto loc = offsets[i] + random.randint<size_t>(degrees[i]);
         if (edge_is_sampled[loc]) continue;
-        auto j                                       = columns[loc];
-        edge_is_sampled[loc]                         = true;
-        edge_is_sampled[g.loc_of_edge_between(j, i)] = true;
+        auto j                                        = columns[loc];
+        edge_is_sampled[loc]                          = true;
+        edge_is_sampled[g->loc_of_edge_between(j, i)] = true;
         if (i < j) {
             ret.emplace_back(i, j);
         } else {
@@ -55,4 +55,16 @@ vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const UndirectedGraph
         ++current_sampled;
     }
     return ret;
+}
+
+vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const Graph& g) {
+    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
+    if (ptr1 != nullptr) {
+        return this->_sample(ptr1);
+    }
+    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
+    if (ptr2 != nullptr) {
+        return this->_sample(ptr2);
+    }
+    return {};
 }

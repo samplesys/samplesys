@@ -12,7 +12,7 @@ namespace Backend {
  * return undirected and unweighted triangles
  */
 template <class Graph>
-void _triangles(Graph &g, std::size_t *nnbr, std::size_t *nTriangles);
+void _triangles(const Graph &g, std::size_t *nnbr, std::size_t *nTriangles);
 
 /**
  * Return number of directed triangles in (i,k,j)
@@ -23,21 +23,22 @@ size_t _tc(std::vector<std::size_t> &ip, std::vector<std::size_t> &is, std::vect
 /*
  * local clustering coefficient
  */
-void get_cluster_coef(DirectedGraph &g, double *cluster_coef);
-void get_cluster_coef(UndirectedGraph &g, double *cluster_coef);
+void get_cluster_coef(const Graph &g, double *cluster_coef);
+void _get_cluster_coef(const DirectedGraph *g, double *cluster_coef);
+void _get_cluster_coef(const UndirectedGraph *g, double *cluster_coef);
 
 template <class Graph>
-void get_transtivity(Graph g, double &transtivity);
+void get_transtivity(const Graph *g, double &transtivity);
 
 /**
  *  Implementation
  */
 template <class Graph>
-void _triangles(Graph &g, std::size_t *nnbr, std::size_t *nTriangles) {
+void _triangles(const Graph *g, std::size_t *nnbr, std::size_t *nTriangles) {
     // This double counts triangles so you may want to divide by 2.
-    size_t              nv     = g.number_of_nodes();
-    const auto         &column = g.get_columns();
-    const auto         &offset = g.get_offsets();
+    size_t              nv     = g->number_of_nodes();
+    const auto         &column = g->get_columns();
+    const auto         &offset = g->get_offsets();
     std::vector<size_t> nbr[nv];
 
     for (size_t i = 0; i < nv; i++) {
@@ -61,8 +62,8 @@ void _triangles(Graph &g, std::size_t *nnbr, std::size_t *nTriangles) {
 }
 
 template <class Graph>
-void get_transtivity(Graph g, double &transtivity) {
-    std::size_t  nv         = g.get_vertex_num();
+void get_transtivity(const Graph *g, double &transtivity) {
+    std::size_t  nv         = g->get_vertex_num();
     std::size_t *nnbr       = (std::size_t *)(malloc(nv * sizeof(std::size_t)));
     std::size_t *nTriangles = (std::size_t *)(malloc(nv * sizeof(std::size_t)));
     size_t       triangles = 0, triads = 0;

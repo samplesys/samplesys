@@ -6,6 +6,9 @@
 #include <map>
 #include <vector>
 
+#include "graph/DirectedGraph.h"
+#include "graph/UndirectedGraph.h"
+
 namespace Backend {
 
 template <class Graph>

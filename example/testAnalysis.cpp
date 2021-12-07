@@ -7,6 +7,7 @@
 #include "analysis/Backend.h"
 #include "graph/UndirectedGraph.h"
 #include "utils.h"
+#include "utils/GraphStream.h"
 
 using namespace Backend;
 using namespace std;
@@ -24,26 +25,22 @@ void cmdInp(int argc, char **argv) {
     int    _argc = 0;
     string input = argv[++_argc];
 
-    size_t number_of_nodes;
-    auto   adjList = map<std::size_t, set<std::size_t>>();
-    readGraph(number_of_nodes, adjList, input);
+    auto graph = GraphStream::readText(input, false);
 
-    auto                graph = UndirectedGraph(number_of_nodes, adjList);
     map<size_t, size_t> deg_disb;
     double              avg_degree;
     double              asso_coef;
 
     auto start = high_resolution_clock::now();
-
-    Backend::get_degree_avg(graph, avg_degree);
-    // printf("Average degree: %lf\n", avg_degree);
-    Backend::get_degree_disb(graph, deg_disb);
+    Backend::get_degree_avg(*graph, avg_degree);
+    printf("Average degree: %lf\n", avg_degree);
+    Backend::get_degree_disb(*graph, deg_disb);
     // printf("Degree distribution:\nDegree\tCount\n");
     // for (auto x : deg_disb) {
     //     printf("%zd\t%zd\n", x.first, x.second);
     // }
-    Backend::get_degree_asso(graph, asso_coef);
-    // printf("Degree assortativity coefficient: %lf\n", asso_coef);
+    Backend::get_degree_asso(*graph, asso_coef);
+    printf("Degree assortativity coefficient: %lf\n", asso_coef);
 
     auto stop     = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -51,9 +48,9 @@ void cmdInp(int argc, char **argv) {
          << ": " << duration.count() << " microseconds" << endl;
 
     start                = high_resolution_clock::now();
-    size_t  nv           = graph.number_of_nodes();
+    size_t  nv           = graph->number_of_nodes();
     double *cluster_coef = reinterpret_cast<double *>(malloc(nv * sizeof(double)));
-    Backend::get_cluster_coef(graph, cluster_coef);
+    Backend::get_cluster_coef(*graph, cluster_coef);
     // printf("Clustering coefficient:\n");
     // for (size_t i = 0; i < nv; i++)
     //     printf("%zd %lf\n", i, cluster_coef[i]);
@@ -64,7 +61,7 @@ void cmdInp(int argc, char **argv) {
 
     start = high_resolution_clock::now();
     sp_mat spr_mat;
-    Backend::get_sparse_mat(graph, spr_mat);
+    Backend::get_sparse_mat(*graph, spr_mat);
     vec eigval;
     mat eigvec;
     Backend::get_eigen(eigval, eigvec, spr_mat, 10);
@@ -85,8 +82,8 @@ void cmdInp(int argc, char **argv) {
     start = high_resolution_clock::now();
     // vector<vector<size_t>> *sccs = new vector<vector<size_t>>;
     vector<vector<size_t>> *wccs = new vector<vector<size_t>>;
-    // Backend::get_sccs(&graph, sccs);
-    Backend::get_wccs(&graph, wccs);
+    // Backend::get_sccs(*graph, sccs);
+    Backend::get_wccs(*graph, wccs);
     // printf("%Total zd weakly connected component.\n", wccs->size());
     delete wccs;
     stop     = high_resolution_clock::now();

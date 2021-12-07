@@ -10,9 +10,9 @@ namespace Backend {
 /**
  * get WCCs(weekly-connected-component)
  */
-void get_wccs(const UndirectedGraph *g, std::vector<std::vector<std::size_t>> *wccs);
-
-void get_wccs(const DirectedGraph *g, std::vector<std::vector<std::size_t>> *wccs);
+void get_wccs(const Graph &g, std::vector<std::vector<std::size_t>> *wccs);
+void _get_wccs(const UndirectedGraph *g, std::vector<std::vector<std::size_t>> *wccs);
+void _get_wccs(const DirectedGraph *g, std::vector<std::vector<std::size_t>> *wccs);
 
 /**
  * get SCCs(strongly-connected-component)

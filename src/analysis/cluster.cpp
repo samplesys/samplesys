@@ -13,11 +13,11 @@ size_t _tc(vector<size_t> &ip, vector<size_t> &is, vector<size_t> &jp, vector<si
     return pp.size() + ps.size() + sp.size() + ss.size();
 }
 
-void _directed_triangles(DirectedGraph &g, size_t *degreetot, size_t *degreebid,
+void _directed_triangles(const DirectedGraph *g, size_t *degreetot, size_t *degreebid,
                          size_t *ndiTriangle) {
-    size_t         nv     = g.number_of_nodes();
-    const auto    &column = g.get_columns();
-    const auto    &offset = g.get_offsets();
+    size_t         nv     = g->number_of_nodes();
+    const auto    &column = g->get_columns();
+    const auto    &offset = g->get_offsets();
     vector<size_t> pred[nv], succ[nv];
 
     for (size_t i = 0; i < nv; i++) {
@@ -48,9 +48,9 @@ void _directed_triangles(DirectedGraph &g, size_t *degreetot, size_t *degreebid,
     }
 }
 
-void get_cluster_coef(DirectedGraph &g, double *cluster_coef) {
+void _get_cluster_coef(const DirectedGraph *g, double *cluster_coef) {
     // unweighted graph
-    size_t  nv          = g.number_of_nodes();
+    size_t  nv          = g->number_of_nodes();
     size_t *degreetot   = (size_t *)(malloc(nv * sizeof(size_t)));
     size_t *degreebid   = (size_t *)(malloc(nv * sizeof(size_t)));
     size_t *ndiTriangle = (size_t *)(malloc(nv * sizeof(size_t)));
@@ -68,9 +68,9 @@ void get_cluster_coef(DirectedGraph &g, double *cluster_coef) {
     delete ndiTriangle;
 }
 
-void get_cluster_coef(UndirectedGraph &g, double *cluster_coef) {
+void _get_cluster_coef(const UndirectedGraph *g, double *cluster_coef) {
     // unweighted graph
-    size_t  nv         = g.number_of_nodes();
+    size_t  nv         = g->number_of_nodes();
     size_t *nTriangles = (size_t *)(malloc(nv * sizeof(size_t)));
     size_t *nnbr       = (size_t *)(malloc(nv * sizeof(size_t)));
     Backend::_triangles(g, nnbr, nTriangles);
@@ -84,6 +84,13 @@ void get_cluster_coef(UndirectedGraph &g, double *cluster_coef) {
     }
     delete nTriangles;
     delete nnbr;
+}
+
+void get_cluster_coef(const Graph &g, double *cluster_coef) {
+    auto ptr1 = dynamic_cast<const DirectedGraph *>(&g);
+    if (ptr1 != nullptr) Backend::_get_cluster_coef(ptr1, cluster_coef);
+    auto ptr2 = dynamic_cast<const UndirectedGraph *>(&g);
+    if (ptr2 != nullptr) Backend::_get_cluster_coef(ptr2, cluster_coef);
 }
 
 }  // namespace Backend
