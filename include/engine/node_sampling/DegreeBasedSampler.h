@@ -5,8 +5,8 @@
 #ifndef SAMPLER_INCLUDE_ENGINE_NODE_SAMPLING_DEGREEBASEDSAMPLER_H_
 #define SAMPLER_INCLUDE_ENGINE_NODE_SAMPLING_DEGREEBASEDSAMPLER_H_
 
-#include "NodeSampler.h"
 #include "graph/DirectedGraph.h"
+#include "NodeSampler.h"
 
 class DegreeBasedSampler : public NodeSampler {
    private:

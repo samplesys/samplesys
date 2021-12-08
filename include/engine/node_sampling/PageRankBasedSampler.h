@@ -5,8 +5,8 @@
 #ifndef SAMPLER_INCLUDE_ENGINE_NODE_SAMPLING_PAGERANKBASEDSAMPLER_H_
 #define SAMPLER_INCLUDE_ENGINE_NODE_SAMPLING_PAGERANKBASEDSAMPLER_H_
 
-#include "NodeSampler.h"
 #include "graph/DirectedGraph.h"
+#include "NodeSampler.h"
 
 class PageRankBasedSampler : public NodeSampler {
    private:
