@@ -3,8 +3,10 @@
 
 #include <armadillo>
 #include <iostream>
+
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"
+
 namespace Backend {
 
 template <class Graph>
@@ -14,7 +16,8 @@ void get_sparse_mat(const Graph &g, arma::sp_mat &adj_mat);
 void get_eigen(arma::vec &eigval, arma::mat &eigvec, const arma::sp_mat &adj_mat, const int &k);
 
 // find k singular values/vectors
-void get_singular(arma::mat &U, arma::vec &S, arma::mat &V, const arma::sp_mat &adj_mat, const int &k);
+void get_singular(arma::mat &U, arma::vec &S, arma::mat &V, const arma::sp_mat &adj_mat,
+                  const int &k);
 
 /**
  * Implementation
