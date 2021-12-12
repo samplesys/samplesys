@@ -88,3 +88,45 @@ void GraphStream::writeBinary(const string &filename, const shared_ptr<Graph> &g
     os.write(reinterpret_cast<const char *>(adjList.data()),
              number_of_edges * sizeof(decltype(adjList)::value_type));
 }
+
+void GraphStream::text_to_binary(const string &input_filename, const string &output_filename,
+                                 bool directed) {
+    FILE *fp = fopen(input_filename.c_str(), "r");
+    if (!fp) {
+        printf("error %d: %s \n", errno, strerror(errno));
+        return;
+    }
+    size_t number_of_nodes = 0;
+    size_t number_of_edges = 0;
+    auto   adjList1        = map<size_t, set<size_t>>();
+    size_t u, v;
+    if (directed) {
+        while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+            number_of_nodes = max(number_of_nodes, max(u, v) + 1);
+            number_of_edges += adjList1[u].insert(v).second;
+        }
+    } else {
+        while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+            number_of_nodes = max(number_of_nodes, max(u, v) + 1);
+            number_of_edges += adjList1[u].insert(v).second;
+            if (u != v) number_of_edges += adjList1[v].insert(u).second;
+        }
+    }
+    fclose(fp);
+
+    auto os       = ofstream(output_filename, ios_base::out | ios_base::binary);
+    auto adjList2 = vector<pair<size_t, size_t>>();
+
+    adjList2.reserve(number_of_edges);
+    for (const auto &p : adjList1) {
+        auto i = p.first;
+        for (auto j : p.second) {
+            adjList2.emplace_back(i, j);
+        }
+    }
+
+    os.write(reinterpret_cast<const char *>(&number_of_nodes), sizeof(size_t));
+    os.write(reinterpret_cast<const char *>(&number_of_edges), sizeof(size_t));
+    os.write(reinterpret_cast<const char *>(adjList2.data()),
+             number_of_edges * sizeof(decltype(adjList2)::value_type));
+}
