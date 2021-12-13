@@ -17,6 +17,7 @@ Random::Random(int seed) : gen(seed) {}
 vector<size_t> Random::choice(const vector<double>& probability, size_t number_of_sampled,
                               bool replace) {
     vector<size_t> sampled;
+    if (!number_of_sampled) return sampled;
     sampled.reserve(number_of_sampled);
 
     if (replace) {

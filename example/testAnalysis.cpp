@@ -5,7 +5,6 @@
 #include <map>
 
 #include "analysis/Backend.h"
-#include "graph/UndirectedGraph.h"
 #include "utils.h"
 #include "utils/GraphStream.h"
 

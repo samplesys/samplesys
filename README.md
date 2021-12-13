@@ -33,6 +33,14 @@ docker build -t samplesys --progress plain .
 docker run --rm -it samplesys
 ```
 
+### Third-party
+#### Armadillo
+Download link: http://arma.sourceforge.net/
+
+#### Google Benchmark
+Download link: https://github.com/google/benchmark
+
+
 ### Pre-processing
 
 The above process generates 2 executable files, namely `samplesys` and `gen`, where the latter is used for dataset pre-processing.
