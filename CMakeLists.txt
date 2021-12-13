@@ -94,3 +94,9 @@ add_executable(testGraphStream
         example/testGraphStream.cpp
         )
 target_link_libraries(testGraphStream sampler)
+
+find_package(benchmark REQUIRED)
+add_executable(bmSample
+        test/bmSample.cpp
+)
+target_link_libraries(bmSample benchmark::benchmark sampler)
