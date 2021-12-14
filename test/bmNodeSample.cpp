@@ -37,9 +37,9 @@ class NodeSampleFixture : public benchmark::Fixture {
     double                       percent;
 
     void SetUp(const ::benchmark::State& state) {
-        std::string input = "example/input/facebook_edges.csv";
+        std::string input = "example/input/soc-Slashdot0902.bin";
         // printf("Starting loading %s.\n", input.c_str());
-        graph = GraphStream::readText(input);
+        graph = GraphStream::readBinary(input);
         // printf("Graph loaded.\n");
         percent = 0.5;
         // printf("%zd %zd\n", graph->number_of_nodes(), graph->number_of_edges());
@@ -68,8 +68,20 @@ BENCHMARK_DEFINE_F(NodeSampleFixture, PRN)(benchmark::State& state) {
     }
 }
 
-BENCHMARK_REGISTER_F(NodeSampleFixture, RN)->Unit(benchmark::kMillisecond)->Threads(8)->Threads(4)->Threads(2);
-BENCHMARK_REGISTER_F(NodeSampleFixture, RDN)->Unit(benchmark::kMillisecond)->Threads(8)->Threads(4)->Threads(2);
-BENCHMARK_REGISTER_F(NodeSampleFixture, PRN)->Unit(benchmark::kMillisecond)->Threads(8)->Threads(4)->Threads(2);
+BENCHMARK_REGISTER_F(NodeSampleFixture, RN)
+    ->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+    // ->Threads(8)
+    // ->Threads(4)
+    // ->Threads(2);
+BENCHMARK_REGISTER_F(NodeSampleFixture, RDN)
+    ->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+    // ->Threads(8)
+    // ->Threads(4)
+    // ->Threads(2);
+BENCHMARK_REGISTER_F(NodeSampleFixture, PRN)
+    ->Unit(benchmark::kMillisecond)->MeasureProcessCPUTime();
+    // ->Threads(8)
+    // ->Threads(4)
+    // ->Threads(2);
 
 BENCHMARK_MAIN();
