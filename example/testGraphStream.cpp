@@ -9,10 +9,11 @@
 using namespace std;
 
 int main(int argc, char **argv) {
-    if (argc < 2) {
+    if (argc < 4) {
         cout << "[usage]: " << argv[0] << " path/to/input"
              << " path/to/output"
-             << " direct/undirected" << endl;
+             << " directed/undirected" << endl;
+        exit(1);
     }
     int    _argc = 0;
     string input = argv[++_argc];
@@ -22,8 +23,8 @@ int main(int argc, char **argv) {
     string graphType = argv[++_argc];
     cout << "graphType: " << graphType << endl;
 
-    auto graph = GraphStream::readText(input, graphType == "directed");
-    GraphStream::writeBinary(output, graph);
+    // auto graph = GraphStream::readText(input, graphType == "directed");
+    // GraphStream::writeBinary(output, graph);
 
     GraphStream::text_to_binary(input, output, graphType == "directed");
 }

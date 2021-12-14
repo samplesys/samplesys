@@ -37,7 +37,7 @@ class EdgeSampleFixture : public benchmark::Fixture {
     double                       percent;
 
     void SetUp(const ::benchmark::State& state) {
-        std::string input = "example/input/facebook_edges.csv";
+        std::string input = "example/input/";
         // printf("Starting loading %s.\n", input.c_str());
         graph = GraphStream::readText(input);
         // printf("Graph loaded.\n");

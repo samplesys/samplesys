@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <regex>
 
 using namespace std;
 
@@ -18,7 +19,20 @@ shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed) {
     size_t number_of_nodes = 0;
     auto   adjList         = map<size_t, set<size_t>>();
     size_t u, v;
-    while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+    regex  comma_regex("\\d+,\\s*\\d+[\\r\\n]*$");
+    regex  blank_regex("\\d+\\s*\\d+[\\r\\n]*$");
+    char   line[55];
+    string scnfpatn;
+    fgets(line, 50, fp);
+    if (regex_match(line, blank_regex)) {
+        scnfpatn = "%zd %zd";
+        // printf("blank\n");
+    } else if (regex_match(line, comma_regex)) {
+        scnfpatn = "%zd,%zd";
+        // printf("comma\n");
+    }
+    fseek(fp, 0, SEEK_SET);
+    while (fscanf(fp, scnfpatn.c_str(), &u, &v) != -1) {
         number_of_nodes = max(number_of_nodes, max(u, v) + 1);
         adjList[u].insert(v);
     }
@@ -100,13 +114,26 @@ void GraphStream::text_to_binary(const string &input_filename, const string &out
     size_t number_of_edges = 0;
     auto   adjList1        = map<size_t, set<size_t>>();
     size_t u, v;
+    regex  comma_regex("\\d+,\\s*\\d+[\\r\\n]*$");
+    regex  blank_regex("\\d+\\s*\\d+[\\r\\n]*$");
+    char   line[55];
+    string scnfpatn;
+    fgets(line, 50, fp);
+    if (regex_match(line, blank_regex)) {
+        scnfpatn = "%zd %zd";
+        // printf("blank\n");
+    } else if (regex_match(line, comma_regex)) {
+        scnfpatn = "%zd,%zd";
+        // printf("comma\n");
+    }
+    fseek(fp, 0, SEEK_SET);
     if (directed) {
-        while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+        while (fscanf(fp, scnfpatn.c_str(), &u, &v) != -1) {
             number_of_nodes = max(number_of_nodes, max(u, v) + 1);
             number_of_edges += adjList1[u].insert(v).second;
         }
     } else {
-        while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+        while (fscanf(fp, scnfpatn.c_str(), &u, &v) != -1) {
             number_of_nodes = max(number_of_nodes, max(u, v) + 1);
             number_of_edges += adjList1[u].insert(v).second;
             if (u != v) number_of_edges += adjList1[v].insert(u).second;
