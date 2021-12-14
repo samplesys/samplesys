@@ -96,7 +96,10 @@ add_executable(testGraphStream
 target_link_libraries(testGraphStream sampler)
 
 find_package(benchmark REQUIRED)
-add_executable(bmSample
-        test/bmSample.cpp
-)
-target_link_libraries(bmSample benchmark::benchmark sampler)
+file(GLOB BM_TESTS ${CMAKE_SOURCE_DIR}/test/*.cpp)
+foreach(bm_test_name ${BM_TESTS})
+        STRING(REGEX REPLACE "/.*/test/" "" target_name ${bm_test_name})
+        STRING(REGEX REPLACE ".cpp" "" target_name ${target_name})
+        add_executable(${target_name} ${bm_test_name})
+        target_link_libraries(${target_name} benchmark::benchmark sampler)
+endforeach()

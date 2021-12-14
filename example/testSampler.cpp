@@ -3,6 +3,7 @@
 //
 
 #include <engine/edge_sampling/RandomEdgeSampler.h>
+#include <engine/exploration_sampling/ForestFireSampler.h>
 #include <engine/node_sampling/DegreeBasedSampler.h>
 #include <engine/node_sampling/PageRankBasedSampler.h>
 #include <engine/node_sampling/RandomNodeSampler.h>
@@ -40,7 +41,7 @@ int main(int argc, char *argv[]) {
         {"rdn", make_shared<DegreeBasedSampler>(graph->number_of_nodes() * percent)},
         {"prn", make_shared<PageRankBasedSampler>(graph->number_of_nodes() * percent)},
         {"re", make_shared<RandomEdgeSampler>(graph->number_of_edges() * percent)},
-    };
+        {"ff", make_shared<ForestFireSampler>(graph->number_of_edges() * percent)}};
 
     auto start = high_resolution_clock::now();
 

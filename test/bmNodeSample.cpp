@@ -30,14 +30,14 @@ BENCHMARK(BM_hello);
 /**
  * Node Sample Benchmark test
  */
-class SampleFixture : public benchmark::Fixture {
+class NodeSampleFixture : public benchmark::Fixture {
    protected:
     std::shared_ptr<Graph>       graph;
     std::shared_ptr<BaseSampler> sampler;
     double                       percent;
 
     void SetUp(const ::benchmark::State& state) {
-        std::string input = "example/input/simple.csv";
+        std::string input = "example/input/facebook_edges.csv";
         // printf("Starting loading %s.\n", input.c_str());
         graph = GraphStream::readText(input);
         // printf("Graph loaded.\n");
@@ -47,29 +47,29 @@ class SampleFixture : public benchmark::Fixture {
     void TearDown(const ::benchmark::State& state) {}
 };
 
-BENCHMARK_DEFINE_F(SampleFixture, RN)(benchmark::State& state) {
+BENCHMARK_DEFINE_F(NodeSampleFixture, RN)(benchmark::State& state) {
     sampler = make_shared<RandomNodeSampler>(graph->number_of_nodes() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
 }
 
-BENCHMARK_DEFINE_F(SampleFixture, RDN)(benchmark::State& state) {
+BENCHMARK_DEFINE_F(NodeSampleFixture, RDN)(benchmark::State& state) {
     sampler = make_shared<DegreeBasedSampler>(graph->number_of_nodes() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
 }
 
-BENCHMARK_DEFINE_F(SampleFixture, PRN)(benchmark::State& state) {
+BENCHMARK_DEFINE_F(NodeSampleFixture, PRN)(benchmark::State& state) {
     sampler = make_shared<PageRankBasedSampler>(graph->number_of_nodes() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
 }
 
-BENCHMARK_REGISTER_F(SampleFixture, RN)->Threads(8)->Threads(4)->Threads(2);
-BENCHMARK_REGISTER_F(SampleFixture, RDN)->Threads(8)->Threads(4)->Threads(2);
-BENCHMARK_REGISTER_F(SampleFixture, PRN)->Threads(8)->Threads(4)->Threads(2);
+BENCHMARK_REGISTER_F(NodeSampleFixture, RN)->Unit(benchmark::kMillisecond)->Threads(8)->Threads(4)->Threads(2);
+BENCHMARK_REGISTER_F(NodeSampleFixture, RDN)->Unit(benchmark::kMillisecond)->Threads(8)->Threads(4)->Threads(2);
+BENCHMARK_REGISTER_F(NodeSampleFixture, PRN)->Unit(benchmark::kMillisecond)->Threads(8)->Threads(4)->Threads(2);
 
 BENCHMARK_MAIN();
