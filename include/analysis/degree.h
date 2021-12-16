@@ -23,6 +23,10 @@ void get_degree_asso(const Graph& g, double& assortativty_coef);
 /* Compute the outer product of two vectors. */
 void outer(std::vector<double>& x, std::vector<double>& y, std::vector<std::vector<double>>& xy);
 
+/**
+ * Implemention
+ */
+
 template <class Graph>
 void get_degree_disb(const Graph& g, std::map<std::size_t, std::size_t>& disb_degree) {
     std::size_t nv     = g.number_of_nodes();
