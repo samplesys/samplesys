@@ -1,7 +1,7 @@
 #ifndef ANALYSIS_LINEAR_H
 #define ANALYSIS_LINEAR_H
 
-#include <armadillo>
+#include "3_party/armadillo/armadillo"
 #include <iostream>
 
 #include "graph/DirectedGraph.h"

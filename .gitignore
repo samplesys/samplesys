@@ -9,15 +9,15 @@
 *.pch
 
 ## compiled dynamic libraries
-*.so
+# *.so
 *.dylib
-*.dll
+# *.dll
 
 ## compiled static libraries
 *.lai
 *.la
-*.a
-*.lib
+# *.a
+# *.lib
 
 ## executables
 *.exe
@@ -35,7 +35,10 @@ build/
 ## output files
 output/
 
-## Huge file
+## local dirs
+/3_party
+
+## Huge files
 
 # https://snap.stanford.edu/data/twitter-2010.html
 example/input/twitter-2010-ids.csv

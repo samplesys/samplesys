@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.20)
 project(sampler)
 
 set(CMAKE_CXX_STANDARD 17)
+set(3_PARTY_LIB_PATH ${PROJECT_SOURCE_DIR}/lib/3_party)
 
+# basic modules
 add_library(sampler SHARED
         src/utils/Random.cpp
         include/utils/Random.h
@@ -48,19 +50,11 @@ add_library(sampler SHARED
         include/engine/exploration_sampling/SnowBallSampler.h
         src/engine/exploration_sampling/ForestFireSampler.cpp
         include/engine/exploration_sampling/ForestFireSampler.h
-
         )
 
 target_include_directories(sampler PUBLIC
         include
         )
-
-add_executable(testSampler
-        example/testSampler.cpp
-        example/utils.cpp
-        example/utils.h
-        )
-target_link_libraries(testSampler sampler)
 
 add_library(backend SHARED
         src/graph/Graph.cpp
@@ -80,7 +74,22 @@ target_include_directories(backend PUBLIC
         include
         )
 
-target_link_libraries(backend PUBLIC -larmadillo)
+target_link_libraries(backend PRIVATE
+        ${3_PARTY_LIB_PATH}/libarmadillo.so
+        ${3_PARTY_LIB_PATH}/libopenblas.a
+        ${3_PARTY_LIB_PATH}/liblapack.a
+        ${3_PARTY_LIB_PATH}/libarpack_Linux.a
+        ${3_PARTY_LIB_PATH}/libsuperlu.a
+        pthread
+        )
+
+# functional tests
+add_executable(testSampler
+        example/testSampler.cpp
+        example/utils.cpp
+        example/utils.h
+        )
+target_link_libraries(testSampler sampler)
 
 add_executable(testAnalysis
         example/testAnalysis.cpp
@@ -95,11 +104,11 @@ add_executable(testGraphStream
         )
 target_link_libraries(testGraphStream sampler)
 
-find_package(benchmark REQUIRED)
+# Google benchmark tests
 file(GLOB BM_TESTS ${CMAKE_SOURCE_DIR}/test/*.cpp)
 foreach(bm_test_name ${BM_TESTS})
         STRING(REGEX REPLACE "/.*/test/" "" target_name ${bm_test_name})
         STRING(REGEX REPLACE ".cpp" "" target_name ${target_name})
         add_executable(${target_name} ${bm_test_name})
-        target_link_libraries(${target_name} benchmark::benchmark sampler)
+        target_link_libraries(${target_name} ${3_PARTY_LIB_PATH}/libbenchmark.a sampler pthread)
 endforeach()

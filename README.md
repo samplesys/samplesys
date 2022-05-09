@@ -34,10 +34,26 @@ docker run --rm -it samplesys
 ```
 
 ### Third-party
+Dependencies
+Building Samplesys requires the following to be installed:
+* Armadillo-10.8.0
+* arpack
+* LAPACK 3.10.1
+* OpenBLAS 0.3.20
+* SuperLU 5.3.0
+* Benchmark 1.6.1
+
 #### Armadillo
+Armadillo is a high quality C++ library for linear algebra and scientific computing, aiming towards a good balance between speed and 
+ease of use.The library can be used for machine learning, pattern recognition, computer vision,signal processing, 
+bioinformatics, statistics, finance, etc.
+
+
 Download link: http://arma.sourceforge.net/
 
 #### Google Benchmark
+A library to benchmark code snippets, similar to unit tests.
+
 Download link: https://github.com/google/benchmark
 
 

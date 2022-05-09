@@ -1,4 +1,4 @@
-#include "benchmark/benchmark.h"
+#include "3_party/benchmark/benchmark.h"
 #include "engine/edge_sampling/HybridNodeEdgeSampler.h"
 #include "engine/edge_sampling/RandomEdgeSampler.h"
 #include "engine/edge_sampling/RandomEdgeSamplerWithInduction.h"
@@ -25,7 +25,7 @@ static void BM_hello(benchmark::State& state) {
         ans = f(graph);
     }
 }
-// BENCHMARK(BM_hello);
+BENCHMARK(BM_hello);
 
 /**
  * Node Sample Benchmark test

@@ -1,9 +1,9 @@
 #ifndef ANALYSIS_BACKEND_H
 #define ANALYSIS_BACKEND_H
 
-#include "cluster.h"
-#include "cncomp.h"
-#include "degree.h"
-#include "linear.h"
+#include "analysis/cluster.h"
+#include "analysis/cncomp.h"
+#include "analysis/degree.h"
+#include "analysis/linear.h"
 
 #endif
