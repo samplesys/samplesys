@@ -37,7 +37,7 @@ output/
 
 ## local dirs
 /3_party
-
+/archive
 ## Huge files
 
 # https://snap.stanford.edu/data/twitter-2010.html

@@ -6,6 +6,7 @@
 
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"
+using namespace arma;
 
 namespace Backend {
 

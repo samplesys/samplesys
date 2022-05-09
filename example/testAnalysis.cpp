@@ -1,4 +1,4 @@
-#include <armadillo>
+#include "3_party/armadillo/armadillo"
 #include <chrono>
 #include <functional>
 #include <iostream>

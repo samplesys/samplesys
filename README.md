@@ -36,12 +36,15 @@ docker run --rm -it samplesys
 ### Third-party
 Dependencies
 Building Samplesys requires the following to be installed:
-* Armadillo-10.8.0
-* arpack
-* LAPACK 3.10.1
-* OpenBLAS 0.3.20
-* SuperLU 5.3.0
-* Benchmark 1.6.1
+* gfortran: `sudo ppt install gfortran`
+
+These are third-party packages installed in the project:
+* Armadillo (installed when building)
+* arpack (lib/3_party)
+* LAPACK 3.10.1 (lib/3_party)
+* OpenBLAS 0.3.20 (lib/3_party)
+* SuperLU 5.3.0 (lib/3_party)
+* Benchmark 1.6.1 (lib/3_party)
 
 #### Armadillo
 Armadillo is a high quality C++ library for linear algebra and scientific computing, aiming towards a good balance between speed and 

@@ -1,7 +1,4 @@
-#include <algorithm>
-#include <cstring>
-#include <queue>
-
+#include "analysis/cncomp.h"
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"
 using namespace std;

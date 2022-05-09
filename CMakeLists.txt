@@ -75,12 +75,13 @@ target_include_directories(backend PUBLIC
         )
 
 target_link_libraries(backend PRIVATE
-        ${3_PARTY_LIB_PATH}/libarmadillo.so
         ${3_PARTY_LIB_PATH}/libopenblas.a
         ${3_PARTY_LIB_PATH}/liblapack.a
+        ${3_PARTY_LIB_PATH}/libblas.a
         ${3_PARTY_LIB_PATH}/libarpack_Linux.a
         ${3_PARTY_LIB_PATH}/libsuperlu.a
         pthread
+        gfortran
         )
 
 # functional tests

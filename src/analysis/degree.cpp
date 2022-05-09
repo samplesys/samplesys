@@ -1,4 +1,4 @@
-#include <vector>
+#include "analysis/degree.h"
 using namespace std;
 
 namespace Backend {
