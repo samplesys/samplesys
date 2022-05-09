@@ -66,7 +66,7 @@ add_library(backend SHARED
         src/utils/GraphStream.cpp
         include/utils/GraphStream.h
         
-        src/analysis/Backend.cpp
+        src/analysis/backend.cpp
         include/analysis/Backend.h
         )
 
