@@ -1,10 +1,10 @@
 #ifndef ANALYSIS_CNCOMP_H
 #define ANALYSIS_CNCOMP_H
 
-#include <vector>
 #include <algorithm>
 #include <cstring>
 #include <queue>
+#include <vector>
 
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"

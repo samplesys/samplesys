@@ -1,11 +1,12 @@
 #ifndef ANALYSIS_LINEAR_H
 #define ANALYSIS_LINEAR_H
 
-#include "3_party/armadillo/armadillo"
 #include <iostream>
 
+#include "3_party/armadillo/armadillo"
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"
+
 using namespace arma;
 
 namespace Backend {

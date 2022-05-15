@@ -1,9 +1,8 @@
-#include "3_party/armadillo/armadillo"
 #include <chrono>
-#include <functional>
 #include <iostream>
 #include <map>
 
+#include "3_party/armadillo/armadillo"
 #include "analysis/Backend.h"
 #include "utils.h"
 #include "utils/GraphStream.h"

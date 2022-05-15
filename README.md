@@ -26,13 +26,6 @@ cmake ..
 make
 ```
 
-### docker
-
-```shell
-docker build -t samplesys --progress plain .
-docker run --rm -it samplesys
-```
-
 ### Third-party
 Dependencies
 Building Samplesys requires the following to be installed:
@@ -96,36 +89,47 @@ samplesys accepts CSR formatted network as input. The toolkit `gen` can convert 
 
 ### Quick-Start
 
-We use _random node sampling_ as an example.
+[//]: # (We use _random node sampling_ as an example.)
 
-```shell
-./samplesys -sample -rn -input data/blogcatalog.bin -percent 0.5
-```
+[//]: # (```shell)
 
-According to the above command, samplesys executes random node sampling method and generate subgraph for network. The output file is formatted in form of edge list in `output/sample.txt`.
+[//]: # (./samplesys -sample -rn -input data/blogcatalog.bin -percent 0.5)
 
-**General Settings**
+[//]: # (```)
 
-* `-input` Input CSR formatted network dataset.
-* `-output` Output sampled network in form of edge list, `output/sample.txt` in default.
-* `-directed` Network is directed, otherwise the network is undirected.
-* `-sample`, `-analysis` Choose the action to be done with graph.
-* `-rn`,`-rdn`,`prn` Choose node based sampling methods. Each corresponds to random node,.
-* `re`,`rne`,`hrne`,`ties`,`pies` Choose edge based sampling methods. Each corresponds to 
-* `dfs`,`bfs`,`sb`,`ff` Choose exploration based sampling methods. Each corresponds to 
-* `-percent` Ratio of sample towards the origin network.
-* `-debug` Print debug message.
+[//]: # (According to the above command, samplesys executes random node sampling method and generate subgraph for network. The output file is formatted in form of edge list in `output/sample.txt`.)
 
-**Model-Specific Options**
+[//]: # (**General Settings**)
 
-- `-hybp` Ratio of algorithm A used in HRNE sampling methods.
-- `-start` Specify start node for exploration based sampling methods.
-- `-maxneighbor` Number of max neighbors chosen in Snow Ball sampling methods.
-- `forward` Probability of expansion in Forest Fire sampling methods.
+[//]: # (* `-input` Input CSR formatted network dataset.)
+
+[//]: # (* `-output` Output sampled network in form of edge list, `output/sample.txt` in default.)
+
+[//]: # (* `-directed` Network is directed, otherwise the network is undirected.)
+
+[//]: # (* `-sample`, `-analysis` Choose the action to be done with graph.)
+
+[//]: # (* `-rn`,`-rdn`,`prn` Choose node based sampling methods. Each corresponds to random node,.)
+
+[//]: # (* `re`,`rne`,`hrne`,`ties`,`pies` Choose edge based sampling methods. Each corresponds to )
+
+[//]: # (* `dfs`,`bfs`,`sb`,`ff` Choose exploration based sampling methods. Each corresponds to )
+
+[//]: # (* `-percent` Ratio of sample towards the origin network.)
+
+[//]: # (* `-debug` Print debug message.)
+
+[//]: # (**Model-Specific Options**)
+
+[//]: # (- `-hybp` Ratio of algorithm A used in HRNE sampling methods.)
+
+[//]: # (- `-start` Specify start node for exploration based sampling methods.)
+
+[//]: # (- `-maxneighbor` Number of max neighbors chosen in Snow Ball sampling methods.)
+
+[//]: # (- `forward` Probability of expansion in Forest Fire sampling methods.)
 
 ---
-
-ABANDONED
 
 ## Evaluation
 
@@ -134,7 +138,7 @@ The evaluation is conducted on a server with 24-core Xeon CPU and 96GB of memory
 ### Random Walk Generating
 
 | Time(s)     | **Deepwalk** | **Node2vec** | **Metapath2vec** | **Edge2vec** | **Fairwalk** |
-| ----------- | ------------ | ------------ | ---------------- | ------------ | ------------ |
+|-------------|--------------|--------------|------------------|--------------|--------------|
 | BlogCatalog | 0.07         | 0.20         | 0.16             | 0.29         | 0.33         |
 | Amazon      | 1.83         | 4.71         | 3.97             | 5.91         | 6.31         |
 | YouTube     | 13.16        | 31.34        | 22.33            | 38.23        | 43.11        |
@@ -142,7 +146,7 @@ The evaluation is conducted on a server with 24-core Xeon CPU and 96GB of memory
 ### Embedding Training
 
 | Dataset           | BlogCatalog | Amazon | YouTube |
-| ----------------- | ----------- | ------ | ------- |
+|-------------------|-------------|--------|---------|
 | Traininng Time(s) | 10.03       | 437.13 | 1512.99 |
 
 ### Accuracy Evaluation
@@ -150,7 +154,7 @@ The evaluation is conducted on a server with 24-core Xeon CPU and 96GB of memory
 The accuracy of the embedding is evaluated on BlogCatalog with multi-label node classification task. After the node embedding is acquired, we input the embedding into a classifier and utilize node labels of different proportions as training data to test the accuracy of the inference of remaining node labels.
 
 | Train Ratio | 0.1   | 0.2   | 0.3   | 0.4   | 0.5   | 0.6   | 0.7   | 0.8   | 0.9   |
-| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+|-------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 | Micro-F1    | 0.346 | 0.364 | 0.375 | 0.379 | 0.379 | 0.382 | 0.396 | 0.401 | 0.399 |
 | Macro-F1    | 0.181 | 0.213 | 0.227 | 0.238 | 0.245 | 0.253 | 0.257 | 0.254 | 0.256 |
 
