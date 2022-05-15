@@ -20,4 +20,5 @@ jobs:
       - uses: DoozyX/clang-format-lint-action@v0.13
         with:
           source: 'example include src'
+          exclude: 'include/3_party'
           clangFormatVersion: 13

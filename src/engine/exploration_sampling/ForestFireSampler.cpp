@@ -45,19 +45,19 @@ vector<pair<size_t, size_t>> ForestFireSampler::_sample(const DirectedGraph* g) 
             source = random.randint(g->number_of_nodes());
         }
 
-        // sample the node when pop out
+        // sample the node when popping out
         tinder.push(source);
 
         // set a fire from source
         while (current_sampled_nodes < number_of_nodes) {
             if (tinder.empty()) {
-                if (visited_nodes.empty()) {
-                    // the fire went out
-                    break;
-                }
-                for (size_t i = 0; i < restart_hop_size && i < tinder.size(); ++i) {
+                for (size_t i = 0, m = min(restart_hop_size, visited_nodes.size()); i < m; ++i) {
                     tinder.push(visited_nodes.front());
                     visited_nodes.pop();
+                }
+                if (tinder.empty()) {
+                    // the fire went out, need to select a new source
+                    break;
                 }
             }
             size_t i = tinder.front();
@@ -124,19 +124,19 @@ vector<pair<size_t, size_t>> ForestFireSampler::_sample(const UndirectedGraph* g
             source = random.randint(g->number_of_nodes());
         }
 
-        // sample the node when pop out
+        // sample the node when popping out
         tinder.push(source);
 
         // set a fire from source
         while (current_sampled_nodes < number_of_nodes) {
             if (tinder.empty()) {
-                if (visited_nodes.empty()) {
-                    // the fire went out
-                    break;
-                }
-                for (size_t i = 0; i < restart_hop_size && i < tinder.size(); ++i) {
+                for (size_t i = 0, m = min(restart_hop_size, visited_nodes.size()); i < m; ++i) {
                     tinder.push(visited_nodes.front());
                     visited_nodes.pop();
+                }
+                if (tinder.empty()) {
+                    // the fire went out, need to select a new source
+                    break;
                 }
             }
             size_t i = tinder.front();

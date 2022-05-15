@@ -1,4 +1,5 @@
 #include "analysis/cncomp.h"
+
 using namespace std;
 
 namespace Backend {
