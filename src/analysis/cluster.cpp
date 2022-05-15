@@ -93,11 +93,4 @@ void get_cluster_coef(const Graph &g, double *cluster_coef) {
     if (ptr2 != nullptr) Backend::_get_cluster_coef(*ptr2, cluster_coef);
 }
 
-void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func_map) {
-    auto ptr1 = dynamic_cast<const DirectedGraph *>(&g);
-    if (ptr1 != nullptr) Backend::_get_hop_plot(*ptr1, nbrhd_func_map);
-    auto ptr2 = dynamic_cast<const UndirectedGraph *>(&g);
-    if (ptr2 != nullptr) Backend::_get_hop_plot(*ptr2, nbrhd_func_map);
-}
-
 }  // namespace Backend

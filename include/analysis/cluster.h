@@ -2,15 +2,14 @@
 #define ANALYSIS_CLUSTER_H
 
 #include <algorithm>
-#include <vector>
-#include <map>
 #include <exception>
+#include <map>
+#include <vector>
 
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"
-#include "utils/hyperloglog.hpp"
-
 #include "omp.h"
+#include "utils/hyperloglog.hpp"
 namespace Backend {
 /**
  * return undirected and unweighted triangles
@@ -35,9 +34,7 @@ template <class Graph>
 void get_transtivity(const Graph &g, double &transtivity);
 
 template <class Graph>
-void _get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func_map);
 void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func_map);
-
 
 /**
  *  Implementation
@@ -75,7 +72,7 @@ void get_transtivity(const Graph &g, double &transtivity) {
     std::size_t  nv         = g.number_of_nodes();
     std::size_t *nnbr       = (std::size_t *)(malloc(nv * sizeof(std::size_t)));
     std::size_t *nTriangles = (std::size_t *)(malloc(nv * sizeof(std::size_t)));
-    std::size_t       triangles = 0, triads = 0;
+    std::size_t  triangles = 0, triads = 0;
     _triangles(g, nnbr, nTriangles);
     for (std::size_t i = 0; i < nv; i++) {
         triangles += nTriangles[i];
@@ -90,47 +87,47 @@ void get_transtivity(const Graph &g, double &transtivity) {
 }
 
 template <class Graph>
-void _get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func_map) {
-    // if(!std::is_same<g, *DirectedGraph>::value && !std::is_same<g, *UndirectedGraph>::value) 
-    //     throw std::invalid_argument("argument g must be graph");
-    std::size_t t = 0;
-    std::size_t nv = g.number_of_nodes();
-    std::size_t ne = g.number_of_edges();
+void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func_map) {
+    std::size_t t      = 0;
+    std::size_t nv     = g.number_of_nodes();
+    std::size_t ne     = g.number_of_edges();
     const auto &column = g.get_columns();
     const auto &offset = g.get_offsets();
 
-    bool changed = true;
+    bool             changed = true;
     hll::HyperLogLog new_hlls[nv];
     hll::HyperLogLog old_hlls[nv];
     nbrhd_func_map.clear();
-    for(std::size_t i=0;i<nv;i++) new_hlls[i] = hll::HyperLogLog(12);
-    while(changed) {
-        changed = false;
+    for (std::size_t i = 0; i < nv; i++)
+        new_hlls[i] = hll::HyperLogLog(12);
+    while (changed) {
+        changed           = false;
         nbrhd_func_map[t] = 0;
-        for(std::size_t i=0;i<nv;i++){
+#pragma omp parallel for
+        for (std::size_t i = 0; i < nv; i++) {
             nbrhd_func_map[t] += new_hlls[i].estimate();
             old_hlls[i] = new_hlls[i];
         }
-        for(std::size_t vid=0;vid<nv;vid++) {
-            for(std::size_t p=offset[vid];p<offset[vid+1];p++){
+#pragma omp parallel for
+        for (std::size_t vid = 0; vid < nv; vid++) {
+            for (std::size_t p = offset[vid]; p < offset[vid + 1]; p++) {
                 std::size_t uid = column[vid];
-                changed = new_hlls[vid].merge(old_hlls[uid]) || changed;
+                changed         = new_hlls[vid].merge(old_hlls[uid]) || changed;
             }
         }
         t++;
     }
     std::size_t precnt = 0;
-    for(auto it = nbrhd_func_map.begin();it!=nbrhd_func_map.end();it++) {
-        if(it==nbrhd_func_map.begin()) {
+    for (auto it = nbrhd_func_map.begin(); it != nbrhd_func_map.end(); it++) {
+        if (it == nbrhd_func_map.begin()) {
             precnt = it->second;
             continue;
         }
-        std::size_t nowcnt=it->second;
-        it->second=nowcnt-precnt;
-        precnt=nowcnt;
+        std::size_t nowcnt = it->second;
+        it->second         = nowcnt - precnt;
+        precnt             = nowcnt;
     }
 }
-
 
 }  // namespace Backend
 

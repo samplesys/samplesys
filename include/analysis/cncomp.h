@@ -1,11 +1,12 @@
 #ifndef ANALYSIS_CNCOMP_H
 #define ANALYSIS_CNCOMP_H
 
-#include <vector>
 #include <algorithm>
 #include <cstring>
-#include <queue>
+#include <exception>
 #include <map>
+#include <queue>
+#include <vector>
 
 #include "graph/DirectedGraph.h"
 #include "graph/UndirectedGraph.h"
@@ -26,7 +27,7 @@ void get_wccs_distb(const Graph &g, std::map<std::size_t, std::size_t> &wccs_dis
  */
 void get_sccs_distb(const DirectedGraph &g, std::map<std::size_t, std::size_t> &sccs_distb);
 
-void get_sccs(const DirectedGraph &g, std::vector<std::vector<std::size_t>> &sccs);
+void get_sccs(const Graph &g, std::vector<std::vector<std::size_t>> &sccs);
 
 /**
  * Implemention

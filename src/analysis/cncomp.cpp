@@ -96,17 +96,18 @@ void get_wccs_distb(const Graph &g, map<size_t, size_t> &wccs_distb) {
     vector<vector<size_t>> wccs;
     Backend::get_wccs(g, wccs);
     wccs_distb.clear();
-    for(size_t i=0;i<wccs.size();i++) wccs_distb[wccs[i].size()]++;
+    for (size_t i = 0; i < wccs.size(); i++)
+        wccs_distb[wccs[i].size()]++;
 }
 
-void sccTarjan(const DirectedGraph *g, size_t st, size_t *dfn, size_t *low, size_t *belong,
+void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size_t *belong,
                size_t &dfs_clock, vector<vector<size_t>> &sccs) {
-    size_t      nv = g->number_of_nodes();
+    size_t      nv = g.number_of_nodes();
     size_t      tp = 0, top = 0;
     size_t      nowi, nxti;
     size_t      sta[nv];
-    const auto &offset = g->get_offsets();
-    const auto &edge   = g->get_edges();
+    const auto &offset = g.get_offsets();
+    const auto &edge   = g.get_edges();
     struct dsu {
         size_t nowi;
         size_t edgei;
@@ -147,26 +148,22 @@ void sccTarjan(const DirectedGraph *g, size_t st, size_t *dfn, size_t *low, size
     }
 }
 
-void get_sccs(const DirectedGraph &g, vector<vector<size_t>> &sccs) {
+void get_sccs(const Graph &g, vector<vector<size_t>> &sccs) {
+    auto gptr = dynamic_cast<const DirectedGraph *>(&g);
+    if (gptr == nullptr) throw std::invalid_argument("must be directed graph");
+
     size_t  nv        = g.number_of_nodes();
     size_t *dfn       = reinterpret_cast<size_t *>(malloc(nv * sizeof(size_t)));
     size_t *low       = reinterpret_cast<size_t *>(malloc(nv * sizeof(size_t)));
     size_t *belong    = reinterpret_cast<size_t *>(malloc(nv * sizeof(size_t)));
     size_t  dfs_clock = 0;
-    auto gptr = &g;
 
     for (size_t i = 0; i < nv; i++)
         dfn[i] = low[i] = belong[i] = 0;
 
     for (size_t i = 0; i < nv; i++)
-        if (!dfn[i]) Backend::sccTarjan(gptr, i, dfn, low, belong, dfs_clock, sccs);
+        if (!dfn[i]) Backend::sccTarjan(*gptr, i, dfn, low, belong, dfs_clock, sccs);
 
-    printf("%ld SCCs:\n", sccs.size());
-    for (auto scc : sccs) {
-        for (auto x : scc)
-            printf("%zd ", x);
-        printf("\n");
-    }
     delete dfn;
     delete low;
     delete belong;
@@ -176,7 +173,8 @@ void get_sccs_distb(const DirectedGraph &g, map<size_t, size_t> &sccs_distb) {
     vector<vector<size_t>> sccs;
     Backend::get_wccs(g, sccs);
     sccs_distb.clear();
-    for(size_t i=0;i<sccs.size();i++) sccs_distb[sccs[i].size()]++;
+    for (size_t i = 0; i < sccs.size(); i++)
+        sccs_distb[sccs[i].size()]++;
 }
 
 }  // namespace Backend

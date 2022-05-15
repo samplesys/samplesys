@@ -1,24 +1,25 @@
 #ifndef ANALYSIS_UTILS_HYPERLOGLOG_HPP
 #define ANALYSIS_UTILS_HYPERLOGLOG_HPP
 
-#include <vector>
-#include <cmath>
-#include <sstream>
-#include <exception>
 #include <algorithm>
+#include <cmath>
+#include <exception>
+#include <sstream>
+#include <vector>
+
 #include "utils/murmurhash3.h"
 
 #define HLL_HASH_SEED 313
 
 #if defined(__has_builtin) && (defined(__GNUC__) || defined(__clang__))
 
-#define _GET_CLZ(x, b) (uint8_t)std::min(b, ::__builtin_clz(x)) + 1
+#define _GET_CLZ(x, b) (uint8_t) std::min(b, ::__builtin_clz(x)) + 1
 
 #else
 
 inline uint8_t _get_leading_zero_count(uint32_t x, uint8_t b) {
 
-#if defined (_MSC_VER)
+#if defined(_MSC_VER)
     uint32_t leading_zero_len = 32;
     ::_BitScanReverse(&leading_zero_len, x);
     --leading_zero_len;
@@ -31,22 +32,20 @@ inline uint8_t _get_leading_zero_count(uint32_t x, uint8_t b) {
     }
     return v;
 #endif
-
 }
 #define _GET_CLZ(x, b) _get_leading_zero_count(x, b)
 #endif /* defined(__GNUC__) */
 
 namespace hll {
 
-static const double pow_2_32 = 4294967296.0; ///< 2^32
-static const double neg_pow_2_32 = -4294967296.0; ///< -(2^32)
+static const double pow_2_32     = 4294967296.0;   ///< 2^32
+static const double neg_pow_2_32 = -4294967296.0;  ///< -(2^32)
 
 /** @class HyperLogLog
  *  @brief Implement of 'HyperLogLog' estimate cardinality algorithm
  */
 class HyperLogLog {
-public:
-
+   public:
     /**
      * Constructor
      *
@@ -55,8 +54,7 @@ public:
      *
      * @exception std::invalid_argument the argument is out of range.
      */
-    HyperLogLog(uint8_t b = 4): b_(b), m_(1 << b), M_(m_, 0) {
-
+    HyperLogLog(uint8_t b = 4) : b_(b), m_(1 << b), M_(m_, 0) {
         if (b < 4 || 30 < b) {
             throw std::invalid_argument("bit width must be in the range [4,30]");
         }
@@ -87,9 +85,9 @@ public:
      */
     void add(const char* str, uint32_t len) {
         uint32_t hash;
-        MurmurHash3_x86_32(str, len, HLL_HASH_SEED, (void*) &hash);
-        uint32_t index = hash & ((1 <<  b_) - 1);
-        uint8_t rank = _GET_CLZ((hash << b_), 32 - b_);
+        MurmurHash3_x86_32(str, len, HLL_HASH_SEED, (void*)&hash);
+        uint32_t index = hash & ((1 << b_) - 1);
+        uint8_t  rank  = _GET_CLZ((hash << b_), 32 - b_);
         if (rank > M_[index]) {
             M_[index] = rank;
         }
@@ -106,7 +104,7 @@ public:
         for (uint32_t i = 0; i < m_; i++) {
             sum += 1.0 / (1 << M_[i]);
         }
-        estimate = alphaMM_ / sum; // E in the original paper
+        estimate = alphaMM_ / sum;  // E in the original paper
         if (estimate <= 2.5 * m_) {
             uint32_t zeros = 0;
             for (uint32_t i = 0; i < m_; i++) {
@@ -115,7 +113,7 @@ public:
                 }
             }
             if (zeros != 0) {
-                estimate = m_ * std::log(static_cast<double>(m_)/ zeros);
+                estimate = m_ * std::log(static_cast<double>(m_) / zeros);
             }
         } else if (estimate > (1.0 / 30.0) * pow_2_32) {
             estimate = neg_pow_2_32 * log(1.0 - (estimate / pow_2_32));
@@ -141,7 +139,7 @@ public:
         for (uint32_t r = 0; r < m_; ++r) {
             if (M_[r] < other.M_[r]) {
                 has_change = true;
-                M_[r] = other.M_[r];
+                M_[r]      = other.M_[r];
                 // M_[r] |= other.M_[r];
             }
         }
@@ -151,18 +149,14 @@ public:
     /**
      * Clears all internal registers.
      */
-    void clear() {
-        std::fill(M_.begin(), M_.end(), 0);
-    }
+    void clear() { std::fill(M_.begin(), M_.end(), 0); }
 
     /**
      * Returns size of register.
      *
      * @return Register size
      */
-    uint32_t registerSize() const {
-        return m_;
-    }
+    uint32_t registerSize() const { return m_; }
 
     /**
      * Exchanges the content of the instance
@@ -186,7 +180,7 @@ public:
     void dump(std::ostream& os) {
         os.write((char*)&b_, sizeof(b_));
         os.write((char*)&M_[0], sizeof(M_[0]) * M_.size());
-        if(os.fail()){
+        if (os.fail()) {
             throw std::runtime_error("Failed to dump");
         }
     }
@@ -203,19 +197,19 @@ public:
         is.read((char*)&b, sizeof(b));
         HyperLogLog tempHLL(b);
         is.read((char*)&(tempHLL.M_[0]), sizeof(M_[0]) * tempHLL.m_);
-        if(is.fail()){
-           throw std::runtime_error("Failed to restore");
+        if (is.fail()) {
+            throw std::runtime_error("Failed to restore");
         }
         swap(tempHLL);
     }
 
-// protected:
-    uint8_t b_; ///< register bit width
-    uint32_t m_; ///< register size
-    double alphaMM_; ///< alpha * m^2
-    std::vector<uint8_t> M_; ///< registers
+    // protected:
+    uint8_t              b_;        ///< register bit width
+    uint32_t             m_;        ///< register size
+    double               alphaMM_;  ///< alpha * m^2
+    std::vector<uint8_t> M_;        ///< registers
 };
 
-} // namespace hll
+}  // namespace hll
 
-#endif // !defined(HYPERLOGLOG_HPP)
+#endif  // !defined(HYPERLOGLOG_HPP)
