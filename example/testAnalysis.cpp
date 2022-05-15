@@ -58,6 +58,14 @@ void cmdInp(int argc, char **argv) {
     duration = duration_cast<microseconds>(stop - start);
     cout << "Clustering Analysis Time: " << duration.count() << " microseconds" << endl;
 
+    // hot-plot neighborhood function
+    start                = high_resolution_clock::now();
+    map<size_t, size_t>nbrhd_func_map;
+    Backend::get_hop_plot(*graph, nbrhd_func_map);
+    stop     = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(stop - start);
+    cout << "Hot-plot Analysis Time: " << duration.count() << " microseconds" << endl;
+
     start = high_resolution_clock::now();
     sp_mat spr_mat;
     Backend::get_sparse_mat(*graph, spr_mat);
@@ -80,11 +88,10 @@ void cmdInp(int argc, char **argv) {
 
     start = high_resolution_clock::now();
     // vector<vector<size_t>> *sccs = new vector<vector<size_t>>;
-    vector<vector<size_t>> *wccs = new vector<vector<size_t>>;
+    vector<vector<size_t>> wccs;
     // Backend::get_sccs(*graph, sccs);
     Backend::get_wccs(*graph, wccs);
     // printf("%Total zd weakly connected component.\n", wccs->size());
-    delete wccs;
     stop     = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << "Connected Component Analysis Time: " << duration.count() << " microseconds" << endl;
