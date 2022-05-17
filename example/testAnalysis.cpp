@@ -28,6 +28,7 @@ void test_degree(std::shared_ptr<Graph> graph) {
     double              avg_degree;
     double              asso_coef;
     auto                start = high_resolution_clock::now();
+
     Backend::get_degree_avg(*graph, avg_degree);
     Backend::get_degree_disb(*graph, deg_disb);
     if (t_origin) {
