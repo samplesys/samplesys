@@ -20,12 +20,13 @@ void _triangles(const Graph &g, std::size_t *nnbr, std::size_t *nTriangles);
 /**
  * Return number of directed triangles in (i,k,j)
  */
-size_t _tc(std::vector<std::size_t> &ip, std::vector<std::size_t> &is, std::vector<std::size_t> &jp,
-           std::vector<std::size_t> &js);
+std::size_t _tc(std::vector<std::size_t> &ip, std::vector<std::size_t> &is,
+                std::vector<std::size_t> &jp, std::vector<std::size_t> &js);
 
 /*
  * local clustering coefficient
  */
+void get_cluster_coef_distb(const Graph &g, std::map<double, std::size_t> &cluster_coef_distb);
 void get_cluster_coef(const Graph &g, double *cluster_coef);
 void _get_cluster_coef(const DirectedGraph &g, double *cluster_coef);
 void _get_cluster_coef(const UndirectedGraph &g, double *cluster_coef);
@@ -111,7 +112,7 @@ void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func
 #pragma omp parallel for
         for (std::size_t vid = 0; vid < nv; vid++) {
             for (std::size_t p = offset[vid]; p < offset[vid + 1]; p++) {
-                std::size_t uid = column[vid];
+                std::size_t uid = column[p];
                 changed         = new_hlls[vid].merge(old_hlls[uid]) || changed;
             }
         }

@@ -170,7 +170,10 @@ void get_sccs(const Graph &g, vector<vector<size_t>> &sccs) {
     delete belong;
 }
 
-void get_sccs_distb(const DirectedGraph &g, map<size_t, size_t> &sccs_distb) {
+void get_sccs_distb(const Graph &g, map<size_t, size_t> &sccs_distb) {
+    auto gptr = dynamic_cast<const DirectedGraph *>(&g);
+    if (gptr == nullptr) throw std::invalid_argument("must be directed graph");
+
     vector<vector<size_t>> sccs;
     Backend::get_wccs(g, sccs);
     sccs_distb.clear();

@@ -4,9 +4,6 @@
 
 #include "utils.h"
 
-#include <cstdio>
-#include <cstring>
-
 using namespace std;
 
 void printGraph(const vector<pair<size_t, size_t>> &edges, const string &file) {
