@@ -31,7 +31,6 @@ vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const DirectedGraph* g) 
             node_is_sampled[source] = true;
             ++current_sampled_nodes;
         }
-        
         source = columns[offsets[source] + random.randint(degrees[source])];
     }
 

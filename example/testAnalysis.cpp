@@ -1,8 +1,8 @@
 #include <chrono>
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <typeinfo>
-#include <cstring>
 
 #include "3_party/armadillo/armadillo"
 #include "analysis/Backend.h"
@@ -19,14 +19,13 @@ void test_Analysis(std::shared_ptr<Graph> graph) {
     double              avg_degree;
     double              asso_coef;
 
-
     // Degree distribution and assortativity
     auto start = high_resolution_clock::now();
     Backend::get_degree_avg(*graph, avg_degree);
     printf("Average degree: %lf\n", avg_degree);
     Backend::get_degree_disb(*graph, deg_disb);
     // printf("Degree distribution:\nDegree\tCount\n");
-    // for (auto x : deg_disb) 
+    // for (auto x : deg_disb)
     //     printf("%zd\t%zd\n", x.first, x.second);
     Backend::get_degree_asso(*graph, asso_coef);
     printf("Degree assortativity coefficient: %lf\n", asso_coef);
@@ -35,7 +34,6 @@ void test_Analysis(std::shared_ptr<Graph> graph) {
     auto duration = duration_cast<microseconds>(stop - start);
     cout << "Degree Analysis Time"
          << ": " << duration.count() << " microseconds" << endl;
-
 
     // Clustering coefficient
     start                = high_resolution_clock::now();
@@ -50,22 +48,20 @@ void test_Analysis(std::shared_ptr<Graph> graph) {
     duration = duration_cast<microseconds>(stop - start);
     cout << "Clustering Analysis Time: " << duration.count() << " microseconds" << endl;
 
-
     // Hot-plot neighborhood
-    start                = high_resolution_clock::now();
-    map<size_t, size_t>nbrhd_func_map;
+    start = high_resolution_clock::now();
+    map<size_t, size_t> nbrhd_func_map;
     Backend::get_hop_plot(*graph, nbrhd_func_map);
     stop     = high_resolution_clock::now();
     duration = duration_cast<microseconds>(stop - start);
     cout << "Hot-plot Analysis Time: " << duration.count() << " microseconds" << endl;
-
 
     // Eigen value and Singular value
     start = high_resolution_clock::now();
     sp_mat spr_mat;
     Backend::get_sparse_mat(*graph, spr_mat);
     size_t k = 4;
-    if(typeid(*graph)==typeid(UndirectedGraph)) {
+    if (typeid(*graph) == typeid(UndirectedGraph)) {
         vec eigval;
         mat eigvec;
         Backend::get_eigen(eigval, eigvec, spr_mat, k);
@@ -88,12 +84,11 @@ void test_Analysis(std::shared_ptr<Graph> graph) {
     duration = duration_cast<microseconds>(stop - start);
     cout << "Linear Analysis Time: " << duration.count() << " microseconds" << endl;
 
-
     // Connected component
     start = high_resolution_clock::now();
     vector<vector<size_t>> sccs;
     vector<vector<size_t>> wccs;
-    if(typeid(*graph)==typeid(DirectedGraph)) Backend::get_sccs(*graph, sccs);
+    if (typeid(*graph) == typeid(DirectedGraph)) Backend::get_sccs(*graph, sccs);
     Backend::get_wccs(*graph, wccs);
     // printf("Total %ld weakly connected component.\n", wccs.size());
     stop     = high_resolution_clock::now();
@@ -103,16 +98,14 @@ void test_Analysis(std::shared_ptr<Graph> graph) {
 
 void cmdInp(int argc, char **argv) {
     if (argc < 2) {
-        cout << "[usage]: " << argv[0]
-             << "path/to/input"
-             << "directed/undirected"
-             << endl;
+        cout << "[usage]: " << argv[0] << "path/to/input"
+             << "directed/undirected" << endl;
         exit(1);
     }
-    int    _argc = 0;
-    string input = argv[++_argc];
-    bool is_directed = false;
-    if(argc > 2) is_directed = (strcmp(argv[++_argc], "directed")==0 ? true : false);
+    int    _argc       = 0;
+    string input       = argv[++_argc];
+    bool   is_directed = false;
+    if (argc > 2) is_directed = (strcmp(argv[++_argc], "directed") == 0 ? true : false);
     auto graph = GraphStream::readText(input, is_directed);
     test_Analysis(graph);
 }
