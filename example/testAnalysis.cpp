@@ -169,8 +169,8 @@ void test_cncomp(std::shared_ptr<Graph> graph) {
 
 void cmdInp(int argc, char **argv) {
     if (argc < 2) {
-        cout << "[usage]: " << argv[0] << "path/to/input"
-             << "directed/undirected" << endl
+        cout << "[Usage]: " << argv[0] << " path/to/input"
+             << " directed/undirected" << endl
              << "[Options]: " << endl
              << "\t-degree\t\tDegree test." << endl
              << "\t-cluster\t\tClustring coeifficient test." << endl

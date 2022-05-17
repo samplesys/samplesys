@@ -28,12 +28,12 @@ int    is_directed;
 
 void cmdInp(int argc, char *argv[]) {
     if (argc < 4) {
-        std::cout << "[usage]: " << argv[0] << " path/to/input"
+        std::cout << "[Usage]: " << argv[0] << " path/to/input"
                   << " path/to/output" << endl
                   << "[Options]:" << endl
-                  << "\t-directed/undirected\t\t, default directed."
-                  << "\t-percent <num>\t\tPercent of graph to be sampled, default 0,1."
-                  << "\t-method\t\tSample method(rn/rdn/prn/re/ff), default \"rn\"" << endl;
+                  << "\t-directed/undirected, default directed." << endl
+                  << "\t-percent <num>\t\tPercent of graph to be sampled, default 0.1." << endl
+                  << "\t-method <name>\t\tSample method(rn/rdn/prn/re/ff), default \"rn\"" << endl;
         exit(1);
     }
     int _argc      = 0;

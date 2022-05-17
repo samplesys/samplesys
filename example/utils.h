@@ -17,10 +17,10 @@ void printGraph(const std::vector<std::pair<size_t, size_t>> &edges, const std::
 
 /* KS-test to measure the agreement between the two sampled distributions. */
 template <class data>
-void getKSStatsSort(data *x, data *y, int lenx, int leny, double &ks_stats);
+void getKSStatsSort(data *x, data *y, std::size_t lenx, std::size_t leny, double &ks_stats);
 
 template <class data>
-void getKSStats(data *x, data *y, int lenx, int leny, double &ks_stats);
+void getKSStats(data *x, data *y, std::size_t lenx, std::size_t leny, double &ks_stats);
 
 template <class data>
 void getKSStatsMap(const std::map<data, std::size_t> &distbx,
@@ -31,7 +31,7 @@ void getKSStatsMap(const std::map<data, std::size_t> &distbx,
  */
 
 template <class data>
-void getKSStatsSort(data *x, data *y, int lenx, int leny, double &ks_stats) {
+void getKSStatsSort(data *x, data *y, std::size_t lenx, std::size_t leny, double &ks_stats) {
     size_t px = 0;
     size_t py = 0;
     double t  = __DBL_MIN__;
@@ -45,7 +45,7 @@ void getKSStatsSort(data *x, data *y, int lenx, int leny, double &ks_stats) {
         double dy = ((double)py) / leny;
         double d  = fabs(dx - dy);
         if (d > ks_stats) ks_stats = d;
-        double new_t = min(x[px], y[py]);
+        double new_t = std::min(x[px], y[py]);
         if (new_t == t)
             break;
         else
@@ -64,9 +64,9 @@ void getKSStatsSort(data *x, data *y, int lenx, int leny, double &ks_stats) {
  * @param ks_stats ks-test statistic
  */
 template <class data>
-void getKSStats(data *x, data *y, int lenx, int leny, double &ks_stats) {
-    sort(x, x + lenx);
-    sort(y, y + leny);
+void getKSStats(data *x, data *y, std::size_t lenx, std::size_t leny, double &ks_stats) {
+    std::sort(x, x + lenx);
+    std::sort(y, y + leny);
     getKSStatsSort(x, y, lenx, leny, ks_stats);
 }
 
