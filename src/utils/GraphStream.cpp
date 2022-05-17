@@ -30,6 +30,41 @@ shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed) {
     }
 }
 
+std::shared_ptr<Graph> GraphStream::readTextCompact(const string &filename, bool directed) {
+    FILE *fp = fopen(filename.c_str(), "r");
+    if (!fp) {
+        printf("error %d: %s \n", errno, strerror(errno));
+        return nullptr;
+    }
+    auto   mapper          = map<size_t, size_t>();
+    size_t number_of_nodes = 0;
+    auto   adjList         = map<size_t, set<size_t>>();
+    size_t u, v;
+    while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+        auto it = mapper.find(u);
+        if (it != mapper.end()) {
+            u = it->second;
+        } else {
+            mapper.emplace(u, number_of_nodes);
+            u = number_of_nodes++;
+        }
+        it = mapper.find(v);
+        if (it != mapper.end()) {
+            v = it->second;
+        } else {
+            mapper.emplace(v, number_of_nodes);
+            v = number_of_nodes++;
+        }
+        adjList[u].insert(v);
+    }
+    fclose(fp);
+    if (directed) {
+        return make_shared<DirectedGraph>(adjList, number_of_nodes);
+    } else {
+        return make_shared<UndirectedGraph>(adjList, number_of_nodes);
+    }
+}
+
 void GraphStream::writeText(const string &filename, const shared_ptr<Graph> &g) {
     FILE *fp = fopen(filename.c_str(), "w");
 

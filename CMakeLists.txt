@@ -97,7 +97,6 @@ add_executable(testAnalysis
         example/utils.cpp
         example/utils.h
         )
-
 target_link_libraries(testAnalysis PUBLIC backend)
 
 add_executable(testGraphStream
