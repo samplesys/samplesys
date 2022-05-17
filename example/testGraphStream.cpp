@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     if (argc < 2) {
         cout << "[usage]: " << argv[0] << " path/to/input"
              << " path/to/output"
-             << " direct/undirected" << endl;
+             << " directed/undirected" << endl;
     }
     int    _argc = 0;
     string input = argv[++_argc];
@@ -22,8 +22,10 @@ int main(int argc, char **argv) {
     string graphType = argv[++_argc];
     cout << "graphType: " << graphType << endl;
 
-    auto graph = GraphStream::readText(input, graphType == "directed");
-    GraphStream::writeBinary(output, graph);
+    auto graph1 = GraphStream::readTextCompact(input, graphType == "directed");
+
+    auto graph2 = GraphStream::readText(input, graphType == "directed");
+    GraphStream::writeBinary(output, graph2);
 
     GraphStream::text_to_binary(input, output, graphType == "directed");
 }

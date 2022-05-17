@@ -50,7 +50,7 @@ add_library(sampler SHARED
         include/engine/exploration_sampling/SnowBallSampler.h
         src/engine/exploration_sampling/ForestFireSampler.cpp
         include/engine/exploration_sampling/ForestFireSampler.h
-        src/engine/exploration_sampling/RandomWalkSampler.cpp include/engine/exploration_sampling/RandomWalkSampler.h src/engine/exploration_sampling/RandomWalkWithRestartSampler.cpp include/engine/exploration_sampling/RandomWalkWithRestartSampler.h src/engine/exploration_sampling/RandomWalkWithJumpSampler.cpp include/engine/exploration_sampling/RandomWalkWithJumpSampler.h)
+        src/engine/exploration_sampling/RandomWalkSampler.cpp include/engine/exploration_sampling/RandomWalkSampler.h)
 
 target_include_directories(sampler PUBLIC
         include
@@ -97,7 +97,6 @@ add_executable(testAnalysis
         example/utils.cpp
         example/utils.h
         )
-
 target_link_libraries(testAnalysis PUBLIC backend)
 
 add_executable(testGraphStream
