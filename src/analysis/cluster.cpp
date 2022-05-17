@@ -58,7 +58,7 @@ void _get_cluster_coef(const DirectedGraph &g, double *cluster_coef) {
 #pragma omp parallel for
     for (size_t i = 0; i < nv; i++) {
         if (ndiTriangle[i] == 0)
-            cluster_coef = 0;
+            cluster_coef[i] = 0;
         else
             cluster_coef[i] =
                 ndiTriangle[i] / ((degreetot[i] * (degreetot[i] - 1) - 2 * degreebid[i]) * 2);
@@ -91,6 +91,14 @@ void get_cluster_coef(const Graph &g, double *cluster_coef) {
     if (ptr1 != nullptr) Backend::_get_cluster_coef(*ptr1, cluster_coef);
     auto ptr2 = dynamic_cast<const UndirectedGraph *>(&g);
     if (ptr2 != nullptr) Backend::_get_cluster_coef(*ptr2, cluster_coef);
+}
+
+void get_cluster_coef_distb(const Graph &g, map<double, size_t> &cluster_coef_distb) {
+    size_t  nv           = g.number_of_nodes();
+    double *cluster_coef = (double *)(malloc(nv * sizeof(double)));
+    get_cluster_coef(g, cluster_coef);
+    for (size_t i = 0; i < nv; i++)
+        cluster_coef_distb[cluster_coef[i]]++;
 }
 
 }  // namespace Backend
