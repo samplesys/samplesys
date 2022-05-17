@@ -50,7 +50,7 @@ add_library(sampler SHARED
         include/engine/exploration_sampling/SnowBallSampler.h
         src/engine/exploration_sampling/ForestFireSampler.cpp
         include/engine/exploration_sampling/ForestFireSampler.h
-        )
+        src/engine/exploration_sampling/RandomWalkSampler.cpp include/engine/exploration_sampling/RandomWalkSampler.h src/engine/exploration_sampling/RandomWalkWithRestartSampler.cpp include/engine/exploration_sampling/RandomWalkWithRestartSampler.h src/engine/exploration_sampling/RandomWalkWithJumpSampler.cpp include/engine/exploration_sampling/RandomWalkWithJumpSampler.h)
 
 target_include_directories(sampler PUBLIC
         include
@@ -65,7 +65,7 @@ add_library(backend SHARED
         include/graph/UndirectedGraph.h
         src/utils/GraphStream.cpp
         include/utils/GraphStream.h
-        
+
         src/analysis/backend.cpp
         include/analysis/Backend.h
         )
@@ -107,9 +107,9 @@ target_link_libraries(testGraphStream sampler)
 
 # Google benchmark tests
 file(GLOB BM_TESTS ${CMAKE_SOURCE_DIR}/test/*.cpp)
-foreach(bm_test_name ${BM_TESTS})
-        STRING(REGEX REPLACE "/.*/test/" "" target_name ${bm_test_name})
-        STRING(REGEX REPLACE ".cpp" "" target_name ${target_name})
-        add_executable(${target_name} ${bm_test_name})
-        target_link_libraries(${target_name} ${3_PARTY_LIB_PATH}/libbenchmark.a sampler pthread)
-endforeach()
+foreach (bm_test_name ${BM_TESTS})
+    STRING(REGEX REPLACE "/.*/test/" "" target_name ${bm_test_name})
+    STRING(REGEX REPLACE ".cpp" "" target_name ${target_name})
+    add_executable(${target_name} ${bm_test_name})
+    target_link_libraries(${target_name} ${3_PARTY_LIB_PATH}/libbenchmark.a sampler pthread)
+endforeach ()

@@ -4,6 +4,7 @@
 
 #include <engine/edge_sampling/RandomEdgeSampler.h>
 #include <engine/exploration_sampling/ForestFireSampler.h>
+#include <engine/exploration_sampling/RandomWalkSampler.h>
 #include <engine/node_sampling/DegreeBasedSampler.h>
 #include <engine/node_sampling/PageRankBasedSampler.h>
 #include <engine/node_sampling/RandomNodeSampler.h>
@@ -34,14 +35,15 @@ int main(int argc, char *argv[]) {
     string output         = argv[++_argc];
     string samplingMethod = argv[++_argc];
 
-    auto graph = GraphStream::readText(input);
+    auto graph = GraphStream::readText(input, false);
 
     auto nodeSamplers = map<string, shared_ptr<BaseSampler>>{
         {"rn", make_shared<RandomNodeSampler>(graph->number_of_nodes() * percent)},
         {"rdn", make_shared<DegreeBasedSampler>(graph->number_of_nodes() * percent)},
         {"prn", make_shared<PageRankBasedSampler>(graph->number_of_nodes() * percent)},
         {"re", make_shared<RandomEdgeSampler>(graph->number_of_edges() * percent)},
-        {"ff", make_shared<ForestFireSampler>(graph->number_of_edges() * percent)}};
+        {"ff", make_shared<ForestFireSampler>(graph->number_of_nodes() * percent)},
+        {"rw", make_shared<RandomWalkSampler>(graph->number_of_nodes() * percent)}};
 
     auto start = high_resolution_clock::now();
 
