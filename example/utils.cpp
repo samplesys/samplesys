@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/1.
-//
-
 #include "utils.h"
 
 using namespace std;

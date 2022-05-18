@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/30.
-//
-
 #include "engine/edge_sampling/HybridNodeEdgeSampler.h"
 
 using namespace std;

@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/12/1.
-//
-
 #include "engine/edge_sampling/RandomEdgeSamplerWithInduction.h"
 
 using namespace std;

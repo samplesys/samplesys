@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/10/27.
-//
-
 #include "graph/DirectedGraph.h"
 
 using namespace std;

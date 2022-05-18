@@ -1,7 +1,3 @@
-/*
- * Created by AutJ on 2021/12/6.
- */
-
 #include <iostream>
 
 #include "utils/GraphStream.h"

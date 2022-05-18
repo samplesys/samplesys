@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/12/1.
-//
-
 #include "engine/exploration_sampling/SnowBallSampler.h"
 
 #include <queue>

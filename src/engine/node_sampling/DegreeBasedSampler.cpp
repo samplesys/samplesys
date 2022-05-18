@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/10/31.
-//
-
 #include "engine/node_sampling/DegreeBasedSampler.h"
 
 using namespace std;

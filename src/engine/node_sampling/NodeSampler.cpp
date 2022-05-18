@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/1.
-//
-
 #include "engine/node_sampling/NodeSampler.h"
 
 #include <algorithm>

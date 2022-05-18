@@ -62,7 +62,7 @@ BENCHMARK_DEFINE_F(EdgeSampleFixture, RNE)(benchmark::State& state) {
 }
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, HRNE)(benchmark::State& state) {
-    sampler = make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_nodes() * percent);
+    sampler = make_shared<HybridNodeEdgeSampler>(graph->number_of_nodes() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
@@ -70,7 +70,7 @@ BENCHMARK_DEFINE_F(EdgeSampleFixture, HRNE)(benchmark::State& state) {
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, TIES)(benchmark::State& state) {
     sampler =
-        make_shared<RandomEdgeSamplerWithPartialInduction>(graph->number_of_nodes() * percent);
+        make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_nodes() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }

@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/16.
-//
-
 #ifndef SAMPLER_INCLUDE_UTILS_RANDOM_H_
 #define SAMPLER_INCLUDE_UTILS_RANDOM_H_
 
