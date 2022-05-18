@@ -50,8 +50,8 @@ void _get_wccs(const DirectedGraph *g, vector<vector<size_t>> &wccs) {
     bool           visited[nv];
     vector<size_t> wccV, pred[nv];
 
-    memset(visited, 0, sizeof(visited));
     for (size_t i = 0; i < nv; i++) {
+        visited[i] = 0;
         for (size_t p = offset[i]; p < offset[i + 1]; p++) {
             pred[column[p]].push_back(i);
         }
@@ -99,11 +99,14 @@ void get_wccs_distb(const Graph &g, map<size_t, size_t> &wccs_distb) {
     wccs_distb.clear();
     for (size_t i = 0; i < wccs.size(); i++)
         wccs_distb[wccs[i].size()]++;
+    // for (auto pr : wccs_distb)
+    //     printf("%ld %ld\n", pr.first, pr.second);
 }
 
 void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size_t *belong,
                size_t &dfs_clock, vector<vector<size_t>> &sccs) {
     size_t      nv = g.number_of_nodes();
+    size_t      ne = g.number_of_edges();
     size_t      tp = 0, top = 0;
     size_t      nowi, nxti;
     size_t      sta[nv];
@@ -113,8 +116,7 @@ void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size
         size_t nowi;
         size_t edgei;
         size_t down;
-    } stk[nv];
-
+    } stk[ne];
     stk[++tp] = (dsu){st, offset[st], 0};
     while (tp) {  // stack is not empty
         dsu &now = stk[tp];

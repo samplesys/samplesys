@@ -36,7 +36,7 @@ void test_degree(std::shared_ptr<Graph> graph) {
         map<size_t, size_t> deg_disb_ori;
         double              avg_degree_ori;
         Backend::get_degree_avg(*origin_graph, avg_degree_ori);
-        std::cout << "[Degree]Average degree: " << avg_degree << " of " << avg_degree_ori << endl;
+        std::cout << "[Degree]Average degree: " << avg_degree << " / " << avg_degree_ori << endl;
 
         Backend::get_degree_disb(*origin_graph, deg_disb_ori);
         getKSStatsMap(deg_disb, deg_disb_ori, ks_stats);
