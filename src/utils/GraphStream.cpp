@@ -9,7 +9,8 @@
 
 using namespace std;
 
-shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed) {
+shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed,
+                                        const std::string &pattern) {
     FILE *fp = fopen(filename.c_str(), "r");
     if (!fp) {
         printf("error %d: %s \n", errno, strerror(errno));
@@ -18,7 +19,7 @@ shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed) {
     size_t number_of_nodes = 0;
     auto   adjList         = map<size_t, set<size_t>>();
     size_t u, v;
-    while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+    while (fscanf(fp, pattern.c_str(), &u, &v) != -1) {
         number_of_nodes = max(number_of_nodes, max(u, v) + 1);
         adjList[u].insert(v);
     }
@@ -30,7 +31,8 @@ shared_ptr<Graph> GraphStream::readText(const string &filename, bool directed) {
     }
 }
 
-std::shared_ptr<Graph> GraphStream::readTextCompact(const string &filename, bool directed) {
+std::shared_ptr<Graph> GraphStream::readTextCompact(const string &filename, bool directed,
+                                                    const std::string &pattern) {
     FILE *fp = fopen(filename.c_str(), "r");
     if (!fp) {
         printf("error %d: %s \n", errno, strerror(errno));
@@ -40,7 +42,7 @@ std::shared_ptr<Graph> GraphStream::readTextCompact(const string &filename, bool
     size_t number_of_nodes = 0;
     auto   adjList         = map<size_t, set<size_t>>();
     size_t u, v;
-    while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+    while (fscanf(fp, pattern.c_str(), &u, &v) != -1) {
         auto it = mapper.find(u);
         if (it != mapper.end()) {
             u = it->second;
@@ -125,7 +127,7 @@ void GraphStream::writeBinary(const string &filename, const shared_ptr<Graph> &g
 }
 
 void GraphStream::text_to_binary(const string &input_filename, const string &output_filename,
-                                 bool directed) {
+                                 bool directed, const std::string &pattern) {
     FILE *fp = fopen(input_filename.c_str(), "r");
     if (!fp) {
         printf("error %d: %s \n", errno, strerror(errno));
@@ -136,12 +138,12 @@ void GraphStream::text_to_binary(const string &input_filename, const string &out
     auto   adjList1        = map<size_t, set<size_t>>();
     size_t u, v;
     if (directed) {
-        while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+        while (fscanf(fp, pattern.c_str(), &u, &v) != -1) {
             number_of_nodes = max(number_of_nodes, max(u, v) + 1);
             number_of_edges += adjList1[u].insert(v).second;
         }
     } else {
-        while (fscanf(fp, "%zd,%zd", &u, &v) != -1) {
+        while (fscanf(fp, pattern.c_str(), &u, &v) != -1) {
             number_of_nodes = max(number_of_nodes, max(u, v) + 1);
             number_of_edges += adjList1[u].insert(v).second;
             if (u != v) number_of_edges += adjList1[v].insert(u).second;
