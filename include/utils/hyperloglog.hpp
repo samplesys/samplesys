@@ -80,12 +80,11 @@ class HyperLogLog {
     /**
      * Adds element to the estimator
      *
-     * @param[in] str string to add
-     * @param[in] len length of string
+     * @param[in] num number to add
      */
-    void add(const char* str, uint32_t len) {
+    void add(const std::size_t& num) {
         uint32_t hash;
-        MurmurHash3_x86_32(str, len, HLL_HASH_SEED, (void*)&hash);
+        MurmurHash3_x86_32(&num, sizeof(num), HLL_HASH_SEED, (void*)&hash);
         uint32_t index = hash & ((1 << b_) - 1);
         uint8_t  rank  = _GET_CLZ((hash << b_), 32 - b_);
         if (rank > M_[index]) {

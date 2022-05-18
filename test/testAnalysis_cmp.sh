@@ -1,6 +1,6 @@
 #!/bin/bash
 
-log_path="../results/facebook_edges_cmplog.txt"
+log_path="../results/facebook_edge.txt"
 graph_path="../example/input/facebook_edges.csv"
 sample_path="../results/subgraph.csv"
 
@@ -18,11 +18,12 @@ for ((i=1;i<=3;i++))
     echo "  sample done."
     echo "Trun ${i}: " >> ${log_path}
     ../build/testAnalysis ${sample_path} directed \
+        -origin ${graph_path} \
+        -cncomp \
         -degree \
         -cluster \
         -hot_plot \
-        -cncomp \
-        -origin ${graph_path} \
+        -seed 4356 \
         >> ${log_path}
     echo "  analysis done."
     done

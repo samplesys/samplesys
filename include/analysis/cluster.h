@@ -99,8 +99,12 @@ void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func
     hll::HyperLogLog new_hlls[nv];
     hll::HyperLogLog old_hlls[nv];
     nbrhd_func_map.clear();
-    for (std::size_t i = 0; i < nv; i++)
-        new_hlls[i] = hll::HyperLogLog(12);
+#pragma omp parallel for
+    for (std::size_t i = 0; i < nv; i++) {
+        old_hlls[i] = hll::HyperLogLog(12);
+        old_hlls[i].add(i);
+        new_hlls[i] = old_hlls[i];
+    }
     while (changed) {
         changed           = false;
         nbrhd_func_map[t] = 0;
@@ -109,11 +113,12 @@ void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func
             nbrhd_func_map[t] += new_hlls[i].estimate();
             old_hlls[i] = new_hlls[i];
         }
+        std::size_t vid, uid, p;
 #pragma omp parallel for
-        for (std::size_t vid = 0; vid < nv; vid++) {
-            for (std::size_t p = offset[vid]; p < offset[vid + 1]; p++) {
-                std::size_t uid = column[p];
-                changed         = new_hlls[vid].merge(old_hlls[uid]) || changed;
+        for (vid = 0; vid < nv; vid++) {
+            for (p = offset[vid]; p < offset[vid + 1]; p++) {
+                uid     = column[p];
+                changed = new_hlls[vid].merge(old_hlls[uid]) || changed;
             }
         }
         t++;
@@ -127,6 +132,7 @@ void get_hop_plot(const Graph &g, std::map<std::size_t, std::size_t> &nbrhd_func
         std::size_t nowcnt = it->second;
         it->second         = nowcnt - precnt;
         precnt             = nowcnt;
+        // printf("%ld %ld\n", it->first, it->second);
     }
 }
 

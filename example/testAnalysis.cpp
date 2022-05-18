@@ -32,29 +32,15 @@ void test_degree(std::shared_ptr<Graph> graph) {
     Backend::get_degree_avg(*graph, avg_degree);
     Backend::get_degree_disb(*graph, deg_disb);
     if (t_origin) {
-        size_t  nvori   = origin_graph->number_of_nodes();
-        double *dgnew   = (double *)malloc(nv * sizeof(double));
-        double *dgori   = (double *)malloc(nvori * sizeof(double));
-        auto    degrees = graph->get_degrees();
-        double  ks_stats;
-        double  avg_degree_ori;
-
-        Backend::get_degree_avg(*origin_graph, avg_degree_ori);
-        for (size_t i = 0; i < nv; i++)
-            dgnew[i] = degrees[i];
-        degrees = origin_graph->get_degrees();
-        for (size_t i = 0; i < nvori; i++)
-            dgori[i] = degrees[i];
-        getKSStats(dgnew, dgori, nv, nvori, ks_stats);
-
-        double              ks_stats1;
+        double              ks_stats;
         map<size_t, size_t> deg_disb_ori;
-        Backend::get_degree_disb(*origin_graph, deg_disb_ori);
-        getKSStatsMap(deg_disb, deg_disb_ori, ks_stats1);
+        double              avg_degree_ori;
+        Backend::get_degree_avg(*origin_graph, avg_degree_ori);
+        std::cout << "[Degree]Average degree: " << avg_degree << " of " << avg_degree_ori << endl;
 
-        delete dgnew;
-        delete dgori;
-        std::cout << "[Degree]Degree distribution: " << ks_stats << "----" << ks_stats1 << endl;
+        Backend::get_degree_disb(*origin_graph, deg_disb_ori);
+        getKSStatsMap(deg_disb, deg_disb_ori, ks_stats);
+        std::cout << "[Degree]Degree distribution: " << ks_stats << endl;
     } else {
         std::cout << "[Degree]Average degree: " << avg_degree << endl;
     }
@@ -185,12 +171,12 @@ void cmdInp(int argc, char **argv) {
     }
     int _argc   = 0;
     input_path  = argv[++_argc];
-    is_directed = false;
+    is_directed = true;
     t_degree = t_cluster = t_hot_polt = t_linear = t_cncomp = t_timer = t_origin = false;
     if (argc > 2) {
         if (strcmp(argv[++_argc], "directed") == 0)
             is_directed = true;
-        else if (strcmp(argv[++_argc], "undirected") == 0)
+        else if (strcmp(argv[_argc], "undirected") == 0)
             is_directed = false;
         else
             throw std::invalid_argument(

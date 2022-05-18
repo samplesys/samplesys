@@ -108,7 +108,7 @@ void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size
     size_t      nowi, nxti;
     size_t      sta[nv];
     const auto &offset = g.get_offsets();
-    const auto &edge   = g.get_edges();
+    const auto &column = g.get_columns();
     struct dsu {
         size_t nowi;
         size_t edgei;
@@ -140,7 +140,7 @@ void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size
             continue;
         }
 
-        nxti = edge[now.edgei], now.edgei += 1;
+        nxti = column[now.edgei], now.edgei += 1;
         if (!dfn[nxti]) {
             now.down  = nxti;  // traverse son = nxti
             stk[++tp] = (dsu){nxti, offset[nxti], 0};
@@ -175,10 +175,12 @@ void get_sccs_distb(const Graph &g, map<size_t, size_t> &sccs_distb) {
     if (gptr == nullptr) throw std::invalid_argument("must be directed graph");
 
     vector<vector<size_t>> sccs;
-    Backend::get_wccs(g, sccs);
+    Backend::get_sccs(g, sccs);
     sccs_distb.clear();
     for (size_t i = 0; i < sccs.size(); i++)
         sccs_distb[sccs[i].size()]++;
+    // for (auto pr : sccs_distb)
+    //     printf("%ld %ld\n", pr.first, pr.second);
 }
 
 }  // namespace Backend

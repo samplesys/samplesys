@@ -29,6 +29,7 @@ string output;
 string samplingMethod;
 double percent;
 int    is_directed;
+int    seed;
 
 void cmdInp(int argc, char *argv[]) {
     if (argc < 4) {
@@ -37,7 +38,8 @@ void cmdInp(int argc, char *argv[]) {
                   << "[Options]:" << endl
                   << "\t-directed/undirected, default directed." << endl
                   << "\t-percent <num>\t\tPercent of graph to be sampled, default 0.1." << endl
-                  << "\t-method <name>\t\tSample method(rn/rdn/prn/re/ff), default \"rn\"" << endl;
+                  << "\t-method <name>\t\tSample method(rn/rdn/prn/re/ff), default \"rn\"" << endl
+                  << "\t-seed <num>\t\tRandom seed." << endl;
         exit(1);
     }
     int _argc      = 0;
@@ -55,6 +57,8 @@ void cmdInp(int argc, char *argv[]) {
             samplingMethod = argv[++_argc];
         else if (strcmp(argv[_argc], "-percent") == 0)
             percent = atof(argv[++_argc]);
+        else if (strcmp(argv[_argc], "-seed") == 0)
+            seed = atoi(argv[++_argc]);
     }
     if (input == "" || output == "") {
         std::cout << "input path and output path must be specified." << endl;
@@ -68,22 +72,24 @@ int main(int argc, char *argv[]) {
     auto graph = GraphStream::readText(input, is_directed);
 
     auto nodeSamplers = map<string, shared_ptr<BaseSampler>>{
-        {"rn", make_shared<RandomNodeSampler>(graph->number_of_nodes() * percent)},
-        {"rdn", make_shared<DegreeBasedSampler>(graph->number_of_nodes() * percent)},
-        {"prn", make_shared<PageRankBasedSampler>(graph->number_of_nodes() * percent)},
-        {"re", make_shared<RandomEdgeSampler>(graph->number_of_edges() * percent)},
-        {"rne", make_shared<RandomNodeEdgeSampler>(graph->number_of_edges() * percent)},
-        {"hrne", make_shared<HybridNodeEdgeSampler>(graph->number_of_edges() * percent)},
-        {"ties", make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_edges() * percent)},
-        {"pies",
-         make_shared<RandomEdgeSamplerWithPartialInduction>(graph->number_of_edges() * percent)},
-        {"bfs", make_shared<BreadthFirstSearchSampler>(graph->number_of_nodes() * percent)},
-        {"dfs", make_shared<DepthFirstSearchSampler>(graph->number_of_nodes() * percent)},
-        {"ff", make_shared<ForestFireSampler>(graph->number_of_nodes() * percent)},
-        {"snb", make_shared<SnowBallSampler>(graph->number_of_nodes() * percent)},
-        {"rw", make_shared<RandomWalkSampler>(graph->number_of_nodes() * percent)},
-        {"rwj", make_shared<RandomWalkWithJumpSampler>(graph->number_of_nodes() * percent)},
-        {"rwr", make_shared<RandomWalkWithRestartSampler>(graph->number_of_nodes() * percent)}};
+        {"rn", make_shared<RandomNodeSampler>(graph->number_of_nodes() * percent, seed)},
+        {"rdn", make_shared<DegreeBasedSampler>(graph->number_of_nodes() * percent, seed)},
+        {"prn", make_shared<PageRankBasedSampler>(graph->number_of_nodes() * percent, seed)},
+        {"re", make_shared<RandomEdgeSampler>(graph->number_of_edges() * percent, seed)},
+        {"rne", make_shared<RandomNodeEdgeSampler>(graph->number_of_edges() * percent, seed)},
+        {"hrne", make_shared<HybridNodeEdgeSampler>(graph->number_of_edges() * percent, seed)},
+        {"ties",
+         make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_edges() * percent, seed)},
+        {"pies", make_shared<RandomEdgeSamplerWithPartialInduction>(
+                     graph->number_of_edges() * percent, seed)},
+        {"bfs", make_shared<BreadthFirstSearchSampler>(graph->number_of_nodes() * percent, seed)},
+        {"dfs", make_shared<DepthFirstSearchSampler>(graph->number_of_nodes() * percent, seed)},
+        {"ff", make_shared<ForestFireSampler>(graph->number_of_nodes() * percent, seed)},
+        {"snb", make_shared<SnowBallSampler>(graph->number_of_nodes() * percent, seed)},
+        {"rw", make_shared<RandomWalkSampler>(graph->number_of_nodes() * percent, seed)},
+        {"rwj", make_shared<RandomWalkWithJumpSampler>(graph->number_of_nodes() * percent, seed)},
+        {"rwr",
+         make_shared<RandomWalkWithRestartSampler>(graph->number_of_nodes() * percent, seed)}};
 
     auto start = high_resolution_clock::now();
 
