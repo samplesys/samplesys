@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/27.
-//
-
 #include "engine/edge_sampling/RandomNodeEdgeSampler.h"
 
 using namespace std;
@@ -55,16 +51,4 @@ vector<pair<size_t, size_t>> RandomNodeEdgeSampler::_sample(const UndirectedGrap
         ++current_sampled;
     }
     return ret;
-}
-
-vector<pair<size_t, size_t>> RandomNodeEdgeSampler::sample(const Graph& g) {
-    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
-    if (ptr1 != nullptr) {
-        return this->_sample(ptr1);
-    }
-    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
-    if (ptr2 != nullptr) {
-        return this->_sample(ptr2);
-    }
-    return {};
 }

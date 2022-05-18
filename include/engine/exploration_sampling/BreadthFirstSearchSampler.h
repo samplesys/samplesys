@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/12/1.
-//
-
 #ifndef SAMPLER_INCLUDE_ENGINE_EXPLORATION_SAMPLING_BREADTHFIRSTSEARCHSAMPLER_H_
 #define SAMPLER_INCLUDE_ENGINE_EXPLORATION_SAMPLING_BREADTHFIRSTSEARCHSAMPLER_H_
 
@@ -18,7 +14,6 @@ class BreadthFirstSearchSampler : public BaseSampler {
    public:
     explicit BreadthFirstSearchSampler(std::size_t number_of_nodes, std::size_t start_node = -1,
                                        int seed = 10);
-    std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g) override;
 };
 
 #endif  // SAMPLER_INCLUDE_ENGINE_EXPLORATION_SAMPLING_BREADTHFIRSTSEARCHSAMPLER_H_

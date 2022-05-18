@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/10/26.
-//
-
 #ifndef SAMPLER_INCLUDE_ENGINE_BASESAMPLER_H_
 #define SAMPLER_INCLUDE_ENGINE_BASESAMPLER_H_
 
@@ -16,9 +12,12 @@ class BaseSampler {
     int    seed;
     Random random;
 
+    virtual std::vector<std::pair<std::size_t, std::size_t>> _sample(const DirectedGraph *g)   = 0;
+    virtual std::vector<std::pair<std::size_t, std::size_t>> _sample(const UndirectedGraph *g) = 0;
+
    public:
     explicit BaseSampler(int seed);
-    virtual std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g) = 0;
+    virtual std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g);
 };
 
 #endif  // SAMPLER_INCLUDE_ENGINE_BASESAMPLER_H_

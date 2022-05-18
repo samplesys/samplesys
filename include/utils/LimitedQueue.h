@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/12/1.
-//
-
 #ifndef SAMPLER_SRC_UTILS_LIMITEDQUEUE_H_
 #define SAMPLER_SRC_UTILS_LIMITEDQUEUE_H_
 

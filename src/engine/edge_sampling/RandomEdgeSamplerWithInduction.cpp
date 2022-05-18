@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/12/1.
-//
-
 #include "engine/edge_sampling/RandomEdgeSamplerWithInduction.h"
 
 using namespace std;
@@ -61,16 +57,4 @@ vector<pair<size_t, size_t>> RandomEdgeSamplerWithInduction::_sample(const Undir
         }
     }
     return ret;
-}
-
-vector<pair<size_t, size_t>> RandomEdgeSamplerWithInduction::sample(const Graph &g) {
-    auto ptr1 = dynamic_cast<const DirectedGraph *>(&g);
-    if (ptr1 != nullptr) {
-        return this->_sample(ptr1);
-    }
-    auto ptr2 = dynamic_cast<const UndirectedGraph *>(&g);
-    if (ptr2 != nullptr) {
-        return this->_sample(ptr2);
-    }
-    return {};
 }

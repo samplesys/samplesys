@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/12/1.
-//
-
 #include "engine/exploration_sampling/DepthFirstSearchSampler.h"
 
 #include <algorithm>
@@ -133,16 +129,4 @@ vector<pair<size_t, size_t>> DepthFirstSearchSampler::_sample(const UndirectedGr
         }
     } while (current_sampled_nodes < number_of_nodes);
     return ret;
-}
-
-vector<pair<size_t, size_t>> DepthFirstSearchSampler::sample(const Graph& g) {
-    auto ptr1 = dynamic_cast<const DirectedGraph*>(&g);
-    if (ptr1 != nullptr) {
-        return this->_sample(ptr1);
-    }
-    auto ptr2 = dynamic_cast<const UndirectedGraph*>(&g);
-    if (ptr2 != nullptr) {
-        return this->_sample(ptr2);
-    }
-    return {};
 }

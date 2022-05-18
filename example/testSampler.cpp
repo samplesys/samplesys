@@ -1,19 +1,23 @@
-//
-// Created by AutJ on 2021/10/31.
-//
-
-#include <engine/edge_sampling/RandomEdgeSampler.h>
-#include <engine/exploration_sampling/ForestFireSampler.h>
-#include <engine/exploration_sampling/RandomWalkSampler.h>
-#include <engine/node_sampling/DegreeBasedSampler.h>
-#include <engine/node_sampling/PageRankBasedSampler.h>
-#include <engine/node_sampling/RandomNodeSampler.h>
-
 #include <chrono>
 #include <cstring>
 #include <iostream>
 #include <memory>
 
+#include "engine/edge_sampling/HybridNodeEdgeSampler.h"
+#include "engine/edge_sampling/RandomEdgeSampler.h"
+#include "engine/edge_sampling/RandomEdgeSamplerWithInduction.h"
+#include "engine/edge_sampling/RandomEdgeSamplerWithPartialInduction.h"
+#include "engine/edge_sampling/RandomNodeEdgeSampler.h"
+#include "engine/exploration_sampling/BreadthFirstSearchSampler.h"
+#include "engine/exploration_sampling/DepthFirstSearchSampler.h"
+#include "engine/exploration_sampling/ForestFireSampler.h"
+#include "engine/exploration_sampling/RandomWalkSampler.h"
+#include "engine/exploration_sampling/RandomWalkWithJumpSampler.h"
+#include "engine/exploration_sampling/RandomWalkWithRestartSampler.h"
+#include "engine/exploration_sampling/SnowBallSampler.h"
+#include "engine/node_sampling/DegreeBasedSampler.h"
+#include "engine/node_sampling/PageRankBasedSampler.h"
+#include "engine/node_sampling/RandomNodeSampler.h"
 #include "utils.h"
 #include "utils/GraphStream.h"
 
@@ -57,6 +61,7 @@ void cmdInp(int argc, char *argv[]) {
         exit(1);
     }
 }
+
 int main(int argc, char *argv[]) {
     cmdInp(argc, argv);
 
@@ -67,8 +72,18 @@ int main(int argc, char *argv[]) {
         {"rdn", make_shared<DegreeBasedSampler>(graph->number_of_nodes() * percent)},
         {"prn", make_shared<PageRankBasedSampler>(graph->number_of_nodes() * percent)},
         {"re", make_shared<RandomEdgeSampler>(graph->number_of_edges() * percent)},
+        {"rne", make_shared<RandomNodeEdgeSampler>(graph->number_of_edges() * percent)},
+        {"hrne", make_shared<HybridNodeEdgeSampler>(graph->number_of_edges() * percent)},
+        {"ties", make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_edges() * percent)},
+        {"pies",
+         make_shared<RandomEdgeSamplerWithPartialInduction>(graph->number_of_edges() * percent)},
+        {"bfs", make_shared<BreadthFirstSearchSampler>(graph->number_of_nodes() * percent)},
+        {"dfs", make_shared<DepthFirstSearchSampler>(graph->number_of_nodes() * percent)},
         {"ff", make_shared<ForestFireSampler>(graph->number_of_nodes() * percent)},
-        {"rw", make_shared<RandomWalkSampler>(graph->number_of_nodes() * percent)}};
+        {"snb", make_shared<SnowBallSampler>(graph->number_of_nodes() * percent)},
+        {"rw", make_shared<RandomWalkSampler>(graph->number_of_nodes() * percent)},
+        {"rwj", make_shared<RandomWalkWithJumpSampler>(graph->number_of_nodes() * percent)},
+        {"rwr", make_shared<RandomWalkWithRestartSampler>(graph->number_of_nodes() * percent)}};
 
     auto start = high_resolution_clock::now();
 

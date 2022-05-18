@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/16.
-//
-
 #include "utils/Random.h"
 
 #include <omp.h>

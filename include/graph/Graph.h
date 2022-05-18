@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/27.
-//
-
 #ifndef SAMPLER_INCLUDE_GRAPH_GRAPH_H_
 #define SAMPLER_INCLUDE_GRAPH_GRAPH_H_
 

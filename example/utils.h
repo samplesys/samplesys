@@ -1,7 +1,3 @@
-//
-// Created by AutJ on 2021/11/1.
-//
-
 #ifndef SAMPLER_EXAMPLE_UTILS_H_
 #define SAMPLER_EXAMPLE_UTILS_H_
 

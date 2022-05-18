@@ -2,14 +2,15 @@
  * Created by AutJ on 2022-05-17.
  */
 
-#include "engine/exploration_sampling/RandomWalkSampler.h"
+#include "engine/exploration_sampling/RandomWalkWithRestartSampler.h"
 
 using namespace std;
 
-RandomWalkSampler::RandomWalkSampler(size_t number_of_nodes, size_t start_node, int seed)
-    : BaseSampler(seed), number_of_nodes(number_of_nodes), start_node(start_node) {}
+RandomWalkWithRestartSampler::RandomWalkWithRestartSampler(size_t number_of_nodes,
+                                                           size_t start_node, double p, int seed)
+    : BaseSampler(seed), number_of_nodes(number_of_nodes), start_node(start_node), p(p) {}
 
-vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const DirectedGraph* g) {
+vector<pair<size_t, size_t>> RandomWalkWithRestartSampler::_sample(const DirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
     const auto& columns = g->get_columns();
@@ -22,6 +23,7 @@ vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const DirectedGraph* g) 
     } else {
         source = start_node;
     }
+    auto initial = source;
 
     auto   node_is_sampled       = vector<bool>(g->number_of_nodes());
     size_t current_sampled_nodes = 0;
@@ -31,7 +33,12 @@ vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const DirectedGraph* g) 
             node_is_sampled[source] = true;
             ++current_sampled_nodes;
         }
-        source = columns[offsets[source] + random.randint(degrees[source])];
+        auto score = random.uniform<double>(0, 1);
+        if (score < p) {
+            source = initial;
+        } else {
+            source = columns[offsets[source] + random.randint(degrees[source])];
+        }
     }
 
     for (size_t i = 0; i < g->number_of_nodes(); ++i) {
@@ -45,8 +52,7 @@ vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const DirectedGraph* g) 
 
     return ret;
 }
-
-vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const UndirectedGraph* g) {
+vector<pair<size_t, size_t>> RandomWalkWithRestartSampler::_sample(const UndirectedGraph* g) {
     auto ret = vector<pair<size_t, size_t>>();
 
     const auto& columns = g->get_columns();
@@ -59,6 +65,7 @@ vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const UndirectedGraph* g
     } else {
         source = start_node;
     }
+    auto initial = source;
 
     auto   node_is_sampled       = vector<bool>(g->number_of_nodes());
     size_t current_sampled_nodes = 0;
@@ -68,7 +75,12 @@ vector<pair<size_t, size_t>> RandomWalkSampler::_sample(const UndirectedGraph* g
             node_is_sampled[source] = true;
             ++current_sampled_nodes;
         }
-        source = columns[offsets[source] + random.randint(degrees[source])];
+        auto score = random.uniform<double>(0, 1);
+        if (score < p) {
+            source = initial;
+        } else {
+            source = columns[offsets[source] + random.randint(degrees[source])];
+        }
     }
 
     for (size_t i = 0; i < g->number_of_nodes(); ++i) {
