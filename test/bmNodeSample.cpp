@@ -37,11 +37,11 @@ class NodeSampleFixture : public benchmark::Fixture {
     double                       percent;
 
     void SetUp(const ::benchmark::State& state) {
-        std::string input = "example/input/facebook_edges.csv";
+        std::string input = "example/input/twitch_edges.csv";
         // printf("Starting loading %s.\n", input.c_str());
         graph = GraphStream::readText(input, false);
         // printf("Graph loaded.\n");
-        percent = 0.5;
+        percent = 0.1;
         // printf("%zd %zd\n", graph->number_of_nodes(), graph->number_of_edges());
     }
     void TearDown(const ::benchmark::State& state) {}

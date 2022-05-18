@@ -27,7 +27,7 @@ vector<size_t> Random::choice(const vector<double>& probability, size_t number_o
         }
         struct cmp {
             bool operator()(const pair<size_t, double>& a, const pair<size_t, double>& b) {
-                return a.second < b.second;
+                return a.second > b.second;
             }
         };
         auto dist    = uniform_real_distribution<>(0, 1);
