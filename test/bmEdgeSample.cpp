@@ -25,7 +25,7 @@ static void BM_hello(benchmark::State& state) {
         ans = f(graph);
     }
 }
-BENCHMARK(BM_hello);
+// BENCHMARK(BM_hello);
 
 /**
  * Node Sample Benchmark test
@@ -39,7 +39,7 @@ class EdgeSampleFixture : public benchmark::Fixture {
     void SetUp(const ::benchmark::State& state) {
         std::string input = "example/input/facebook_edges.csv";
         // printf("Starting loading %s.\n", input.c_str());
-        graph = GraphStream::readText(input);
+        graph = GraphStream::readText(input, false);
         // printf("Graph loaded.\n");
         percent = 0.5;
         // printf("%zd %zd\n", graph->number_of_nodes(), graph->number_of_edges());
@@ -69,8 +69,7 @@ BENCHMARK_DEFINE_F(EdgeSampleFixture, HRNE)(benchmark::State& state) {
 }
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, TIES)(benchmark::State& state) {
-    sampler =
-        make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_nodes() * percent);
+    sampler = make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_nodes() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
