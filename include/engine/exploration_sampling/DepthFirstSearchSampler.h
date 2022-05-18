@@ -18,7 +18,6 @@ class DepthFirstSearchSampler : public BaseSampler {
    public:
     explicit DepthFirstSearchSampler(std::size_t number_of_nodes, std::size_t start_node = -1,
                                      int seed = 10);
-    std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g) override;
 };
 
 #endif  // SAMPLER_SRC_ENGINE_EXPLORATION_SAMPLING_DEPTHFIRSTSEARCHSAMPLER_H_

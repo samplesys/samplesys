@@ -66,6 +66,7 @@ void cmdInp(int argc, char *argv[]) {
         exit(1);
     }
 }
+
 int main(int argc, char *argv[]) {
     cmdInp(argc, argv);
 

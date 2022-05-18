@@ -19,7 +19,6 @@ class SnowBallSampler : public BaseSampler {
    public:
     explicit SnowBallSampler(std::size_t number_of_nodes, std::size_t start_node = -1,
                              std::size_t k = 50, int seed = 10);
-    std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g) override;
 };
 
 #endif  // SAMPLER_SRC_ENGINE_EXPLORATION_SAMPLING_SNOWBALLSAMPLER_H_

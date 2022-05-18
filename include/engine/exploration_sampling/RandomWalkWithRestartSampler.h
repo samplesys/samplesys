@@ -19,7 +19,6 @@ class RandomWalkWithRestartSampler : public BaseSampler {
    public:
     explicit RandomWalkWithRestartSampler(std::size_t number_of_nodes, std::size_t start_node = -1,
                                           double p = 0.1, int seed = 10);
-    std::vector<std::pair<std::size_t, std::size_t>> sample(const Graph &g) override;
 };
 
 #endif  // SAMPLER_INCLUDE_ENGINE_EXPLORATION_SAMPLING_RANDOMWALKWITHRESTARTSAMPLER_H_
