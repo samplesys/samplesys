@@ -50,8 +50,8 @@ void _get_wccs(const DirectedGraph *g, vector<vector<size_t>> &wccs) {
     bool           visited[nv];
     vector<size_t> wccV, pred[nv];
 
-    memset(visited, 0, sizeof(visited));
     for (size_t i = 0; i < nv; i++) {
+        visited[i] = 0;
         for (size_t p = offset[i]; p < offset[i + 1]; p++) {
             pred[column[p]].push_back(i);
         }
@@ -99,22 +99,24 @@ void get_wccs_distb(const Graph &g, map<size_t, size_t> &wccs_distb) {
     wccs_distb.clear();
     for (size_t i = 0; i < wccs.size(); i++)
         wccs_distb[wccs[i].size()]++;
+    // for (auto pr : wccs_distb)
+    //     printf("%ld %ld\n", pr.first, pr.second);
 }
 
 void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size_t *belong,
                size_t &dfs_clock, vector<vector<size_t>> &sccs) {
     size_t      nv = g.number_of_nodes();
+    size_t      ne = g.number_of_edges();
     size_t      tp = 0, top = 0;
     size_t      nowi, nxti;
     size_t      sta[nv];
     const auto &offset = g.get_offsets();
-    const auto &edge   = g.get_edges();
+    const auto &column = g.get_columns();
     struct dsu {
         size_t nowi;
         size_t edgei;
         size_t down;
-    } stk[nv];
-
+    } stk[ne];
     stk[++tp] = (dsu){st, offset[st], 0};
     while (tp) {  // stack is not empty
         dsu &now = stk[tp];
@@ -140,7 +142,7 @@ void sccTarjan(const DirectedGraph &g, size_t st, size_t *dfn, size_t *low, size
             continue;
         }
 
-        nxti = edge[now.edgei], now.edgei += 1;
+        nxti = column[now.edgei], now.edgei += 1;
         if (!dfn[nxti]) {
             now.down  = nxti;  // traverse son = nxti
             stk[++tp] = (dsu){nxti, offset[nxti], 0};
@@ -175,10 +177,12 @@ void get_sccs_distb(const Graph &g, map<size_t, size_t> &sccs_distb) {
     if (gptr == nullptr) throw std::invalid_argument("must be directed graph");
 
     vector<vector<size_t>> sccs;
-    Backend::get_wccs(g, sccs);
+    Backend::get_sccs(g, sccs);
     sccs_distb.clear();
     for (size_t i = 0; i < sccs.size(); i++)
         sccs_distb[sccs[i].size()]++;
+    // for (auto pr : sccs_distb)
+    //     printf("%ld %ld\n", pr.first, pr.second);
 }
 
 }  // namespace Backend

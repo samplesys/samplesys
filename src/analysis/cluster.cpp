@@ -61,7 +61,7 @@ void _get_cluster_coef(const DirectedGraph &g, double *cluster_coef) {
             cluster_coef[i] = 0;
         else
             cluster_coef[i] =
-                ndiTriangle[i] / ((degreetot[i] * (degreetot[i] - 1) - 2 * degreebid[i]) * 2);
+                1.0 * ndiTriangle[i] / ((degreetot[i] * (degreetot[i] - 1) - 2 * degreebid[i]) * 2);
     }
     delete degreetot;
     delete degreebid;
@@ -78,7 +78,7 @@ void _get_cluster_coef(const UndirectedGraph &g, double *cluster_coef) {
 #pragma omp parallel for
     for (size_t i = 0; i < nv; i++) {
         if (nnbr[i] > 1)
-            cluster_coef[i] = nTriangles[i] / (1.0 * nnbr[i] * (nnbr[i] - 1));
+            cluster_coef[i] = 1.0 * nTriangles[i] / (1.0 * nnbr[i] * (nnbr[i] - 1));
         else
             cluster_coef[i] = 0;
     }
@@ -97,6 +97,10 @@ void get_cluster_coef_distb(const Graph &g, map<double, size_t> &cluster_coef_di
     size_t  nv           = g.number_of_nodes();
     double *cluster_coef = (double *)(malloc(nv * sizeof(double)));
     get_cluster_coef(g, cluster_coef);
+    // for (size_t i = 0; i < nv; ++i) {
+    //     printf("%lf ", cluster_coef[i]);
+    // }
+    // printf("\n");
     for (size_t i = 0; i < nv; i++)
         cluster_coef_distb[cluster_coef[i]]++;
 }
