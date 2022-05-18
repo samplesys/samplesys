@@ -51,7 +51,7 @@ vector<pair<size_t, size_t>> RandomEdgeSamplerWithInduction::_sample(const Undir
     for (size_t i = 0; i < g->number_of_nodes(); ++i) {
         if (!node_is_sampled[i]) continue;
         for (auto loc = offsets[i]; loc < offsets[i + 1]; ++loc) {
-            if (i < offsets[loc] && node_is_sampled[columns[loc]]) {
+            if (i < columns[loc] && node_is_sampled[columns[loc]]) {
                 ret.emplace_back(i, columns[loc]);
             }
         }

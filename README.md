@@ -68,26 +68,41 @@ samplesys accepts CSR formatted network as input. The toolkit `gen` can convert 
 ...
 ```
 
-**Example**
+[//]: # (**Example**)
 
-```shell
-./gen -input ../data/blogcatalog_edge.txt -output ../data/blogcatalog.bin
-```
+[//]: # ()
+[//]: # (```shell)
 
-**Full Options**
+[//]: # (./gen -input ../data/blogcatalog_edge.txt -output ../data/blogcatalog.bin)
 
-```
-    -weighted      Generate network with edge weights.
-    -directed      Generate network with directed edges.
-    -rand-w        Assign random weight for edges in range
-                    (0, 1).
-    -hetro         Generate heterogeneous network file.
-                    If `--node-type` is not provided, assign
-                    random node types in range [1, 5].
-    -node-type     File containing node type information.
-```
+[//]: # (```)
 
-### Quick-Start
+[//]: # ()
+[//]: # (**Full Options**)
+
+[//]: # ()
+[//]: # (```)
+
+[//]: # (    -weighted      Generate network with edge weights.)
+
+[//]: # (    -directed      Generate network with directed edges.)
+
+[//]: # (    -rand-w        Assign random weight for edges in range)
+
+[//]: # (                    &#40;0, 1&#41;.)
+
+[//]: # (    -hetro         Generate heterogeneous network file.)
+
+[//]: # (                    If `--node-type` is not provided, assign)
+
+[//]: # (                    random node types in range [1, 5].)
+
+[//]: # (    -node-type     File containing node type information.)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (### Quick-Start)
 
 [//]: # (We use _random node sampling_ as an example.)
 

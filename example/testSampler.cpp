@@ -44,18 +44,18 @@ void cmdInp(int argc, char *argv[]) {
     }
     int _argc      = 0;
     is_directed    = true;
-    percent        = 0.1;
+    percent        = 0.5;
     samplingMethod = "rn";
     input          = argv[++_argc];
     output         = argv[++_argc];
     while (++_argc < argc) {
-        if (strcmp(argv[_argc], "-directed") == 0)
+        if (strcmp(argv[_argc], "--directed") == 0)
             is_directed = true;
-        else if (strcmp(argv[_argc], "-undirected") == 0)
+        else if (strcmp(argv[_argc], "--undirected") == 0)
             is_directed = false;
-        else if (strcmp(argv[_argc], "-method") == 0)
+        else if (strcmp(argv[_argc], "--method") == 0)
             samplingMethod = argv[++_argc];
-        else if (strcmp(argv[_argc], "-percent") == 0)
+        else if (strcmp(argv[_argc], "--percent") == 0)
             percent = atof(argv[++_argc]);
         else if (strcmp(argv[_argc], "-seed") == 0)
             seed = atoi(argv[++_argc]);
