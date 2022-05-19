@@ -2,7 +2,7 @@
 
 (cd build && cmake .. -DCMAKE_BUILD_TYPE=Release)
 
-files=("facebook_edges" "deezer" "twitch_edges.csv" "blogcatalog_edge.txt")
+files=("facebook_edges.csv" "deezer.csv" "twitch_edges.csv" "blogcatalog_edge.txt")
 patterns=("%zd,%zd" "%zd,%zd" "%zd,%zd" "%zd %zd")
 
 tests=(bmNodeSample bmEdgeSample bmExploreSample)
