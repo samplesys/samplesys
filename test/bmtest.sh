@@ -16,7 +16,7 @@ for percent in ${percents[*]}; do
       sed -e "s/input = \".*\"/input = \"example\/input\/$file.csv\"/" -e "s/percent = .*;/percent = $percent;/" "./test/$test.cpp" >"./test/$test.cpp.tmp"
       mv "./test/$test.cpp.tmp" "./test/$test.cpp"
       cmake --build build
-      eval "./build/$test" | grep "threads" | sed -E "s/.*\/(.*)\/threads:([^ ]) *([^ms]*) ms.*/$percent,$file,\1,\2,\3/" >>"$LOG_FILE"
+      eval "./build/$test" | grep "threads" | sed -E "s/.*\/(.*)\/threads:([^ ]) +([^ ]+) ([^ ]+).+/$percent,$file,\1,\2,\3\4/" >>"$LOG_FILE"
       echo "$file-$test-$percent done"
       sleep 1
     done
