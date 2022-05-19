@@ -48,28 +48,28 @@ class EdgeSampleFixture : public benchmark::Fixture {
 };
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, RE)(benchmark::State& state) {
-    sampler = make_shared<RandomEdgeSampler>(graph->number_of_nodes() * percent);
+    sampler = make_shared<RandomEdgeSampler>(graph->number_of_edges() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
 }
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, RNE)(benchmark::State& state) {
-    sampler = make_shared<RandomNodeEdgeSampler>(graph->number_of_nodes() * percent);
+    sampler = make_shared<RandomNodeEdgeSampler>(graph->number_of_edges() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
 }
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, HRNE)(benchmark::State& state) {
-    sampler = make_shared<HybridNodeEdgeSampler>(graph->number_of_nodes() * percent);
+    sampler = make_shared<HybridNodeEdgeSampler>(graph->number_of_edges() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
 }
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, TIES)(benchmark::State& state) {
-    sampler = make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_nodes() * percent);
+    sampler = make_shared<RandomEdgeSamplerWithInduction>(graph->number_of_edges() * percent);
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
@@ -77,7 +77,7 @@ BENCHMARK_DEFINE_F(EdgeSampleFixture, TIES)(benchmark::State& state) {
 
 BENCHMARK_DEFINE_F(EdgeSampleFixture, PIES)(benchmark::State& state) {
     sampler =
-        make_shared<RandomEdgeSamplerWithPartialInduction>(graph->number_of_nodes() * percent);
+        make_shared<RandomEdgeSamplerWithPartialInduction>();
     for (auto _ : state) {
         auto edges = sampler->sample(*graph);
     }
