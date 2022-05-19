@@ -1,6 +1,7 @@
 # Samplesys
 
-Samplesys is a scalable system for large scale graph sampling system, including random nodes, random edges and exploration based methods. And the engine supports OpenMP-based parallelism.
+Samplesys is a scalable system for large scale graph sampling system, including random nodes, random edges and
+exploration based methods. And the engine supports OpenMP-based parallelism.
 
 Also, it provides several graph sampling-based applications, like graph property estimation, node proximate estimation.
 
@@ -27,11 +28,14 @@ make
 ```
 
 ### Third-party
+
 Dependencies
 Building Samplesys requires the following to be installed:
+
 * gfortran: `sudo ppt install gfortran`
 
 These are third-party packages installed in the project:
+
 * Armadillo (installed when building)
 * arpack (lib/3_party)
 * LAPACK 3.10.1 (lib/3_party)
@@ -40,24 +44,28 @@ These are third-party packages installed in the project:
 * Benchmark 1.6.1 (lib/3_party)
 
 #### Armadillo
-Armadillo is a high quality C++ library for linear algebra and scientific computing, aiming towards a good balance between speed and 
-ease of use.The library can be used for machine learning, pattern recognition, computer vision,signal processing, 
-bioinformatics, statistics, finance, etc.
 
+Armadillo is a high quality C++ library for linear algebra and scientific computing, aiming towards a good balance
+between speed and
+ease of use.The library can be used for machine learning, pattern recognition, computer vision,signal processing,
+bioinformatics, statistics, finance, etc.
 
 Download link: http://arma.sourceforge.net/
 
 #### Google Benchmark
+
 A library to benchmark code snippets, similar to unit tests.
 
 Download link: https://github.com/google/benchmark
 
-
 ### Pre-processing
 
-The above process generates 2 executable files, namely `samplesys` and `gen`, where the latter is used for dataset pre-processing.
+The above process generates 2 executable files, namely `samplesys` and `gen`, where the latter is used for dataset
+pre-processing.
 
-samplesys accepts CSR formatted network as input. The toolkit `gen` can convert text based edgelist network to CSR formatted network in binary. The format of the input edge list file is as follows, where one line corresponds to one edge.
+samplesys accepts CSR formatted network as input. The toolkit `gen` can convert text based edgelist network to CSR
+formatted network in binary. The format of the input edge list file is as follows, where one line corresponds to one
+edge.
 
 ```
 5988 2048
@@ -70,17 +78,14 @@ samplesys accepts CSR formatted network as input. The toolkit `gen` can convert 
 
 [//]: # (**Example**)
 
-[//]: # ()
 [//]: # (```shell)
 
 [//]: # (./gen -input ../data/blogcatalog_edge.txt -output ../data/blogcatalog.bin)
 
 [//]: # (```)
 
-[//]: # ()
 [//]: # (**Full Options**)
 
-[//]: # ()
 [//]: # (```)
 
 [//]: # (    -weighted      Generate network with edge weights.)
@@ -101,7 +106,6 @@ samplesys accepts CSR formatted network as input. The toolkit `gen` can convert 
 
 [//]: # (```)
 
-[//]: # ()
 [//]: # (### Quick-Start)
 
 [//]: # (We use _random node sampling_ as an example.)
@@ -166,7 +170,9 @@ The evaluation is conducted on a server with 24-core Xeon CPU and 96GB of memory
 
 ### Accuracy Evaluation
 
-The accuracy of the embedding is evaluated on BlogCatalog with multi-label node classification task. After the node embedding is acquired, we input the embedding into a classifier and utilize node labels of different proportions as training data to test the accuracy of the inference of remaining node labels.
+The accuracy of the embedding is evaluated on BlogCatalog with multi-label node classification task. After the node
+embedding is acquired, we input the embedding into a classifier and utilize node labels of different proportions as
+training data to test the accuracy of the inference of remaining node labels.
 
 | Train Ratio | 0.1   | 0.2   | 0.3   | 0.4   | 0.5   | 0.6   | 0.7   | 0.8   | 0.9   |
 |-------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
@@ -176,7 +182,8 @@ The accuracy of the embedding is evaluated on BlogCatalog with multi-label node 
 ## Define New Models
 
 The definition of the new model is implemented by inheriting `RWModel` class. Three interfaces must be implemented.
-Note that the state is defined as a pair of two integers, where the first represents the current node index, and the second contains the extra information.
+Note that the state is defined as a pair of two integers, where the first represents the current node index, and the
+second contains the extra information.
 
 **Dynamic Weight Definition**
 
@@ -194,7 +201,8 @@ virtual State new_state(
     State cur_state, long long next_edge_idx);
 ```
 
-The transition of states is crucial for the system, and must be implemented. We take the same state information as the last interface as the input, and calculates the next state.
+The transition of states is crucial for the system, and must be implemented. We take the same state information as the
+last interface as the input, and calculates the next state.
 
 **State Capacity**
 
@@ -202,9 +210,12 @@ The transition of states is crucial for the system, and must be implemented. We 
 virtual int state_num(int vertex);
 ```
 
-In order to determine the memory space allocated for the samplers for each node, the user needs to explicitly specify the number of states corresponding to each node, the result is returned as an integer.
+In order to determine the memory space allocated for the samplers for each node, the user needs to explicitly specify
+the number of states corresponding to each node, the result is returned as an integer.
 
-After creating the model class, we need to integrate the model into the system by adding the model to `rw.cpp` in `RandomWalk::init()` and add a new command line argument. Take node2vec as an example, the interfaces are implemented as below.
+After creating the model class, we need to integrate the model into the system by adding the model to `rw.cpp`
+in `RandomWalk::init()` and add a new command line argument. Take node2vec as an example, the interfaces are implemented
+as below.
 
 ```c++
 float Node2vec::compute_weight(State cur_state, long long next_edge_idx) {
@@ -244,9 +255,25 @@ model = (RWModel *)node2vec;
 ...
 ```
 
+## Doxygen
+
+### Install tools
+
+```shell
+sudo apt install graphviz
+sudo apt install doxygen
+```
+
+### Generate document
+
+```shell
+doxygen Doxygen.config
+```
+
 ## Citation
 
-This project is licensed under the terms of [MIT](https://github.com/shaoyx/UniNet/blob/master/LICENSE) license. If the code is used, please cite as the following.
+This project is licensed under the terms of [MIT](https://github.com/shaoyx/UniNet/blob/master/LICENSE) license. If the
+code is used, please cite as the following.
 
 ```
 @inproceedings{Yao2020UniNetSN,
