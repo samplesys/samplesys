@@ -41,7 +41,7 @@ class ExploreSampleFixture : public benchmark::Fixture {
     void SetUp(const ::benchmark::State& state) {
         std::string input = "example/input/deezer.csv";
         // printf("Starting loading %s.\n", input.c_str());
-        graph = GraphStream::readText(input, false);
+        graph = GraphStream::readText(input, false, "%zd,%zd");
         // printf("Graph loaded.\n");
         percent = 0.1;
         // printf("%zd %zd\n", graph->number_of_nodes(), graph->number_of_edges());
