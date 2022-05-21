@@ -82,7 +82,7 @@ Now, the sampled graph is saved into result/subgraph.txt.
 and 157GB memory
 * Dataset:
 
-|数据集|图类型|结点数|边数|描述|
+|Dataset|Type|Nodes|Edges|Description|
 | ------------------------------------------------------------ | ---------- | ------ | ------- | ------------------------------------------------------------ |
 | [twitch-EN](http://snap.stanford.edu/data/twitch-social-networks.html) | Undirected | 7,126  | 35,324  | Social networks of Twitch users.                             |
 | [blogcatalog](https://networkrepository.com/soc-BlogCatalog.php)(part) | Undirected | 10,312 | 333,983 | Social network of bloggers in the BlogCatalog website.       |
