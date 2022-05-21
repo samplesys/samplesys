@@ -9,6 +9,7 @@ int main(int argc, char **argv) {
         cout << "[usage]: " << argv[0] << " path/to/input"
              << " path/to/output"
              << " directed/undirected" << endl;
+        exit(1);
     }
     int    _argc = 0;
     string input = argv[++_argc];

@@ -5,257 +5,99 @@ exploration based methods. And the engine supports OpenMP-based parallelism.
 
 Also, it provides several graph sampling-based applications, like graph property estimation, node proximate estimation.
 
-What's more, it provides samplers for random walk based NRL models.
 
-## Usage
-
-First clone the repo with
-
-```shell
-git clone https://github.com/FerrisChi/samplesys.git
-```
-
-### linux
-
-Then compile with
-
-```shell
-cd samplesys
-mkdir build
-cd build
-cmake ..
-make
-```
-
-### Third-party
+## Installation
+This describes the installation process using cmake. As pre-requisites, you'll need git and cmake installed.
 
 Dependencies
 Building Samplesys requires the following to be installed:
 
-* gfortran: `sudo ppt install gfortran`
+* gfortran: `sudo apt install gfortran`
 
-These are third-party packages installed in the project:
-
-* Armadillo (installed when building)
-* arpack (lib/3_party)
-* LAPACK 3.10.1 (lib/3_party)
-* OpenBLAS 0.3.20 (lib/3_party)
-* SuperLU 5.3.0 (lib/3_party)
-* Benchmark 1.6.1 (lib/3_party)
-
-#### Armadillo
-
-Armadillo is a high quality C++ library for linear algebra and scientific computing, aiming towards a good balance
-between speed and
-ease of use.The library can be used for machine learning, pattern recognition, computer vision,signal processing,
-bioinformatics, statistics, finance, etc.
-
-Download link: http://arma.sourceforge.net/
-
-#### Google Benchmark
-
-A library to benchmark code snippets, similar to unit tests.
-
-Download link: https://github.com/google/benchmark
-
-### Pre-processing
-
-The above process generates 2 executable files, namely `samplesys` and `gen`, where the latter is used for dataset
-pre-processing.
-
-samplesys accepts CSR formatted network as input. The toolkit `gen` can convert text based edgelist network to CSR
-formatted network in binary. The format of the input edge list file is as follows, where one line corresponds to one
-edge.
-
-```
-5988 2048
-5988 1542
-5988 5138
-5988 3607
-5988 4125
-...
+After that, you may download and build the samplesys.
+```shell
+# Check out the library.
+$ git clone https://github.com/samplesys/samplesys.git
+# Go to the library root directory
+$ cd samplesys
+# Make a build directory to place the build output.
+$ mkdir build
+# Enter the build directory
+$ cd build
+# Generate build system files with cmake
+$ cmake ..
+# Build the library.
+$ make
 ```
 
-[//]: # (**Example**)
+This builds the `libsampler.so` and `libbackend.so`, along with tests. On a unix system, the build directory should now look something like this:
 
-[//]: # (```shell)
+```bash
+/samplesys
+    /build
+        /libbackend.so
+        /libsampler.so
+        /bm...
+        /test...
+```
 
-[//]: # (./gen -input ../data/blogcatalog_edge.txt -output ../data/blogcatalog.bin)
+## Running examples
+In the /example directory we provide 3 example cpp program: `testAnalysis.cpp`, `testGraphStream.cpp` and `testSampler.cpp`.
 
-[//]: # (```)
+* In `testGraphStream.cpp`, we show the function of reading a graph from/to a text/binary file.
+* In `testSampler.cpp`, we use the user-specific sampler to sample the input graph and output to a file.
+* In `testAnalysis.cpp`, we utilize most analysis functions in order to get the descriptive efficients from given graph(and original graph).
 
-[//]: # (**Full Options**)
+To get the instruction how to start with these examples, please excute them directly after installing the samplesys.
 
-[//]: # (```)
+For example, to excute the Sampler test.
+```shell
+$ ./build/testSampler
+[Usage]: ./build/testSampler path/to/input path/to/output
+[Options]:
+        --directed/undirected, default directed.
+        --percent <num>         Percent of graph to be sampled, default 0.1.
+        --method <name>         Sample method(rn/rdn/prn/re/ff), default "rn"
+```
 
-[//]: # (    -weighted      Generate network with edge weights.)
+Try to use the Sampler test.
+```shell
+# Need to create the result directory first.
+$ ./build/testSampler example/input/facebook_edges.csv result/subgraph.txt --directed --percent 0.2 --method rdn
+Time taken by rdn: 108774 microsecond
+```
+Now, the sampled graph is saved into result/subgraph.txt.
 
-[//]: # (    -directed      Generate network with directed edges.)
+*To test the samplesys more efficiently, you may use the bash files*
+*in the /test directory.*
 
-[//]: # (    -rand-w        Assign random weight for edges in range)
-
-[//]: # (                    &#40;0, 1&#41;.)
-
-[//]: # (    -hetro         Generate heterogeneous network file.)
-
-[//]: # (                    If `--node-type` is not provided, assign)
-
-[//]: # (                    random node types in range [1, 5].)
-
-[//]: # (    -node-type     File containing node type information.)
-
-[//]: # (```)
-
-[//]: # (### Quick-Start)
-
-[//]: # (We use _random node sampling_ as an example.)
-
-[//]: # (```shell)
-
-[//]: # (./samplesys -sample -rn -input data/blogcatalog.bin -percent 0.5)
-
-[//]: # (```)
-
-[//]: # (According to the above command, samplesys executes random node sampling method and generate subgraph for network. The output file is formatted in form of edge list in `output/sample.txt`.)
-
-[//]: # (**General Settings**)
-
-[//]: # (* `-input` Input CSR formatted network dataset.)
-
-[//]: # (* `-output` Output sampled network in form of edge list, `output/sample.txt` in default.)
-
-[//]: # (* `-directed` Network is directed, otherwise the network is undirected.)
-
-[//]: # (* `-sample`, `-analysis` Choose the action to be done with graph.)
-
-[//]: # (* `-rn`,`-rdn`,`prn` Choose node based sampling methods. Each corresponds to random node,.)
-
-[//]: # (* `re`,`rne`,`hrne`,`ties`,`pies` Choose edge based sampling methods. Each corresponds to )
-
-[//]: # (* `dfs`,`bfs`,`sb`,`ff` Choose exploration based sampling methods. Each corresponds to )
-
-[//]: # (* `-percent` Ratio of sample towards the origin network.)
-
-[//]: # (* `-debug` Print debug message.)
-
-[//]: # (**Model-Specific Options**)
-
-[//]: # (- `-hybp` Ratio of algorithm A used in HRNE sampling methods.)
-
-[//]: # (- `-start` Specify start node for exploration based sampling methods.)
-
-[//]: # (- `-maxneighbor` Number of max neighbors chosen in Snow Ball sampling methods.)
-
-[//]: # (- `forward` Probability of expansion in Forest Fire sampling methods.)
 
 ---
 
 ## Evaluation
 
-The evaluation is conducted on a server with 24-core Xeon CPU and 96GB of memory. The parallelism is set to 16.
+### Test environment
 
-### Random Walk Generating
+* Hardware: 56 Intel(R) Xeon(R) Gold 5120 CPU @ 2.20GHz with 28 Cores(14 per socket) 
+and 157GB memory
+* Dataset:
 
-| Time(s)     | **Deepwalk** | **Node2vec** | **Metapath2vec** | **Edge2vec** | **Fairwalk** |
-|-------------|--------------|--------------|------------------|--------------|--------------|
-| BlogCatalog | 0.07         | 0.20         | 0.16             | 0.29         | 0.33         |
-| Amazon      | 1.83         | 4.71         | 3.97             | 5.91         | 6.31         |
-| YouTube     | 13.16        | 31.34        | 22.33            | 38.23        | 43.11        |
+|数据集|图类型|结点数|边数|描述|
+| ------------------------------------------------------------ | ---------- | ------ | ------- | ------------------------------------------------------------ |
+| [twitch-EN](http://snap.stanford.edu/data/twitch-social-networks.html) | Undirected | 7,126  | 35,324  | Social networks of Twitch users.                             |
+| [blogcatalog](https://networkrepository.com/soc-BlogCatalog.php)(part) | Undirected | 10,312 | 333,983 | Social network of bloggers in the BlogCatalog website.       |
+| [facebook](http://snap.stanford.edu/data/facebook-large-page-page-network.html) | Undirected | 22,470 | 171,002 | Page-page graph of verified Facebook sites.                  |
+| [deezer-HU](http://snap.stanford.edu/data/gemsec-Deezer.html) | Undirected | 47,538 | 222,887 | Friendship networks of users from 3 European countries.      |
+| [soc-Slashdot0902](http://snap.stanford.edu/data/soc-Slashdot0902.html) | Directed   | 82,168 | 948,464 | User-submitted and editor-evaluated technology oriented news. |
 
-### Embedding Training
+### Time test
+![Time test](doc/images/functest.png)
 
-| Dataset           | BlogCatalog | Amazon | YouTube |
-|-------------------|-------------|--------|---------|
-| Traininng Time(s) | 10.03       | 437.13 | 1512.99 |
+### Functional test
+![Functional test](doc/images/timetest.png)
 
-### Accuracy Evaluation
 
-The accuracy of the embedding is evaluated on BlogCatalog with multi-label node classification task. After the node
-embedding is acquired, we input the embedding into a classifier and utilize node labels of different proportions as
-training data to test the accuracy of the inference of remaining node labels.
-
-| Train Ratio | 0.1   | 0.2   | 0.3   | 0.4   | 0.5   | 0.6   | 0.7   | 0.8   | 0.9   |
-|-------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
-| Micro-F1    | 0.346 | 0.364 | 0.375 | 0.379 | 0.379 | 0.382 | 0.396 | 0.401 | 0.399 |
-| Macro-F1    | 0.181 | 0.213 | 0.227 | 0.238 | 0.245 | 0.253 | 0.257 | 0.254 | 0.256 |
-
-## Define New Models
-
-The definition of the new model is implemented by inheriting `RWModel` class. Three interfaces must be implemented.
-Note that the state is defined as a pair of two integers, where the first represents the current node index, and the
-second contains the extra information.
-
-**Dynamic Weight Definition**
-
-```c++
-virtual float compute_weight(
-    State cur_state, long long next_edge_idx);
-```
-
-In this interface, the user needs to define the way to calculate the edge weight based on the state and the next edge.
-
-**State Transition**
-
-```c++
-virtual State new_state(
-    State cur_state, long long next_edge_idx);
-```
-
-The transition of states is crucial for the system, and must be implemented. We take the same state information as the
-last interface as the input, and calculates the next state.
-
-**State Capacity**
-
-```c++
-virtual int state_num(int vertex);
-```
-
-In order to determine the memory space allocated for the samplers for each node, the user needs to explicitly specify
-the number of states corresponding to each node, the result is returned as an integer.
-
-After creating the model class, we need to integrate the model into the system by adding the model to `rw.cpp`
-in `RandomWalk::init()` and add a new command line argument. Take node2vec as an example, the interfaces are implemented
-as below.
-
-```c++
-float Node2vec::compute_weight(State cur_state, long long next_edge_idx) {
-    long long curEdge = this->offsets[cur_state.first] + cur_state.second;
-    int src = edges[curEdge];
-    int nextV = edges[next_edge_idx];
-    float nextW = weights[next_edge_idx];
-    if (src == nextV) {
-        return nextW / paramP;
-    } else if (graph->has_edge(src, nextV)) {
-        return nextW;
-    } else {
-        return nextW / paramQ;
-    }
-}
-
-State Node2vec::new_state(State cur_state, long long next_edge_idx) {
-    int nextV = edges[next_edge_idx];
-    int revOffset = edges_r[next_edge_idx] - offsets[nextV];
-    State nextState;
-    nextState.first = nextV;
-    nextState.second = revOffset;
-    return nextState;
-}
-
-int Node2vec::state_num(int vertex) {
-    return this->degrees[vertex];
-}
-```
-
-Also, the model must be integrated into the system by adding the following code into `RandomWalk::init()`.
-
-```c++
-...
-Node2vec *node2vec = new Node2vec(graph, argc, argv);
-model = (RWModel *)node2vec;
-...
-```
-
-## Doxygen
+## Generate Doc with Doxygen
 
 ### Install tools
 
@@ -270,17 +112,37 @@ sudo apt install doxygen
 doxygen Doxygen.config
 ```
 
-## Citation
 
-This project is licensed under the terms of [MIT](https://github.com/shaoyx/UniNet/blob/master/LICENSE) license. If the
-code is used, please cite as the following.
+## Third-party libs
 
-```
-@inproceedings{Yao2020UniNetSN,
-    author = {Xingyu Yao and Yingxia Shao and Bin Cui and Lei Chen},
-    title = {UniNet: Scalable Network Representation Learning with Metropolis-Hastings Sampling},
-    year = {2021},
-    booktitle = {Proceedings of the 37th IEEE International Conference on Data Engineering},
-    series = {ICDE '21}
-}
-```
+These are third-party packages installed in the project:
+
+* Armadillo (installed when building)
+* arpack (lib/3_party)
+* LAPACK 3.10.1 (lib/3_party)
+* OpenBLAS 0.3.20 (lib/3_party)
+* SuperLU 5.3.0 (lib/3_party)
+* Benchmark 1.6.1 (lib/3_party)
+
+### Armadillo
+
+Armadillo is a high quality C++ library for linear algebra and scientific computing, aiming towards a good balance
+between speed and
+ease of use.The library can be used for machine learning, pattern recognition, computer vision,signal processing,
+bioinformatics, statistics, finance, etc.
+
+Download link: http://arma.sourceforge.net/
+
+### Google Benchmark
+
+A library to benchmark code snippets, similar to unit tests.
+
+Download link: https://github.com/google/benchmark
+
+## Future
+* Provide samplers for random walk based NRL models.
+* Provide Python interface to popular graph neural network repos such as NetworkX.
+
+## License
+
+[GNU General Public License v3.0](https://github.com/samplesys/samplesys/blob/main/LICENSE)

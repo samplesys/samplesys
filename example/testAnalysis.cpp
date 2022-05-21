@@ -158,15 +158,15 @@ void cmdInp(int argc, char **argv) {
         cout << "[Usage]: " << argv[0] << " path/to/input"
              << " directed/undirected" << endl
              << "[Options]: " << endl
-             << "\t-degree\t\tDegree test." << endl
-             << "\t-cluster\t\tClustring coeifficient test." << endl
-             << "\t-hot_plot\t\tHot-plot coefficient test." << endl
-             << "\t-cncomp\t\tConnected component test." << endl
-             << "\t-linear\t\tLinear test." << endl
-             << "\t-origin <path>\t\tOriginal graph to compare with. Make sure the original graph "
+             << "\t--degree\t\tDegree test." << endl
+             << "\t--cluster\t\tClustring coeifficient test." << endl
+             << "\t--hot_plot\t\tHot-plot coefficient test." << endl
+             << "\t--cncomp\t\tConnected component test." << endl
+             << "\t--linear\t\tLinear test." << endl
+             << "\t--origin <path>\t\tOriginal graph to compare with. Make sure the original graph "
                 "is also directed/undirected, same with the input graph."
              << endl
-             << "\t-timer\t\tUse timer in test." << endl;
+             << "\t--timer\t\t\tUse timer in test." << endl;
         exit(1);
     }
     int _argc   = 0;
@@ -183,19 +183,19 @@ void cmdInp(int argc, char **argv) {
                 "Please add directed/undirect to specific the graph before other options.");
     }
     while (++_argc < argc) {
-        if (strcmp(argv[_argc], "-degree") == 0)
+        if (strcmp(argv[_argc], "--degree") == 0)
             t_degree = true;
-        else if (strcmp(argv[_argc], "-cluster") == 0)
+        else if (strcmp(argv[_argc], "--cluster") == 0)
             t_cluster = true;
-        else if (strcmp(argv[_argc], "-hot_plot") == 0)
+        else if (strcmp(argv[_argc], "--hot_plot") == 0)
             t_hot_polt = true;
-        else if (strcmp(argv[_argc], "-linear") == 0)
+        else if (strcmp(argv[_argc], "--linear") == 0)
             t_linear = true;
-        else if (strcmp(argv[_argc], "-cncomp") == 0)
+        else if (strcmp(argv[_argc], "--cncomp") == 0)
             t_cncomp = true;
-        else if (strcmp(argv[_argc], "-timer") == 0)
+        else if (strcmp(argv[_argc], "--timer") == 0)
             t_timer = true;
-        else if (strcmp(argv[_argc], "-origin") == 0) {
+        else if (strcmp(argv[_argc], "--origin") == 0) {
             t_origin    = true;
             origin_path = argv[++_argc];
         }
