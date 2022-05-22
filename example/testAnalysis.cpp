@@ -31,21 +31,24 @@ void test_degree(std::shared_ptr<Graph> graph) {
 
     Backend::get_degree_avg(*graph, avg_degree);
     Backend::get_degree_disb(*graph, deg_disb);
+    Backend::get_degree_asso(*graph, asso_coef);
     if (t_origin) {
         double              ks_stats;
         map<size_t, size_t> deg_disb_ori;
         double              avg_degree_ori;
+        double              asso_coef_ori;
         Backend::get_degree_avg(*origin_graph, avg_degree_ori);
-        std::cout << "[Degree]Average degree: " << avg_degree << " / " << avg_degree_ori << endl;
-
+        Backend::get_degree_asso(*origin_graph, asso_coef_ori);
         Backend::get_degree_disb(*origin_graph, deg_disb_ori);
+        std::cout << "[Degree]Average degree: " << avg_degree << " / " << avg_degree_ori << endl;
+        std::cout << "[Degree]Assortativity coefficient: " << asso_coef << " / " << asso_coef_ori
+                  << endl;
         getKSStatsMap(deg_disb, deg_disb_ori, ks_stats);
         std::cout << "[Degree]Degree distribution: " << ks_stats << endl;
     } else {
         std::cout << "[Degree]Average degree: " << avg_degree << endl;
+        std::cout << "[Degree]Assortativity coefficient: " << asso_coef << endl;
     }
-    Backend::get_degree_asso(*graph, asso_coef);
-    std::cout << "[Degree]Assortativity coefficient: " << asso_coef << endl;
     if (t_timer) {
         auto stop     = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
